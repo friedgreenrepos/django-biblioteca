@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extracss %}
+{{ block.super }}
+<link href="{% static 'css/biblioteca.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block main-header %}{% endblock %}
+
+{% block main-sidebar %}{% endblock %}
+
+{% block content-wrapper %}
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    {% block content-header %}
+      <!-- Content Header (Page header) -->
+      <section class="content-header mb-5">
+        {% block content-header-title %}
+        <h1>
+          {{titolo}}
+          <small>{{sottotitolo}}</small>
+        </h1>
+        {% endblock %}
+        {% block breadcrumbs %}
+          <!-- Breadcrumbs -->
+          {% comment %}{% include 'inc/breadcrumbs.html' %} {% endcomment %}
+        {% endblock %}
+      </section>
+    {% endblock %}
+
+    <!-- Main content -->
+    <section class="content">
+      {% block content-top-toolbar %}{% endblock %}
+      {% block message %}
+        {% comment %}{% include 'messages.html' %}{% endcomment %}
+      {% endblock %}
+      {% block content-top %}{% endblock %}
+      {% block content %}{% endblock %}
+      {% block content-bottom %}{% endblock %}
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+{% endblock %}
+
+{% block footer %}
+<footer class="main-footer">
+  <div class="pull-right hidden-xs">
+    <b>Versione</b> {{version_string}}
+  </div>
+  <strong>Biblioteca by<a href="#">Giulia Calanca</a></strong>
+</footer>
+{% endblock %}
+
+{% block extrajs %}
+<!-- Custom Theme JavaScript -->
+<script src="{% static 'js/biblioteca.js' %}"></script>
+{% endblock %}
