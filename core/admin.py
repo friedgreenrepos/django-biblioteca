@@ -4,7 +4,8 @@ from .models import Libro, Autore, Genere, SottoGenere, Editore
 
 @admin.register(Libro)
 class LibroAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('titolo', 'get_autori_display', 'genere')
+    list_filter = ('genere', 'disponibile', 'data_restituzione') 
 
 
 @admin.register(Autore)
