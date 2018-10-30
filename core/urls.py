@@ -1,2 +1,6 @@
 from django.urls import path
-from core import views
+from . import views
+
+urlpatterns = [
+    path('elenco-libri/', views.ElencoLibriView.as_view(), name='elenco_libri'),
+]
