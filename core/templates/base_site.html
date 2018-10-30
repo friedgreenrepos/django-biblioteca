@@ -4,9 +4,17 @@
 {% block extracss %}
 {{ block.super }}
 <link href="{% static 'css/biblioteca.css' %}" rel="stylesheet">
+<!-- Skin CSS -->
+<link rel="stylesheet" href="{% static 'css/skins/skin-red-light.min.css' %}">
+<!-- icheck -->
+<link href="{% static 'plugins/iCheck/flat/red.css' %}" rel="stylesheet">
 {% endblock %}
 
-{% block main-header %}{% endblock %}
+{% block body-extraclass %}skin-red-light sidebar-mini{% endblock %}
+
+{% block main-header %}
+{% include 'inc/header.html' %}
+{% endblock %}
 
 {% block main-sidebar %}{% endblock %}
 
@@ -56,4 +64,5 @@
 {% block extrajs %}
 <!-- Custom Theme JavaScript -->
 <script src="{% static 'js/biblioteca.js' %}"></script>
+
 {% endblock %}
