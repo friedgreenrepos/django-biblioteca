@@ -44,6 +44,9 @@ class Autore(models.Model):
     def __str__(self):
         return '{} {}'.format(self.cognome, self.nome)
 
+    def cognome_nome(self):
+        return '{} {}'.format(self.cognome, self.nome)
+
 
 class TrackLibro(models.Model):
     disponibile = models.BooleanField(default=True)
@@ -59,8 +62,8 @@ class Libro(TrackLibro):
     autori = models.ManyToManyField('Autore')
     descrizione = models.TextField(blank=True)
     editore = models.ForeignKey(Editore, on_delete=models.PROTECT)
-    genere = models.ManyToManyField(Genere)
-    sottogenere = models.ManyToManyField(SottoGenere)
+    genere = models.ForeignKey(Genere, on_delete=models.PROTECT)
+    sottogenere = models.ManyToManyField(SottoGenere, blank=True)
     collana = models.CharField(max_length=100)
 
 
@@ -70,3 +73,7 @@ class Libro(TrackLibro):
 
     def __str__(self):
         return self.titolo
+
+    def get_autori_display(self):
+        return ', '.join(autore.cognome_nome() for autore in self.autori.all())
+    get_autori_display.short_description = 'Autori'
