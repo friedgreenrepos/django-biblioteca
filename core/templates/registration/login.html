@@ -5,11 +5,14 @@
 {% block content-wrapper %}
   <div class="login-box">
     <div class="login-logo">
-      <a  href="{% url 'dashboard' %}"> <img src="{% static 'img/logo_login.png' %}"> </a>
+      <a  href="{% url 'dashboard' %}">
+        <p><b>B</b>iblioteca</p>
+        <img src="{% static 'img/login_logo.png' %}">
+      </a>
     </div>
     <!-- /.login-logo -->
     <div class="login-box-body">
-      <p class="login-box-msg">Esegui il Login</p>
+      <p class="login-box-msg text-bold text-uppercase">login</p>
 
       <form action="" method="post">{% csrf_token %}
         {% if form.errors %}
@@ -28,7 +31,7 @@
         </div>
         <div class="row">
           <div class="col-xs-12">
-            <button type="submit" class="btn btn-primary btn-block btn-flat btn-darkpink">Login</button>
+            <button type="submit" class="btn btn-block btn-flat btn-rosso">Login</button>
           </div>
           <!-- /.col -->
         </div>

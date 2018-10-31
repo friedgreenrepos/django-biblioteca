@@ -5007,3 +5007,23 @@ a.text-ocra:hover{
   height: 50px;
   padding: 10px 10px 0 0;
 }
+/* login btn style */
+.btn.btn-rosso {
+  background-color: #dd4b39;
+  border-color: #c4665a;
+  color: #fff;
+}
+.btn.btn-rosso:hover {
+  background-color: #c4665a;
+  border-color: #dd4b39;
+  color: #fff;
+}
+/* input border red */
+.form-control:focus {
+  border-color: #dd4b39;
+  box-shadow: none;
+}
+/* larger login box msg */
+.login-box-msg{
+  font-size: 17px;
+}
