@@ -4992,8 +4992,8 @@ table.text-center th {
 /* --------------------------- CSS additions ----------------------------- */
 
 /* box border color */
-.box.box-red {
-	border-top-color: #dd4b39;
+.box.box-ocra {
+	border-top-color: #dd9e39;
 }
 /* text ocra */
 .text-ocra {
@@ -5016,6 +5016,17 @@ a.text-ocra:hover{
 .btn.btn-rosso:hover {
   background-color: #c4665a;
   border-color: #dd4b39;
+  color: #fff;
+}
+/* custom ocra but */
+.btn.btn-ocra {
+  background-color: #dd9e39;
+  border-color: #b88431;
+  color: #fff;
+}
+.btn.btn-rosso:hover {
+  background-color: #b88431;
+  border-color: #dd9e39;
   color: #fff;
 }
 /* input border red */

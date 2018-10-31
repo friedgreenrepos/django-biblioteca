@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.urls import reverse
 # Create your models here.
 
 
@@ -72,6 +72,9 @@ class Libro(TrackLibro):
 
     def __str__(self):
         return self.titolo
+
+    def get_absolute_url(self):
+        return reverse('dettaglio_libro', kwargs={'pk: self.pk'})
 
     def get_autori_display(self):
         return ', '.join(autore.cognome_nome() for autore in self.autori.all())

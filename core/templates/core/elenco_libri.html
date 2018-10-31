@@ -2,66 +2,85 @@
 {% load static %}
 
 {% block content %}
-<div class="box box-red">
-  <div class="box-header">
-    <h3 class="box-title">Libri</h3>
 
-    <div class="box-tools">
-      <div class="input-group input-group-sm" style="width: 150px;">
-        <input name="table_search" class="form-control pull-right" placeholder="Search" type="text">
 
-        <div class="input-group-btn">
-          <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
+  <div class="btn-group">
+    <button type="button" class="btn btn-ocra">Aggiungi</button>
+    <button type="button" class="btn btn-ocra dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+      <span class="caret"></span>
+      <span class="sr-only">Toggle Dropdown</span>
+    </button>
+    <ul class="dropdown-menu" role="menu">
+      <li><a href="{% url 'aggiungi_libro' %}">Libro</a></li>
+      <li><a href="#">Autore</a></li>
+      <li><a href="#">Editore</a></li>
+      <li><a href="#">Collana</a></li>
+      <li><a href="#">Genere</a></li>
+      <li><a href="#">Sottogenere</a></li>
+      <li class="divider"></li>
+      <li><a href="#">Separated link</a></li>
+    </ul>
+  </div>
+<hr>
+  <div class="box box-ocra">
+    <div class="box-header">
+      <h3 class="box-title">Libri</h3>
+
+      <div class="box-tools">
+        <div class="input-group input-group-sm" style="width: 150px;">
+          <input name="table_search" class="form-control pull-right" placeholder="Search" type="text">
+
+          <div class="input-group-btn">
+            <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
+          </div>
         </div>
       </div>
+
     </div>
-
+    <!-- /.box-header -->
+    <div class="box-body table-responsive no-padding">
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th></th>
+            <th>ISBN</th>
+            <th>Titolo</th>
+            <th>Autore</th>
+            <th>Editore</th>
+            <th>Genere</th>
+            <th>Sottogenere</th>
+            <th>Collana</th>
+            <th>Stato</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for libro in object_list %}
+          <tr>
+            <td>
+              <a href="{% url 'dettaglio_libro' libro.id %}" class="text-ocra" data-balloon="Dettaglio" data-balloon-pos="right">
+                <i class="fas fa-info-circle fa-w-16"></i>
+              </a>
+            </td>
+            <td>{{ libro.isbn }}</td>
+            <td>{{ libro.titolo }}</td>
+            <td>{{ libro.get_autori_display }}</td>
+            <td>{{ libro.editore }}</td>
+            <td>{{ libro.genere }}</td>
+            <td>{{ libro.get_sottogeneri_display|default:'-' }}</td>
+            <td>{{ libro.collana }}</td>
+            <td>
+              {% if libro.disponibile %}
+                <span class="label label-success">Disponibile</span>
+              {% else %}
+                <span class="label label-danger">In prestito</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <!-- /.box-body -->
   </div>
-  <!-- /.box-header -->
-  <div class="box-body table-responsive no-padding">
-    <table class="table table-hover">
-      <thead>
-        <tr>
-          <th></th>
-          <th>ISBN</th>
-          <th>Titolo</th>
-          <th>Autore</th>
-          <th>Editore</th>
-          <th>Genere</th>
-          <th>Sottogenere</th>
-          <th>Collana</th>
-          <th>Stato</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for libro in object_list %}
-        <tr>
-          <td>
-            <a href="{% url 'dettaglio_libro' libro.id %}" class="text-ocra" data-balloon="Dettaglio" data-balloon-pos="right">
-              <i class="fas fa-info-circle fa-w-16"></i>
-            </a>
-          </td>
-          <td>{{ libro.isbn }}</td>
-          <td>{{ libro.titolo }}</td>
-          <td>{{ libro.get_autori_display }}</td>
-          <td>{{ libro.editore }}</td>
-          <td>{{ libro.genere }}</td>
-          <td>{{ libro.get_sottogeneri_display|default:'-' }}</td>
-          <td>{{ libro.collana }}</td>
-          <td>
-            {% if libro.disponibile %}
-              <span class="label label-success">Disponibile</span>
-            {% else %}
-              <span class="label label-danger">In prestito</span>
-            {% endif %}
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
-  <!-- /.box-body -->
-</div>
-<!-- /.box -->
-
+  <!-- /.box -->
 {% endblock %}
