@@ -63,9 +63,8 @@ class Libro(TrackLibro):
     descrizione = models.TextField(blank=True)
     editore = models.ForeignKey(Editore, on_delete=models.PROTECT)
     genere = models.ForeignKey(Genere, on_delete=models.PROTECT)
-    sottogenere = models.ManyToManyField(SottoGenere, blank=True)
+    sottogeneri = models.ManyToManyField(SottoGenere, blank=True)
     collana = models.CharField(max_length=100)
-
 
     class Meta:
         verbose_name_plural = 'Libri'
@@ -77,3 +76,7 @@ class Libro(TrackLibro):
     def get_autori_display(self):
         return ', '.join(autore.cognome_nome() for autore in self.autori.all())
     get_autori_display.short_description = 'Autori'
+
+    def get_sottogeneri_display(self):
+        return ', '.join(sottogenere.nome for sottogenere in self.sottogeneri.all())
+    get_sottogeneri_display.short_description = 'Sottogeneri'
