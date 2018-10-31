@@ -16,7 +16,9 @@
 {% include 'inc/header.html' %}
 {% endblock %}
 
-{% block main-sidebar %}{% endblock %}
+{% block main-sidebar %}
+{% include 'inc/sidebar.html' %}
+{% endblock %}
 
 {% block content-wrapper %}
   <!-- Content Wrapper. Contains page content -->
@@ -57,7 +59,7 @@
   <div class="pull-right hidden-xs">
     <b>Versione</b> {{version_string}}
   </div>
-  <strong>Biblioteca by<a href="#">Giulia Calanca</a></strong>
+  <strong>Biblioteca by <a href="#">Giulia Calanca</a></strong>
 </footer>
 {% endblock %}
 

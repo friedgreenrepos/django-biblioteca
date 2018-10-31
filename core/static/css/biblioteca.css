@@ -4989,3 +4989,9 @@ table.text-center th {
     white-space: normal !important;
   }
 }
+/* --------------------------- CSS additions ----------------------------- */
+
+/* box border color */
+.box.box-red {
+	border-top-color: #dd4b39;
+}
