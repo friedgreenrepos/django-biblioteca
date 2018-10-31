@@ -36,14 +36,14 @@
           <!-- User Account: style can be found in dropdown.less -->
           <li class="dropdown user user-menu">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-              <span class="hidden-xs">#TODO: username</span>
+              <span class="hidden-xs">{{ user.username }}</span>
             </a>
             <ul class="dropdown-menu">
               <!-- User image -->
               <li class="user-header">
                 <img src="{% static 'img/profile_circle.jpg' %}" class="img-square" alt="Profile Image">
                 <p>
-                  #TODO: username
+                  {{ user.username }}
                   <small>Utente dal:</small>
                   <small>{{user.date_joined}}</small>
                 </p>
