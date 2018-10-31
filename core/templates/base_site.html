@@ -3,11 +3,14 @@
 
 {% block extracss %}
 {{ block.super }}
+<!-- Biblioteca stylesheet -->
 <link href="{% static 'css/biblioteca.css' %}" rel="stylesheet">
 <!-- Skin CSS -->
 <link rel="stylesheet" href="{% static 'css/skins/skin-red-light.min.css' %}">
 <!-- icheck -->
 <link href="{% static 'plugins/iCheck/flat/red.css' %}" rel="stylesheet">
+<!-- Balloon tootltips -->
+<link href="{% static 'css/balloon.min.css' %}" rel="stylesheet">
 {% endblock %}
 
 {% block body-extraclass %}skin-red-light sidebar-mini{% endblock %}
@@ -34,7 +37,7 @@
         {% endblock %}
         {% block breadcrumbs %}
           <!-- Breadcrumbs -->
-          {% comment %}{% include 'inc/breadcrumbs.html' %} {% endcomment %}
+          {% include 'inc/breadcrumbs.html' %}
         {% endblock %}
       </section>
     {% endblock %}

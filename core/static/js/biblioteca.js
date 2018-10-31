@@ -1149,8 +1149,5 @@ throw new Error('AdminLTE requires jQuery')
       checkedClass: 'checked',
     });
 
-    // Enable tooltip
-    $("body").tooltip({ selector: '[data-toggle=tooltip]' });
-
 
 }(jQuery);

@@ -4995,3 +4995,10 @@ table.text-center th {
 .box.box-red {
 	border-top-color: #dd4b39;
 }
+/* text ocra */
+.text-ocra {
+  color: #dd9e39;
+}
+a.text-ocra:hover{
+  color: #c49b5a;
+}

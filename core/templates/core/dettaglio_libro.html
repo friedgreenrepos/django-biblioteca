@@ -1,0 +1,49 @@
+{% extends 'base_site.html' %}
+{% load static %}
+
+{% block content %}
+
+<div class="row">
+  <div class="col-md-6">
+    <div class="box box-red">
+      <div class="box-header with-border">
+        <h3 class="box-title">Dettagli</h3>
+      </div>
+      <div class="box-body">
+        <strong><i class="fas fa-font margin-r-5"></i> Titolo</strong>
+        <p>
+          {{ libro.titolo }}
+        </p>
+
+        <hr>
+
+        <strong><i class="fas fa-pen-nib margin-r-5"></i> Autori</strong>
+        <p>{{ libro.get_autori_display }}</p>
+
+        <hr>
+
+        <strong><i class="fas fa-question-circle margin-r-5"></i>Stato</strong>
+        <p>
+          {% if libro.disponibile %}
+          <span class="label label-success">Disponibile</span>
+          {% else %}
+          <span class="label label-danger">In prestito</span>
+          {% endif %}
+        </p>
+
+        <hr>
+
+        {% if data_restituzione %}
+          <strong><i class="fas fa-calendar margin-r-5"></i>Data restituzione</strong>
+          <p>{{ libro.data_restituzione }}</p>
+          <hr>
+        {% endif %}
+
+        <strong><i class="fas fa-file-alt margin-r-5"></i>Descrizione</strong>
+        <p>{{ libro.descrizione }}</p>
+      </div>
+      <!-- /.box-body -->
+    </div>
+  </div>
+</div>
+{% endblock %}
