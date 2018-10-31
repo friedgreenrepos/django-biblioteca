@@ -13,46 +13,49 @@
 <link href="{% static 'css/balloon.min.css' %}" rel="stylesheet">
 {% endblock %}
 
-{% block body-extraclass %}skin-red-light sidebar-mini{% endblock %}
+{% block body-extraclass %}skin-red-light layout-top-nav{% endblock %}
 
 {% block main-header %}
 {% include 'inc/header.html' %}
 {% endblock %}
 
 {% block main-sidebar %}
-{% include 'inc/sidebar.html' %}
+{% comment %}{% include 'inc/sidebar.html' %}{% endcomment %}
 {% endblock %}
 
 {% block content-wrapper %}
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
-    {% block content-header %}
-      <!-- Content Header (Page header) -->
-      <section class="content-header mb-5">
-        {% block content-header-title %}
-        <h1>
-          {{titolo}}
-          <small>{{sottotitolo}}</small>
-        </h1>
-        {% endblock %}
-        {% block breadcrumbs %}
-          <!-- Breadcrumbs -->
-          {% include 'inc/breadcrumbs.html' %}
-        {% endblock %}
-      </section>
-    {% endblock %}
-
-    <!-- Main content -->
-    <section class="content">
-      {% block content-top-toolbar %}{% endblock %}
-      {% block message %}
-        {% comment %}{% include 'messages.html' %}{% endcomment %}
+    <div class="container">
+      {% block content-header %}
+        <!-- Content Header (Page header) -->
+        <section class="content-header mb-5">
+          {% block content-header-title %}
+          <h1>
+            {{titolo}}
+            <small>{{sottotitolo}}</small>
+          </h1>
+          {% endblock %}
+          {% block breadcrumbs %}
+            <!-- Breadcrumbs -->
+            {% include 'inc/breadcrumbs.html' %}
+          {% endblock %}
+        </section>
       {% endblock %}
-      {% block content-top %}{% endblock %}
-      {% block content %}{% endblock %}
-      {% block content-bottom %}{% endblock %}
-    </section>
-    <!-- /.content -->
+
+      <!-- Main content -->
+      <section class="content">
+        {% block content-top-toolbar %}{% endblock %}
+        {% block message %}
+          {% comment %}{% include 'messages.html' %}{% endcomment %}
+        {% endblock %}
+        {% block content-top %}{% endblock %}
+        {% block content %}{% endblock %}
+        {% block content-bottom %}{% endblock %}
+      </section>
+      <!-- /.content -->
+    </div>
+    <!-- / .container -->
   </div>
   <!-- /.content-wrapper -->
 {% endblock %}

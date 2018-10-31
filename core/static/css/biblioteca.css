@@ -5002,3 +5002,8 @@ table.text-center th {
 a.text-ocra:hover{
   color: #c49b5a;
 }
+/* logo image size and padding */
+#logo-navbar {
+  height: 50px;
+  padding: 10px 10px 0 0;
+}

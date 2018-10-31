@@ -7,6 +7,11 @@ from .models import Libro
 
 class DashboardView(TemplateView):
     template_name = 'dashboard.html'
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context['titolo'] = 'Dashboard'
+        context['tot_libri'] = Libro.objects.all().count()
+        return context
 
 
 class ElencoLibriView(ListView):
