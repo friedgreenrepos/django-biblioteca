@@ -1,6 +1,15 @@
+from django.utils.translation import ugettext_lazy as _
+from django.contrib.auth.models import User
 from django.db import models
 from django.urls import reverse
-# Create your models here.
+
+
+class Profilo(models.Model):
+    utente = models.OneToOneField(User, on_delete=models.CASCADE)
+    codfisc = models.CharField(max_length=11, verbose_name=_('Codice fiscale'))
+    data_nascita = models.DateField(verbose_name=_('Data di nascita'))
+    telefono = models.CharField(max_length=20)
+    email = models.EmailField()
 
 
 class Genere(models.Model):
