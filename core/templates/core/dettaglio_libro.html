@@ -4,43 +4,106 @@
 {% block content %}
 
 <div class="row">
-  <div class="col-md-6">
+  <div class="col-md-7">
     <div class="box box-ocra">
       <div class="box-header with-border">
-        <h3 class="box-title">Dettagli</h3>
+        <h3 class="box-title">Dettagli Libro</h3>
       </div>
       <div class="box-body">
-        <strong><i class="fas fa-font margin-r-5"></i> Titolo</strong>
-        <p>
-          {{ libro.titolo }}
-        </p>
+        <div class="row">
+          <div class="col-md-6">
+            <strong><i class="fas fa-font margin-r-5"></i> Titolo</strong>
+            <p>
+              {{ libro.titolo }}
+            </p>
+          </div>
+          <hr class="visible-xs clearfix">
+          <div class="col-md-6">
+            <strong><i class="fas fa-pen-nib margin-r-5"></i> Autore</strong>
+            <p>{{ libro.get_autori_display }}</p>
+          </div>
+        </div>
 
         <hr>
 
-        <strong><i class="fas fa-pen-nib margin-r-5"></i> Autori</strong>
-        <p>{{ libro.get_autori_display }}</p>
+        <div class="row">
+          <div class="col-sm-6">
+            <strong><i class="fas fa-question-circle margin-r-5"></i>Stato</strong>
+            <p>
+              {% if libro.disponibile %}
+              <span class="label label-success">Disponibile</span>
+              {% else %}
+              <span class="label label-danger">In prestito</span>
+              {% endif %}
+            </p>
+          </div>
+          <div class="col-sm-6">
+            {% if data_restituzione %}
+              <strong><i class="fas fa-calendar margin-r-5"></i>Data restituzione</strong>
+              <p>{{ libro.data_restituzione }}</p>
+              <hr>
+            {% endif %}
+          </div>
+        </div>
 
         <hr>
 
-        <strong><i class="fas fa-question-circle margin-r-5"></i>Stato</strong>
-        <p>
-          {% if libro.disponibile %}
-          <span class="label label-success">Disponibile</span>
-          {% else %}
-          <span class="label label-danger">In prestito</span>
-          {% endif %}
-        </p>
+        <div class="row">
+          <div class="col-xs-12">
+            <strong><i class="fas fa-file-alt margin-r-5"></i>Descrizione</strong>
+            <p>{{ libro.descrizione }}</p>
+          </div>
+        </div>
 
         <hr>
 
-        {% if data_restituzione %}
-          <strong><i class="fas fa-calendar margin-r-5"></i>Data restituzione</strong>
-          <p>{{ libro.data_restituzione }}</p>
-          <hr>
-        {% endif %}
+        <div class="row">
+          <div class="col-md-6">
+            <strong><i class="fas fa-atlas margin-r-5"></i>Genere</strong>
+            <p>{{ libro.genere }}</p>
+          </div>
+          <hr class="visible-xs clearfix">
+          <div class="col-md-6">
+            <strong><i class="fas fa-atlas margin-r-5"></i>Sottogenere</strong>
+            <p>{{ libro.sottogenere|default:'-' }}</p>
+          </div>
+        </div>
 
-        <strong><i class="fas fa-file-alt margin-r-5"></i>Descrizione</strong>
-        <p>{{ libro.descrizione }}</p>
+        <hr>
+
+        <div class="row">
+          <div class="col-md-6">
+            <strong><i class="fas fa-book margin-r-5"></i>Editore</strong>
+            <p>{{ libro.editore }}</p>
+          </div>
+          <hr class="visible-xs clearfix">
+          <div class="col-md-6">
+            <strong><i class="fas fa-object-group margin-r-5"></i>Collana</strong>
+            <p>{{ libro.collana|default_if_none:'-' }}</p>
+          </div>
+        </div>
+
+        <hr>
+      </div>
+      <!-- /.box-body -->
+    </div>
+  </div>
+  <div class="col-md-5">
+    <div class="box box-ocra">
+      <div class="box-header with-border">
+        <h3 class="box-title">Storico Prestiti</h3>
+      </div>
+      <div class="box-body">
+        <strong><i class="fas fa-book-reader margin-r-5"></i>Utente</strong>
+        <span>TODO: nome utente</span>
+        <strong><i class="fas fa-calendar margin-r-5"></i>Data</strong>
+        <span>TODO: data da - data a</span>
+        <hr>
+        <strong><i class="fas fa-book-reader margin-r-5"></i>Utente</strong>
+        <span>TODO: nome utente</span>
+        <strong><i class="fas fa-calendar margin-r-5"></i>Data</strong>
+        <span>TODO: data da - data a</span>
+        <hr>
       </div>
       <!-- /.box-body -->
     </div>

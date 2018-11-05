@@ -53,10 +53,10 @@ class Autore(models.Model):
         verbose_name_plural = 'Autori'
 
     def __str__(self):
-        return '{} {}'.format(self.cognome, self.nome)
+        return '{} {}'.format(self.nome, self.cognome)
 
-    def cognome_nome(self):
-        return '{} {}'.format(self.cognome, self.nome)
+    def nome_cognome(self):
+        return '{} {}'.format(self.nome, self.cognome)
 
 
 class TrackLibro(models.Model):
@@ -88,7 +88,7 @@ class Libro(TrackLibro):
         return reverse('dettaglio_libro', kwargs={'pk: self.pk'})
 
     def get_autori_display(self):
-        return ', '.join(autore.cognome_nome() for autore in self.autori.all())
+        return ', '.join(autore.nome_cognome() for autore in self.autori.all())
     get_autori_display.short_description = 'Autori'
 
     def get_sottogeneri_display(self):

@@ -23,20 +23,9 @@
   </div>
 <hr>
   <div class="box box-ocra">
-    <div class="box-header">
+    <!-- <div class="box-header">
       <h3 class="box-title">Libri</h3>
-
-      <div class="box-tools">
-        <div class="input-group input-group-sm" style="width: 150px;">
-          <input name="table_search" class="form-control pull-right" placeholder="Search" type="text">
-
-          <div class="input-group-btn">
-            <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
-          </div>
-        </div>
-      </div>
-
-    </div>
+    </div> -->
     <!-- /.box-header -->
     <div class="box-body table-responsive no-padding">
       <table class="table table-hover">
@@ -47,9 +36,8 @@
             <th>Titolo</th>
             <th>Autore</th>
             <th>Editore</th>
-            <th>Genere</th>
-            <th>Sottogenere</th>
             <th>Collana</th>
+            <th>Genere</th>
             <th>Stato</th>
           </tr>
         </thead>
@@ -65,9 +53,8 @@
             <td>{{ libro.titolo }}</td>
             <td>{{ libro.get_autori_display }}</td>
             <td>{{ libro.editore }}</td>
+            <td>{{ libro.collana|default_if_none:'-' }}</td>
             <td>{{ libro.genere }}</td>
-            <td>{{ libro.get_sottogeneri_display|default:'-' }}</td>
-            <td>{{ libro.collana }}</td>
             <td>
               {% if libro.disponibile %}
                 <span class="label label-success">Disponibile</span>
