@@ -1,0 +1,90 @@
+{% extends 'base_site.html' %}
+{% load static %}
+
+{% block content %}
+
+<div class="btn-group">
+  <button type="button" class="btn btn-ocra">Aggiungi</button>
+  <button type="button" class="btn btn-ocra dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+    <span class="caret"></span>
+    <span class="sr-only">Toggle Dropdown</span>
+  </button>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a class="padding-t-10 padding-b-10" href="{% url 'aggiungi_genere' %}" type="button" class="btn btn-ocra">Genere</a>
+    </li>
+    <li>
+      <a class="padding-t-10 padding-b-10" href="{% url 'aggiungi_sottogenere' %}">Sottogenere</a>
+    </li>
+  </ul>
+</div>
+
+<hr>
+
+<div class="row">
+  <div class="col-md-6">
+    <div class="box box-ocra">
+      <div class="box-header with-border">
+        <h3 class="box-title">Generi ({{ tot_generi }})</h3>
+      </div>
+      <div class="box-body table-responsive no-padding">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th></th>
+              <th>Nome</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for genere in generi_list %}
+            <tr>
+              <td>
+                <a href="{% url 'modifica_genere' genere.pk %}" class="text-ocra" data-balloon="Modifica" data-balloon-pos="right">
+                  <i class="fas fa-pen-square fa-130-p"></i>
+                </a>
+              </td>
+              <td>{{ genere.nome }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <!-- /.box-body -->
+    </div>
+    <!-- /.box -->
+  </div>
+  <div class="col-md-6">
+    <div class="box box-ocra">
+      <div class="box-header with-border">
+        <h3 class="box-title">Sottogeneri ({{ tot_sottogeneri }})</h3>
+      </div>
+      <div class="box-body table-responsive no-padding">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th></th>
+              <th>Padre</th>
+              <th>Nome</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for sottogenere in sottogeneri_list %}
+            <tr>
+              <td>
+                <a href="{% url 'modifica_sottogenere' sottogenere.pk %}" class="text-ocra" data-balloon="Modifica" data-balloon-pos="right">
+                  <i class="fas fa-pen-square fa-130-p"></i>
+                </a>
+              </td>
+              <td>{{ sottogenere.padre }}</td>
+              <td>{{ sottogenere.nome }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <!-- /.box-body -->
+    </div>
+    <!-- /.box -->
+  </div>
+</div>
+{% endblock %}

@@ -33,25 +33,25 @@ class AutoreForm(BootstrapForm, forms.ModelForm):
         fields = ['nome', 'cognome']
 
 
-class EditoreForm(forms.ModelForm):
+class EditoreForm(BootstrapForm, forms.ModelForm):
     class Meta:
         model = Editore
         fields = ['nome']
 
 
-class CollanaForm(forms.ModelForm):
+class CollanaForm(BootstrapForm, forms.ModelForm):
     class Meta:
         model = Collana
         fields = ['nome', 'editore']
 
 
-class GenereForm(forms.ModelForm):
+class GenereForm(BootstrapForm, forms.ModelForm):
     class Meta:
         model = Genere
         fields = ['nome']
 
 
-class SottoGenereForm(forms.ModelForm):
+class SottoGenereForm(BootstrapForm, forms.ModelForm):
     class Meta:
         model = SottoGenere
         fields = ['nome', 'padre']
