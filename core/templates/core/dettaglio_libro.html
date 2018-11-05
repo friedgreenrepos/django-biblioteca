@@ -8,14 +8,24 @@
     <div class="box box-ocra">
       <div class="box-header with-border">
         <h3 class="box-title">Dettagli Libro</h3>
+        <div class="box-tools pull-right">
+          <a href="{% url 'modifica_libro' libro.pk %}"
+          type="button" class="btn btn-ocra btn-sm"><i class="fa fa-edit text-white"></i>
+          </a>
+        </div>
       </div>
       <div class="box-body">
         <div class="row">
+          <div class="col-xs-12">
+            <strong><i class="fas fa-barcode margin-r-5"></i> ISBN</strong>
+            <p>{{ libro.isbn }}</p>
+          </div>
+        </div>
+        <hr>
+        <div class="row">
           <div class="col-md-6">
             <strong><i class="fas fa-font margin-r-5"></i> Titolo</strong>
-            <p>
-              {{ libro.titolo }}
-            </p>
+            <p>{{ libro.titolo }}</p>
           </div>
           <hr class="visible-xs clearfix">
           <div class="col-md-6">

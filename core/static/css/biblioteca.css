@@ -4999,8 +4999,12 @@ table.text-center th {
 .text-ocra {
   color: #dd9e39;
 }
-a.text-ocra:hover{
+a.text-ocra:hover {
   color: #c49b5a;
+}
+/* background ocra */
+.bg-ocra {
+  background-color: #dd9e39;
 }
 /* logo image size and padding */
 #logo-navbar {
@@ -5014,27 +5018,31 @@ a.text-ocra:hover{
   color: #fff;
 }
 .btn.btn-rosso:hover {
-  background-color: #c4665a;
+  background-color: #c74333;
   border-color: #dd4b39;
   color: #fff;
 }
-/* custom ocra but */
+/* custom ocra btn */
 .btn.btn-ocra {
   background-color: #dd9e39;
   border-color: #b88431;
   color: #fff;
 }
-.btn.btn-rosso:hover {
+.btn.btn-ocra:hover {
   background-color: #b88431;
   border-color: #dd9e39;
   color: #fff;
 }
+
 /* input border red */
 /* .form-control:focus {
   border-color: #dd4b39;
   box-shadow: none;
 } */
 /* larger login box msg */
-.login-box-msg{
+.login-box-msg {
   font-size: 17px;
+}
+.text-white {
+  color: #fff;
 }

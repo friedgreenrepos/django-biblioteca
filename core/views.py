@@ -2,8 +2,9 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
 from django.views.generic import (TemplateView, ListView, DetailView, CreateView, UpdateView)
-from .models import Libro
-from .forms import LibroForm
+from .models import (Libro, Autore, Genere, SottoGenere, Editore, Collana)
+from .forms import (LibroForm, AutoreForm, GenereForm, SottoGenereForm,
+                    EditoreForm, CollanaForm)
 
 
 class DashboardView(LoginRequiredMixin, TemplateView):
@@ -33,15 +34,14 @@ class DettaglioLibroView(LoginRequiredMixin, DetailView):
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
-        context['titolo'] = self.object
-        context['sottotitolo'] = self.object.get_autori_display()
+        context['titolo'] = self.object.get_titolo_autori_display()
+        context['sottotitolo'] = 'Dettagli'
         return context
 
 
 class AggiungiLibroView(LoginRequiredMixin, CreateView):
     template_name = 'core/libro_form.html'
     model = Libro
-    context_object_name = 'libro'
     form_class = LibroForm
 
     def get_context_data(self, *args, **kwargs):
@@ -57,11 +57,11 @@ class ModificaLibroView(LoginRequiredMixin, UpdateView):
     template_name = 'core/libro_form.html'
     model = Libro
     context_object_name = 'libro'
-    fields = ['__all__']
+    form_class = LibroForm
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
-        context['titolo'] = '{} - {}'.format(self.object, self.get_autori_display())
+        context['titolo'] = self.object.get_titolo_autori_display()
         context['sottotitolo'] = 'Modifica'
         return context
 

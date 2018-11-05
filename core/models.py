@@ -91,6 +91,9 @@ class Libro(TrackLibro):
         return ', '.join(autore.nome_cognome() for autore in self.autori.all())
     get_autori_display.short_description = 'Autori'
 
+    def get_titolo_autori_display(self):
+        return '{} - {}'.format(self, self.get_autori_display())
+
     def get_sottogeneri_display(self):
         return ', '.join(sottogenere.nome for sottogenere in self.sottogeneri.all())
     get_sottogeneri_display.short_description = 'Sottogeneri'
