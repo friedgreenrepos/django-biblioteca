@@ -34,6 +34,17 @@ class Editore(models.Model):
         return self.nome
 
 
+class Collana(models.Model):
+    nome = models.CharField(max_length=100)
+    editore = models.ForeignKey(Editore, on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name_plural = 'Collane'
+
+    def __str__(self):
+        return self.nome
+
+
 class Autore(models.Model):
     nome = models.CharField(max_length=50)
     cognome = models.CharField(max_length=100)
@@ -64,7 +75,7 @@ class Libro(TrackLibro):
     editore = models.ForeignKey(Editore, on_delete=models.PROTECT)
     genere = models.ForeignKey(Genere, on_delete=models.PROTECT)
     sottogeneri = models.ManyToManyField(SottoGenere, blank=True)
-    collana = models.CharField(max_length=100)
+    collana = models.ForeignKey(Collana, on_delete=models.SET_NULL, null=True, blank=True)
 
     class Meta:
         verbose_name_plural = 'Libri'

@@ -1,11 +1,11 @@
 from django.contrib import admin
-from .models import Libro, Autore, Genere, SottoGenere, Editore
+from .models import Libro, Autore, Genere, SottoGenere, Editore, Collana
 # Register your models here.
 
 @admin.register(Libro)
 class LibroAdmin(admin.ModelAdmin):
     list_display = ('titolo', 'get_autori_display', 'genere')
-    list_filter = ('genere', 'disponibile', 'data_restituzione') 
+    list_filter = ('genere', 'disponibile', 'data_restituzione')
 
 
 @admin.register(Autore)
@@ -25,4 +25,9 @@ class SottoGenereAdmin(admin.ModelAdmin):
 
 @admin.register(Editore)
 class EditoreAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(Collana)
+class CollanaAdmin(admin.ModelAdmin):
     pass
