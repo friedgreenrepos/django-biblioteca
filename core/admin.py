@@ -1,6 +1,7 @@
 from django.contrib import admin
-from .models import Libro, Autore, Genere, SottoGenere, Editore, Collana
-# Register your models here.
+from .models import (Libro, Autore, Genere, SottoGenere, Editore, Collana,
+                     RichiestaPrestito, Prestito)
+
 
 @admin.register(Libro)
 class LibroAdmin(admin.ModelAdmin):
@@ -30,4 +31,14 @@ class EditoreAdmin(admin.ModelAdmin):
 
 @admin.register(Collana)
 class CollanaAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(RichiestaPrestito)
+class RichiestaPrestitoAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(Prestito)
+class PrestitoAdmin(admin.ModelAdmin):
     pass

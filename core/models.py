@@ -106,3 +106,38 @@ class Libro(TrackLibro):
     def get_sottogeneri_display(self):
         return ', '.join(sottogenere.nome for sottogenere in self.sottogeneri.all())
     get_sottogeneri_display.short_description = 'Sottogeneri'
+
+
+class RichiestaPrestito(models.Model):
+    PENDENTE = 'PN'
+    ACCETTATA = 'AC'
+    RIFIUTATA = 'RF'
+    STATI_RICHIESTA = (
+        (PENDENTE, 'Pendente'),
+        (ACCETTATA, 'Accettata'),
+        (RIFIUTATA, 'Rifiutata')
+    )
+    profilo = models.ForeignKey(Profilo, on_delete=models.CASCADE)
+    libro = models.ForeignKey(Libro, on_delete=models.CASCADE)
+    data_richiesta = models.DateField(auto_now_add=True)
+    stato = models.CharField(max_length=2, choices=STATI_RICHIESTA)
+
+    class Meta:
+        ordering = ['-data_richiesta']
+        verbose_name_plural = 'Richiesta Prestiti'
+
+    def __str__(self):
+        return '{} - {} - {}'.format(self.profilo, self.libro, self.stato)
+
+
+class Prestito(models.Model):
+    profilo = models.ForeignKey(Profilo, on_delete=models.CASCADE)
+    libro = models.ForeignKey(Libro, on_delete=models.CASCADE)
+    data = models.DateField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-data']
+        verbose_name_plural = 'Prestiti'
+
+    def __str__(self):
+        return '{} - {}'.format(self.profilo, self.libro)

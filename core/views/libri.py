@@ -2,8 +2,8 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
 from django.views.generic import (TemplateView, ListView, DetailView, CreateView, UpdateView)
-from .models import (Libro, Autore, Genere, SottoGenere, Editore, Collana)
-from .forms import (LibroForm, AutoreForm, GenereForm, SottoGenereForm,
+from ..models import (Libro, Autore, Genere, SottoGenere, Editore, Collana)
+from ..forms import (LibroForm, AutoreForm, GenereForm, SottoGenereForm,
                     EditoreForm, CollanaForm)
 
 
