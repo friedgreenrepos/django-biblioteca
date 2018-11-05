@@ -3,69 +3,68 @@
 
 {% block content %}
 
-
-  <div class="btn-group">
-    <button type="button" class="btn btn-ocra">Aggiungi</button>
-    <button type="button" class="btn btn-ocra dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-      <span class="caret"></span>
-      <span class="sr-only">Toggle Dropdown</span>
-    </button>
-    <ul class="dropdown-menu" role="menu">
-      <li><a href="{% url 'aggiungi_libro' %}">Libro</a></li>
-      <li><a href="#">Autore</a></li>
-      <li><a href="#">Editore</a></li>
-      <li><a href="#">Collana</a></li>
-      <li><a href="#">Genere</a></li>
-      <li><a href="#">Sottogenere</a></li>
-    </ul>
-  </div>
+<div class="btn-group">
+  <button type="button" class="btn btn-ocra">Aggiungi</button>
+  <button type="button" class="btn btn-ocra dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+    <span class="caret"></span>
+    <span class="sr-only">Toggle Dropdown</span>
+  </button>
+  <ul class="dropdown-menu" role="menu">
+    <li><a class="padding-t-10 padding-b-10" href="{% url 'aggiungi_libro' %}">Libro</a></li>
+    <li><a class="padding-t-10 padding-b-10" href="{% url 'aggiungi_autore' %}">Autore</a></li>
+    <li><a class="padding-t-10 padding-b-10" href="#">Editore</a></li>
+    <li><a class="padding-t-10 padding-b-10" href="#">Collana</a></li>
+    <li><a class="padding-t-10 padding-b-10" href="#">Genere</a></li>
+    <li><a class="padding-t-10 padding-b-10" href="#">Sottogenere</a></li>
+  </ul>
+</div>
 <hr>
-  <div class="box box-ocra">
-    <!-- <div class="box-header">
-      <h3 class="box-title">Libri</h3>
-    </div> -->
-    <!-- /.box-header -->
-    <div class="box-body table-responsive no-padding">
-      <table class="table table-hover">
-        <thead>
-          <tr>
-            <th></th>
-            <th>ISBN</th>
-            <th>Titolo</th>
-            <th>Autore</th>
-            <th>Editore</th>
-            <th>Collana</th>
-            <th>Genere</th>
-            <th>Stato</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for libro in object_list %}
-          <tr>
-            <td>
-              <a href="{% url 'dettaglio_libro' libro.id %}" class="text-ocra" data-balloon="Dettaglio" data-balloon-pos="right">
-                <i class="fas fa-info-circle fa-w-16"></i>
-              </a>
-            </td>
-            <td>{{ libro.isbn }}</td>
-            <td>{{ libro.titolo }}</td>
-            <td>{{ libro.get_autori_display }}</td>
-            <td>{{ libro.editore }}</td>
-            <td>{{ libro.collana|default_if_none:'-' }}</td>
-            <td>{{ libro.genere }}</td>
-            <td>
-              {% if libro.disponibile %}
-                <span class="label label-success">Disponibile</span>
-              {% else %}
-                <span class="label label-danger">In prestito</span>
-              {% endif %}
-            </td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-    <!-- /.box-body -->
-  </div>
-  <!-- /.box -->
+<div class="box box-ocra">
+  <!-- <div class="box-header">
+  <h3 class="box-title">Libri</h3>
+</div> -->
+<!-- /.box-header -->
+<div class="box-body table-responsive no-padding">
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th></th>
+        <th>ISBN</th>
+        <th>Titolo</th>
+        <th>Autore</th>
+        <th>Editore</th>
+        <th>Collana</th>
+        <th>Genere</th>
+        <th>Stato</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for libro in object_list %}
+      <tr>
+        <td>
+          <a href="{% url 'dettaglio_libro' libro.id %}" class="text-ocra" data-balloon="Dettaglio" data-balloon-pos="right">
+            <i class="fas fa-info-circle fa-130-p"></i>
+          </a>
+        </td>
+        <td>{{ libro.isbn }}</td>
+        <td>{{ libro.titolo }}</td>
+        <td>{{ libro.get_autori_display }}</td>
+        <td>{{ libro.editore }}</td>
+        <td>{{ libro.collana|default_if_none:'-' }}</td>
+        <td>{{ libro.genere }}</td>
+        <td>
+          {% if libro.disponibile %}
+          <span class="label label-success">Disponibile</span>
+          {% else %}
+          <span class="label label-danger">In prestito</span>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+<!-- /.box-body -->
+</div>
+<!-- /.box -->
 {% endblock %}

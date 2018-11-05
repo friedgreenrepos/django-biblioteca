@@ -27,7 +27,7 @@ class LibroForm(BootstrapForm, forms.ModelForm):
                   'genere', 'sottogeneri', 'collana']
 
 
-class AutoreForm(forms.ModelForm):
+class AutoreForm(BootstrapForm, forms.ModelForm):
     class Meta:
         model = Autore
         fields = ['nome', 'cognome']
