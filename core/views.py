@@ -3,8 +3,8 @@ from django.urls import reverse
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
 from django.views.generic import (TemplateView, ListView, DetailView, CreateView, UpdateView)
 from .models import Libro
+from .forms import LibroForm
 
-# Create your views here.
 
 class DashboardView(LoginRequiredMixin, TemplateView):
     template_name = 'dashboard.html'
@@ -42,11 +42,11 @@ class AggiungiLibroView(LoginRequiredMixin, CreateView):
     template_name = 'core/libro_form.html'
     model = Libro
     context_object_name = 'libro'
-    fields = '__all__'
+    form_class = LibroForm
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
-        context['titolo'] = 'Nuovo Libro'
+        context['titolo'] = 'Aggiungi Libro'
         return context
 
     def get_success_url(self):

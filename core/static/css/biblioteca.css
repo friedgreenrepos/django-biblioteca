@@ -5030,10 +5030,10 @@ a.text-ocra:hover{
   color: #fff;
 }
 /* input border red */
-.form-control:focus {
+/* .form-control:focus {
   border-color: #dd4b39;
   box-shadow: none;
-}
+} */
 /* larger login box msg */
 .login-box-msg{
   font-size: 17px;

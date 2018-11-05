@@ -1,10 +1,10 @@
 {% extends 'base_site.html' %}
-{% load static %}
+{% load static render_fields %}
 
 {% block content %}
 
 <div class="row">
-  <div class="col-md-6">
+  <div class="col-xs-12">
     <div class="box box-ocra">
       <div class="box-header with-border">
         <h3 class="box-title">Dettagli</h3>
@@ -12,7 +12,41 @@
       <div class="box-body">
         <form class="" action="" method="post">
           {% csrf_token %}
-          {{ form.as_p }}
+          <div class="row">
+            <div class="col-md-4">
+              {{ form.isbn|render }}
+            </div>
+            <div class="col-md-4">
+              {{ form.titolo|render }}
+            </div>
+            <div class="col-md-4">
+              {{ form.autori|render }}
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-xs-12">
+              {{ form.descrizione|render }}
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              {{ form.editore|render }}
+            </div>
+            <div class="col-md-6">
+              {{ form.collana|render }}
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              {{ form.genere|render }}
+            </div>
+            <div class="col-md-6">
+              {{ form.sottogeneri|render }}
+            </div>
+          </div>
+          {% for field in form.hidden_fields %}
+            {{ field }}
+          {% endfor %}
           <button type="submit" class="btn btn-block btn-success btn-flat">Salva</button>
         </form>
       </div>
