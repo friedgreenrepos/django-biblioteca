@@ -3,11 +3,12 @@ from django.urls import reverse
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
+from django.forms.models import inlineformset_factory
 from django.views.generic import (TemplateView, ListView, DetailView, CreateView,
                                   UpdateView)
-from ..models import (Libro, Autore, Genere, SottoGenere, Editore, Collana)
+from ..models import (Libro, Autore, Genere, SottoGenere, Editore, Collana, Profilo)
 from ..forms import (LibroForm, AutoreForm, GenereForm, SottoGenereForm,
-                    EditoreForm, CollanaForm)
+                    EditoreForm, CollanaForm, ProfiloForm)
 
 
 class DashboardView(LoginRequiredMixin, TemplateView):
@@ -21,17 +22,35 @@ class DashboardView(LoginRequiredMixin, TemplateView):
 
 
 # Prestiti
-# class RichiediPrestito(UpdateView):
-#     model = Libro
-#     form_class = LibroPrestitoForm
-#
-#     def post(self, request, *args, **kwargs):
-#         self.object = self.get_object()
-#         if not self.object.is_disponibile():
-#             messages.error(self.request, "Il libro selezionato non è al momento disponibile.")
-#             return HttpResponseRedirect(redirect_to=reverse('catalogo'))
+class RichiestaLibroView(UpdateView):
+    model = Libro
+    form_class = LibroForm
+    template_name = 'core/richiesta_libro.html'
 
+    profilo_formset = inlineformset_factory(
+        Profilo,
+        Libro,
+        form=LibroProfiloForm,
+        extra=0,
+        min_num=1,
+        validate_min=True,
+    )
 
+    def form_valid(self, form):
+        profilo_prestito = profilo_formset(instance=self.object)
+        with transaction.atomic():
+            self.object = form.save()
+
+            if profilo.is_valid():
+                profilo.instance = self.object
+                profilo.save()
+        return super().form_valid(form)
+
+    # def post(self, request, *args, **kwargs):
+    #     self.object = self.get_object()
+    #     if not self.object.is_disponibile():
+    #         messages.error(self.request, "Il libro selezionato non è al momento disponibile.")
+    #         return HttpResponseRedirect(redirect_to=reverse('catalogo'))
 
 
 # Libri

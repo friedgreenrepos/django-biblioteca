@@ -62,4 +62,9 @@ class ProfiloForm(BootstrapForm, forms.ModelForm):
     class Meta:
         model = Profilo
         fields = ['nome', 'cognome', 'codfisc',
-                'data_nascita', 'telefono', 'email']
+                  'data_nascita', 'telefono', 'email']
+
+class LibroProfiloForm(BootstrapForm, forms.ModelForm):
+    class Meta:
+        model = Libro
+        fields = '__all__'
