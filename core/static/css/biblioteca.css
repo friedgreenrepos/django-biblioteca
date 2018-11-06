@@ -5006,6 +5006,9 @@ a.text-ocra:hover {
 .bg-ocra {
   background-color: #dd9e39;
 }
+.bg-fucsia {
+  background-color: #dd3968;
+}
 /* logo image size and padding */
 #logo-navbar {
   height: 50px;
@@ -5034,11 +5037,6 @@ a.text-ocra:hover {
   color: #fff;
 }
 
-/* input border red */
-/* .form-control:focus {
-  border-color: #dd4b39;
-  box-shadow: none;
-} */
 /* larger login box msg */
 .login-box-msg {
   font-size: 17px;
@@ -5047,7 +5045,7 @@ a.text-ocra:hover {
   color: #fff;
 }
 
-/* used in dropdown li anchors */
+/* bigger padding for dropdown li anchors */
 .padding-t-10 {
   padding-top: 10px !important;
 }

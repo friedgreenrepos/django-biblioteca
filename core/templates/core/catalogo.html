@@ -1,0 +1,42 @@
+{% extends 'base_site.html' %}
+{% load static %}
+
+{% block content %}
+
+<div class="box box-ocra">
+  <div class="box-body table-responsive no-padding">
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>ISBN</th>
+          <th>Titolo</th>
+          <th>Autore</th>
+          <th>Editore</th>
+          <th>Collana</th>
+          <th>Genere</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for libro in object_list %}
+        <tr>
+          <td>{{ libro.isbn }}</td>
+          <td>{{ libro.titolo }}</td>
+          <td>{{ libro.get_autori_display }}</td>
+          <td>{{ libro.editore }}</td>
+          <td>{{ libro.collana|default_if_none:'-' }}</td>
+          <td>{{ libro.genere }}</td>
+          <td>
+            <a href="#" class="btn bg-fucsia text-white btn-sm ad-click-event">
+              Richiedi prestito
+            </a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <!-- /.box-body -->
+</div>
+<!-- /.box -->
+{% endblock %}

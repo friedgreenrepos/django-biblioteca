@@ -16,7 +16,23 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         context['tot_libri'] = Libro.objects.all().count()
         return context
 
+
 # Libri
+class CatalogoView(ListView):
+    template_name = 'core/catalogo.html'
+    model = Libro
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context['titolo'] = 'Catalogo'
+        context['sottotitolo'] = '({})'.format(Libro.objects.filter(disponibile=True).count())
+        return context
+
+    def get_queryset(self):
+        queryset = Libro.objects.filter(disponibile=True)
+        return queryset
+
+
 class ElencoLibriView(LoginRequiredMixin, ListView):
     template_name = 'core/elenco_libri.html'
     model = Libro
