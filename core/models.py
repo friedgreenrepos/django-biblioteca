@@ -5,7 +5,7 @@ from django.urls import reverse
 
 
 class Profilo(models.Model):
-    utente = models.OneToOneField(User, on_delete=models.CASCADE)
+    #utente = models.OneToOneField(User, on_delete=models.CASCADE)
     codfisc = models.CharField(max_length=11, verbose_name=_('Codice fiscale'))
     data_nascita = models.DateField(verbose_name=_('Data di nascita'))
     telefono = models.CharField(max_length=20)
