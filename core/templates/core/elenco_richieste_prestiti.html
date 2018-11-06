@@ -1,0 +1,40 @@
+{% extends 'base_site.html' %}
+{% load static %}
+
+{% block content %}
+
+<div class="row">
+  <div class="col-xs-12">
+    <div class="box box-ocra">
+      <div class="box-body table-responsive no-padding">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th></th>
+              <th>Libro</th>
+              <th>Utente</th>
+              <th>Data Richiesta</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for richiesta in object_list %}
+            <tr>
+              <td>
+                <a href="#" class="text-ocra" data-balloon="Modifica" data-balloon-pos="right">
+                  <i class="fas fa-pen-square fa-130-p"></i>
+                </a>
+              </td>
+              <td>{{ presrichiestatito.libro.get_titolo_autori_display }}</td>
+              <td>{{ richiesta.profilo.utente.full_name }}</td>
+              <td>{{ richiesta.data }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <!-- /.box-body -->
+    </div>
+    <!-- /.box -->
+  </div>
+</div>
+{% endblock %}
