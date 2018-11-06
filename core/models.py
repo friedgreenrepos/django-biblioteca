@@ -89,6 +89,9 @@ class Libro(TrackLibro):
     class Meta:
         verbose_name_plural = 'Libri'
         ordering = ['titolo']
+        permissions = (
+            ('view_dettaglio_libro', 'Accesso al dettaglio di un libro'),
+        )
 
     def __str__(self):
         return self.titolo
@@ -125,6 +128,7 @@ class RichiestaPrestito(models.Model):
     class Meta:
         ordering = ['-data_richiesta']
         verbose_name_plural = 'Richiesta Prestiti'
+        
 
     def __str__(self):
         return '{} - {} - {}'.format(self.profilo, self.libro, self.stato)

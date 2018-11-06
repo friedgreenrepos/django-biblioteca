@@ -33,7 +33,8 @@ class CatalogoView(ListView):
         return queryset
 
 
-class ElencoLibriView(LoginRequiredMixin, ListView):
+class ElencoLibriView(PermissionRequiredMixin, LoginRequiredMixin, ListView):
+    permission_required = 'core.view_libro'
     template_name = 'core/elenco_libri.html'
     model = Libro
 
@@ -44,7 +45,8 @@ class ElencoLibriView(LoginRequiredMixin, ListView):
         return context
 
 
-class DettaglioLibroView(LoginRequiredMixin, DetailView):
+class DettaglioLibroView(PermissionRequiredMixin, LoginRequiredMixin, DetailView):
+    permission_required = 'core.view_dettaglio_libro'
     template_name = 'core/dettaglio_libro.html'
     model = Libro
     context_object_name = 'libro'
@@ -56,7 +58,8 @@ class DettaglioLibroView(LoginRequiredMixin, DetailView):
         return context
 
 
-class AggiungiLibroView(LoginRequiredMixin, CreateView):
+class AggiungiLibroView(PermissionRequiredMixin, LoginRequiredMixin, CreateView):
+    permission_required = 'core.add_libro'
     template_name = 'core/libro_form.html'
     model = Libro
     form_class = LibroForm
@@ -70,7 +73,8 @@ class AggiungiLibroView(LoginRequiredMixin, CreateView):
         return reverse('elenco_libri')
 
 
-class ModificaLibroView(LoginRequiredMixin, UpdateView):
+class ModificaLibroView(PermissionRequiredMixin, LoginRequiredMixin, UpdateView):
+    permission_required = 'core.change_autore'
     template_name = 'core/libro_form.html'
     model = Libro
     form_class = LibroForm
@@ -87,7 +91,8 @@ class ModificaLibroView(LoginRequiredMixin, UpdateView):
 
 # Autori
 
-class ElencoAutoriView(LoginRequiredMixin, ListView):
+class ElencoAutoriView(PermissionRequiredMixin, LoginRequiredMixin, ListView):
+    permission_required = 'core.view_autore'
     template_name = 'core/elenco_autori.html'
     model = Autore
 
@@ -98,7 +103,8 @@ class ElencoAutoriView(LoginRequiredMixin, ListView):
         return context
 
 
-class AggiungiAutoreView(LoginRequiredMixin, CreateView):
+class AggiungiAutoreView(PermissionRequiredMixin, LoginRequiredMixin, CreateView):
+    permission_required = 'core.add_autore'
     template_name = 'core/autore_form.html'
     model = Autore
     form_class = AutoreForm
@@ -112,7 +118,8 @@ class AggiungiAutoreView(LoginRequiredMixin, CreateView):
         return reverse('elenco_autori')
 
 
-class ModificaAutoreView(LoginRequiredMixin, UpdateView):
+class ModificaAutoreView(PermissionRequiredMixin, LoginRequiredMixin, UpdateView):
+    permission_required = 'core.change_autore'
     template_name = 'core/autore_form.html'
     model = Autore
     form_class = AutoreForm
@@ -129,7 +136,8 @@ class ModificaAutoreView(LoginRequiredMixin, UpdateView):
 
 # Generi e sottogeneri
 
-class ElencoGeneriSottogeneriView(LoginRequiredMixin, TemplateView):
+class ElencoGeneriSottogeneriView(PermissionRequiredMixin, LoginRequiredMixin, TemplateView):
+    permission_required = 'core.view_genere'
     template_name = 'core/elenco_generi_sottogeneri.html'
 
     def get_context_data(self, *args, **kwargs):
@@ -144,7 +152,8 @@ class ElencoGeneriSottogeneriView(LoginRequiredMixin, TemplateView):
         return context
 
 
-class AggiungiGenereView(LoginRequiredMixin, CreateView):
+class AggiungiGenereView(PermissionRequiredMixin, LoginRequiredMixin, CreateView):
+    permission_required = 'core.add_genere'
     template_name = 'core/genere_form.html'
     model = Genere
     form_class = GenereForm
@@ -158,7 +167,8 @@ class AggiungiGenereView(LoginRequiredMixin, CreateView):
         return reverse('elenco_generi_sottogeneri')
 
 
-class ModificaGenereView(LoginRequiredMixin, UpdateView):
+class ModificaGenereView(PermissionRequiredMixin, LoginRequiredMixin, UpdateView):
+    permission_required = 'core.change_genere'
     template_name = 'core/genere_form.html'
     model = Genere
     form_class = GenereForm
@@ -173,7 +183,8 @@ class ModificaGenereView(LoginRequiredMixin, UpdateView):
         return reverse('elenco_generi_sottogeneri')
 
 
-class AggiungiSottoGenereView(LoginRequiredMixin, CreateView):
+class AggiungiSottoGenereView(PermissionRequiredMixin, LoginRequiredMixin, CreateView):
+    permission_required = 'core.add_sottogenere'
     template_name = 'core/sottogenere_form.html'
     model = SottoGenere
     form_class = SottoGenereForm
@@ -187,7 +198,8 @@ class AggiungiSottoGenereView(LoginRequiredMixin, CreateView):
         return reverse('elenco_generi_sottogeneri')
 
 
-class ModificaSottoGenereView(LoginRequiredMixin, UpdateView):
+class ModificaSottoGenereView(PermissionRequiredMixin, LoginRequiredMixin, UpdateView):
+    permission_required = 'core.change_sottogenere'
     template_name = 'core/sottogenere_form.html'
     model = SottoGenere
     form_class = SottoGenere
@@ -204,7 +216,8 @@ class ModificaSottoGenereView(LoginRequiredMixin, UpdateView):
 
 # Editori e collane
 
-class ElencoEditoriCollaneView(LoginRequiredMixin, TemplateView):
+class ElencoEditoriCollaneView(PermissionRequiredMixin, LoginRequiredMixin, TemplateView):
+    permission_required = 'core.view_editore'
     template_name = 'core/elenco_editori_collane.html'
 
     def get_context_data(self, *args, **kwargs):
@@ -219,7 +232,8 @@ class ElencoEditoriCollaneView(LoginRequiredMixin, TemplateView):
         return context
 
 
-class AggiungiEditoreView(LoginRequiredMixin, CreateView):
+class AggiungiEditoreView(PermissionRequiredMixin, LoginRequiredMixin, CreateView):
+    permission_required = 'core.add_editore'
     template_name = 'core/editore_form.html'
     model = Editore
     form_class = EditoreForm
@@ -233,7 +247,8 @@ class AggiungiEditoreView(LoginRequiredMixin, CreateView):
         return reverse('elenco_editori_collane')
 
 
-class ModificaEditoreView(LoginRequiredMixin, UpdateView):
+class ModificaEditoreView(PermissionRequiredMixin, LoginRequiredMixin, UpdateView):
+    permission_required = 'core.change_editore'
     template_name = 'core/editore_form.html'
     model = Editore
     form_class = EditoreForm
@@ -248,7 +263,8 @@ class ModificaEditoreView(LoginRequiredMixin, UpdateView):
         return reverse('elenco_editori_collane')
 
 
-class AggiungiCollanaView(LoginRequiredMixin, CreateView):
+class AggiungiCollanaView(PermissionRequiredMixin, LoginRequiredMixin, CreateView):
+    permission_required = 'core.add_collana'
     template_name = 'core/collana_form.html'
     model = Collana
     form_class = CollanaForm
@@ -262,7 +278,8 @@ class AggiungiCollanaView(LoginRequiredMixin, CreateView):
         return reverse('elenco_editori_collane')
 
 
-class ModificaCollanaView(LoginRequiredMixin, UpdateView):
+class ModificaCollanaView(PermissionRequiredMixin, LoginRequiredMixin, UpdateView):
+    permission_required = 'core.change_collana'
     template_name = 'core/collana_form.html'
     model = Collana
     form_class = CollanaForm

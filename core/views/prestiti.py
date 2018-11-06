@@ -5,7 +5,8 @@ from django.views.generic import (TemplateView, ListView, DetailView, CreateView
 from ..models import (RichiestaPrestito, Prestito)
 
 
-class ElencoPrestitiView(LoginRequiredMixin, ListView):
+class ElencoPrestitiView(PermissionRequiredMixin, LoginRequiredMixin, ListView):
+    permission_required = 'core.view_prestito'
     template_name = 'core/elenco_prestiti.html'
     model = Prestito
 
@@ -16,7 +17,8 @@ class ElencoPrestitiView(LoginRequiredMixin, ListView):
         return context
 
 
-class ElencoRichiestePrestitiView(LoginRequiredMixin, ListView):
+class ElencoRichiestePrestitiView(PermissionRequiredMixin, LoginRequiredMixin, ListView):
+    permission_required = 'core.view_richiestaprestito'
     template_name = 'core/elenco_richieste_prestiti.html'
     model = RichiestaPrestito
 

@@ -6,7 +6,7 @@
         <a href="{% url 'dashboard' %}" class="navbar-left">
           <img src="{% static 'img/logo.png' %}" alt="logo" id="logo-navbar">
         </a>
-        <a href="{% url 'dashboard' %}" class="navbar-brand"><b>B</b>IBLIOTECA</a>
+        <a href="{% if user.is_authenticated %}{% url 'dashboard' %}{% else %}{% url 'catalogo' %}{% endif %}" class="navbar-brand"><b>B</b>IBLIOTECA</a>
         <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse">
           <i class="fa fa-bars"></i>
         </button>
@@ -15,14 +15,33 @@
       <div class="collapse navbar-collapse pull-left" id="navbar-collapse">
         <ul class="nav navbar-nav">
           <li><a href="{% url 'catalogo' %}">Catalogo</a></li>
-          <li class="active"><a href="{% url 'elenco_libri' %}">Libri <span class="sr-only">(current)</span></a></li>
+          {% if not user.is_authenticated %}
+          <li><a href="{% url 'login' %}">Area privata</a></li>
+          {% endif %}
+        </ul>
+      </div>
+      <!-- /.navbar-collapse -->
+
+      <div class="navbar-custom-menu">
+        <ul class="nav navbar-nav">
+          <!-- Area accessibile via login -->
+          {% if perms.core.view_libro %}
+          <li><a href="{% url 'elenco_libri' %}">Libri <span class="sr-only">(current)</span></a></li>
+          {% endif %}
+          {% if perms.core.view_prestito or perms.core.view_richiestaprestito %}
           <li class="dropdown">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Prestiti <span class="caret"></span></a>
             <ul class="dropdown-menu" role="menu">
+              {% if perms.core.view_prestito %}
               <li><a class="padding-t-10 padding-b-10" href="{% url 'elenco_prestiti' %}">Elenco Prestiti</a></li>
+              {% endif %}
+              {% if perms.core.view_richiestaprestito %}
               <li><a class="padding-t-10 padding-b-10" href="{% url 'elenco_richieste_prestiti' %}">Elenco Richieste</a></li>
+              {% endif %}
             </ul>
           </li>
+          {% endif %}
+          {% comment %}
           <li class="dropdown">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Amministrazione <span class="caret"></span></a>
             <ul class="dropdown-menu" role="menu">
@@ -31,13 +50,10 @@
               <li><a class="padding-t-10 padding-b-10" href="{% url 'elenco_editori_collane' %}">Elenco Editori e collane</a></li>
             </ul>
           </li>
-        </ul>
-      </div>
-      <!-- /.navbar-collapse -->
-      {% if user.is_authenticated %}
-      <div class="navbar-custom-menu">
-        <ul class="nav navbar-nav">
-          <!-- User Account: style can be found in dropdown.less -->
+          {% endcomment %}
+
+          <!-- User Account -->
+          {% if user.is_authenticated %}
           <li class="dropdown user user-menu">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
               <span class="hidden-xs">{{ user.username }}</span>
@@ -47,16 +63,18 @@
               <li class="user-header">
                 <img src="{% static 'img/profile_circle.jpg' %}" class="img-square" alt="Profile Image">
                 <p>
-                  {{ user.username }}
+                  {% firstof user.get_full_name user.get_username %}
                   <small>Utente dal:</small>
                   <small>{{user.date_joined}}</small>
                 </p>
               </li>
               <!-- Menu Footer-->
               <li class="user-footer">
+                {% if user.is_staff %}
                 <div class="pull-left">
                   <a href="{% url 'admin:index' %}" class="btn btn-default btn-flat" target="_blank">Admin</a>
                 </div>
+                {% endif %}
                 <div class="pull-right">
                   <a href="{% url 'logout' %}" class="btn btn-default btn-flat">Logout</a>
                 </div>
