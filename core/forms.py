@@ -1,5 +1,6 @@
 from django import forms
-from .models import (Libro, Autore, Editore, Collana, Genere, SottoGenere)
+from .models import (Libro, Autore, Editore, Collana, Genere, SottoGenere,
+                    Profilo)
 
 
 __all__ = ['BootstrapForm']
@@ -55,3 +56,10 @@ class SottoGenereForm(BootstrapForm, forms.ModelForm):
     class Meta:
         model = SottoGenere
         fields = ['nome', 'padre']
+
+
+class ProfiloForm(BootstrapForm, forms.ModelForm):
+    class Meta:
+        model = Profilo
+        fields = ['nome', 'cognome', 'codfisc',
+                'data_nascita', 'telefono', 'email']

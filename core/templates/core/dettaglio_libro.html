@@ -37,28 +37,6 @@
         <hr>
 
         <div class="row">
-          <div class="col-sm-6">
-            <strong><i class="fas fa-question-circle margin-r-5"></i>Stato</strong>
-            <p>
-              {% if libro.disponibile %}
-              <span class="label label-success">Disponibile</span>
-              {% else %}
-              <span class="label label-danger">In prestito</span>
-              {% endif %}
-            </p>
-          </div>
-          <div class="col-sm-6">
-            {% if data_restituzione %}
-              <strong><i class="fas fa-calendar margin-r-5"></i>Data restituzione</strong>
-              <p>{{ libro.data_restituzione }}</p>
-              <hr>
-            {% endif %}
-          </div>
-        </div>
-
-        <hr>
-
-        <div class="row">
           <div class="col-xs-12">
             <strong><i class="fas fa-file-alt margin-r-5"></i>Descrizione</strong>
             <p>{{ libro.descrizione }}</p>
@@ -101,7 +79,70 @@
   <div class="col-md-5">
     <div class="box box-ocra">
       <div class="box-header with-border">
-        <h3 class="box-title">Storico Prestiti</h3>
+        <h3 class="box-title">Prestito</h3>
+      </div>
+      <div class="box-body">
+        <div class="row">
+          <div class="col-xs-12">
+            <strong><i class="fas fa-question-circle margin-r-5"></i>Stato</strong>
+            {% if libro.is_disponibile %}
+              <span class="label label-success lb-md pull-right">Disponibile</span>
+            {% elif libro.is_inprestito %}
+              <span class="label label-danger lb-md pull-right">In prestito</span>
+            {% else %}
+              <span class="label label-warning lb-md pull-right">Pendente</span>
+            {% endif %}
+          </div>
+        </div>
+        {% if libro.profilo_prestito %}
+        <div class="row">
+          <div class="col-xs-12">
+            <hr>
+            <strong><i class="fas fa-book-reader margin-r-5"></i>Profilo</strong>
+            <span class="pull-right">{{ libro.profilo_prestito }}</span>
+          </div>
+        </div>
+        {% endif %}
+        {% if libro.data_richiesta %}
+        <div class="row">
+          <div class="col-xs-12">
+            <hr>
+            <strong><i class="fas fa-calendar margin-r-5"></i>Data richiesta prestito</strong>
+            <span class="pull-right">{{ libro.data_richiesta }}</span>
+          </div>
+        </div>
+        {% endif %}
+        {% if libro.data_prestito %}
+        <div class="row">
+          <div class="col-xs-12">
+            <hr>
+            <strong><i class="fas fa-calendar margin-r-5"></i>Data prestito</strong>
+            <span class="pull-right">{{ libro.data_prestito }}</span>
+          </div>
+        </div>
+        {% endif %}
+        {% if libro.data_restituzione %}
+        <div class="row">
+          <div class="col-xs-12">
+            <hr>
+            <strong><i class="fas fa-calendar margin-r-5"></i>Data restituzione</strong>
+            <span class="pull-right">{{ libro.data_restituzione }}</span>
+          </div>
+        </div>
+        <hr>
+        {% endif %}
+      </div>
+      <!-- /.box-body -->
+    </div>
+    <!-- / .box -->
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-7">
+    <div class="box box-ocra">
+      <div class="box-header with-border">
+        <h3 class="box-title">Storico</h3>
       </div>
       <div class="box-body">
         <strong><i class="fas fa-book-reader margin-r-5"></i>Utente</strong>

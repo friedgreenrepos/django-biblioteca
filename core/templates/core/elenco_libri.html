@@ -49,10 +49,12 @@
           <td>{{ libro.collana|default_if_none:'-' }}</td>
           <td>{{ libro.genere }}</td>
           <td>
-            {% if libro.disponibile %}
+            {% if libro.is_disponibile %}
             <span class="label label-success">Disponibile</span>
-            {% else %}
+            {% elif libro.is_inprestito %}
             <span class="label label-danger">In prestito</span>
+            {% else %}
+            <span class="label label-warning">Pendente</span>
             {% endif %}
           </td>
         </tr>

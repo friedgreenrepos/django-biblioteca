@@ -5056,3 +5056,7 @@ a.text-ocra:hover {
 .fa-130-p {
   font-size: 130%;
 }
+/* custom label size */
+.lb-md {
+  font-size: 90%;
+}

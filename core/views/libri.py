@@ -1,7 +1,10 @@
 from django.shortcuts import render
 from django.urls import reverse
+from django.contrib import messages
+from django.http import HttpResponseRedirect
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
-from django.views.generic import (TemplateView, ListView, DetailView, CreateView, UpdateView)
+from django.views.generic import (TemplateView, ListView, DetailView, CreateView,
+                                  UpdateView)
 from ..models import (Libro, Autore, Genere, SottoGenere, Editore, Collana)
 from ..forms import (LibroForm, AutoreForm, GenereForm, SottoGenereForm,
                     EditoreForm, CollanaForm)
@@ -17,6 +20,20 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         return context
 
 
+# Prestiti
+# class RichiediPrestito(UpdateView):
+#     model = Libro
+#     form_class = LibroPrestitoForm
+#
+#     def post(self, request, *args, **kwargs):
+#         self.object = self.get_object()
+#         if not self.object.is_disponibile():
+#             messages.error(self.request, "Il libro selezionato non è al momento disponibile.")
+#             return HttpResponseRedirect(redirect_to=reverse('catalogo'))
+
+
+
+
 # Libri
 class CatalogoView(ListView):
     template_name = 'core/catalogo.html'
@@ -25,11 +42,12 @@ class CatalogoView(ListView):
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         context['titolo'] = 'Catalogo'
-        context['sottotitolo'] = '({})'.format(Libro.objects.filter(disponibile=True).count())
+        disponibili = '({})'.format(Libro.objects.filter(stato_prestito=Libro.DISPONIBILE).count())
+        context['sottotitolo'] = disponibili
         return context
 
     def get_queryset(self):
-        queryset = Libro.objects.filter(disponibile=True)
+        queryset = Libro.objects.filter(stato_prestito=Libro.DISPONIBILE)
         return queryset
 
 
@@ -90,7 +108,6 @@ class ModificaLibroView(PermissionRequiredMixin, LoginRequiredMixin, UpdateView)
 
 
 # Autori
-
 class ElencoAutoriView(PermissionRequiredMixin, LoginRequiredMixin, ListView):
     permission_required = 'core.view_autore'
     template_name = 'core/elenco_autori.html'
@@ -135,7 +152,6 @@ class ModificaAutoreView(PermissionRequiredMixin, LoginRequiredMixin, UpdateView
 
 
 # Generi e sottogeneri
-
 class ElencoGeneriSottogeneriView(PermissionRequiredMixin, LoginRequiredMixin, TemplateView):
     permission_required = 'core.view_genere'
     template_name = 'core/elenco_generi_sottogeneri.html'
@@ -215,7 +231,6 @@ class ModificaSottoGenereView(PermissionRequiredMixin, LoginRequiredMixin, Updat
 
 
 # Editori e collane
-
 class ElencoEditoriCollaneView(PermissionRequiredMixin, LoginRequiredMixin, TemplateView):
     permission_required = 'core.view_editore'
     template_name = 'core/elenco_editori_collane.html'

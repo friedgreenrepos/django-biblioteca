@@ -1,12 +1,11 @@
 from django.contrib import admin
 from .models import (Libro, Autore, Genere, SottoGenere, Editore, Collana,
-                     RichiestaPrestito, Prestito)
+                     Profilo)
 
 
 @admin.register(Libro)
 class LibroAdmin(admin.ModelAdmin):
     list_display = ('titolo', 'get_autori_display', 'genere')
-    list_filter = ('genere', 'disponibile', 'data_restituzione')
 
 
 @admin.register(Autore)
@@ -34,11 +33,6 @@ class CollanaAdmin(admin.ModelAdmin):
     pass
 
 
-@admin.register(RichiestaPrestito)
-class RichiestaPrestitoAdmin(admin.ModelAdmin):
-    pass
-
-
-@admin.register(Prestito)
-class PrestitoAdmin(admin.ModelAdmin):
+@admin.register(Profilo)
+class ProfiloAdmin(admin.ModelAdmin):
     pass

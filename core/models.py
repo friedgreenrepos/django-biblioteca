@@ -6,10 +6,18 @@ from django.urls import reverse
 
 class Profilo(models.Model):
     #utente = models.OneToOneField(User, on_delete=models.CASCADE)
+    nome = models.CharField(max_length=50)
+    cognome = models.CharField(max_length=50)
     codfisc = models.CharField(max_length=11, verbose_name=_('Codice fiscale'))
     data_nascita = models.DateField(verbose_name=_('Data di nascita'))
     telefono = models.CharField(max_length=20)
     email = models.EmailField()
+
+    class Meta:
+        verbose_name_plural = 'Profili'
+
+    def __str__(self):
+        return '{} {}'.format(self.nome, self.cognome)
 
 
 class Genere(models.Model):
@@ -69,11 +77,31 @@ class Autore(models.Model):
 
 
 class TrackLibro(models.Model):
-    disponibile = models.BooleanField(default=True)
+    PENDENTE = 'PN'
+    INPRESTITO = 'PR'
+    DISPONIBILE = 'DS'
+    STATI_PRESTITO = (
+        (PENDENTE, 'Pendente'),
+        (INPRESTITO, 'In prestito'),
+        (DISPONIBILE, 'Disponibile')
+    )
+    stato_prestito = models.CharField(max_length=2, choices=STATI_PRESTITO, default=DISPONIBILE)
+    data_richiesta = models.DateField(blank=True, null=True)
+    data_prestito = models.DateField(blank=True, null=True)
     data_restituzione = models.DateField(blank=True, null=True)
+    profilo_prestito = models.ForeignKey(Profilo, on_delete=models.SET_NULL, null=True, blank=True)
 
     class Meta:
         abstract = True
+
+    def is_disponibile(self):
+        return self.stato_prestito == self.DISPONIBILE
+
+    def is_inprestito(self):
+        return self.stato_prestito == self.INPRESTITO
+
+    def is_pendente(self):
+        return self.stato_prestito == self.PENDENETE
 
 
 class Libro(TrackLibro):
@@ -109,39 +137,3 @@ class Libro(TrackLibro):
     def get_sottogeneri_display(self):
         return ', '.join(sottogenere.nome for sottogenere in self.sottogeneri.all())
     get_sottogeneri_display.short_description = 'Sottogeneri'
-
-
-class RichiestaPrestito(models.Model):
-    PENDENTE = 'PN'
-    ACCETTATA = 'AC'
-    RIFIUTATA = 'RF'
-    STATI_RICHIESTA = (
-        (PENDENTE, 'Pendente'),
-        (ACCETTATA, 'Accettata'),
-        (RIFIUTATA, 'Rifiutata')
-    )
-    profilo = models.ForeignKey(Profilo, on_delete=models.CASCADE)
-    libro = models.ForeignKey(Libro, on_delete=models.CASCADE)
-    data_richiesta = models.DateField(auto_now_add=True)
-    stato = models.CharField(max_length=2, choices=STATI_RICHIESTA)
-
-    class Meta:
-        ordering = ['-data_richiesta']
-        verbose_name_plural = 'Richiesta Prestiti'
-        
-
-    def __str__(self):
-        return '{} - {} - {}'.format(self.profilo, self.libro, self.stato)
-
-
-class Prestito(models.Model):
-    profilo = models.ForeignKey(Profilo, on_delete=models.CASCADE)
-    libro = models.ForeignKey(Libro, on_delete=models.CASCADE)
-    data = models.DateField(auto_now_add=True)
-
-    class Meta:
-        ordering = ['-data']
-        verbose_name_plural = 'Prestiti'
-
-    def __str__(self):
-        return '{} - {}'.format(self.profilo, self.libro)
