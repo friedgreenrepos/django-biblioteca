@@ -1,0 +1,19 @@
+{% load render_fields %}
+
+<div class="row">
+  <div class="col-xs-12">
+    <form action="" method="get" class="form-inline filter">
+        {{ filter.form.isbn|render }}
+        {{ filter.form.titolo|render }}
+        {{ filter.form.autori|render }}
+        {{ filter.form.editore|render }}
+        {{ filter.form.collana|render }}
+        {{ filter.form.genere|render }}
+        {{ filter.form.stato_prestito|render }}
+        <div class="form-group valign-bottom">
+        <button type="submit" class="btn btn-ocra"><i class="fa fa-search"></i>&nbsp;Filtra</button>
+        <a class="btn btn-link" href="?">Resetta</a>
+      </div>
+    </form>
+  </div>
+</div>

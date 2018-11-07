@@ -1,6 +1,11 @@
 {% extends 'base_site.html' %}
 {% load static %}
 
+{% block extracss %}
+{{ block.super }}
+{{ filter.form.media.css }}
+{% endblock %}
+
 {% block content %}
 
 <div class="btn-group">
@@ -18,7 +23,11 @@
     <li><a class="padding-t-10 padding-b-10" href="{% url 'aggiungi_sottogenere' %}">Sottogenere</a></li>
   </ul>
 </div>
+
+{% include 'inc/filtri_libro.html' %}
+
 <hr>
+
 <div class="box box-ocra">
   <div class="box-body table-responsive no-padding">
     <table class="table table-hover">
@@ -65,4 +74,9 @@
   <!-- /.box-body -->
 </div>
 <!-- /.box -->
+{% endblock %}
+
+{% block extrajs %}
+{{ block.super }}
+{{ filter.form.media.js}}
 {% endblock %}

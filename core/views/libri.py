@@ -6,9 +6,12 @@ from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMix
 from django.forms.models import inlineformset_factory
 from django.views.generic import (TemplateView, ListView, DetailView, CreateView,
                                   UpdateView)
-from ..models import (Libro, Autore, Genere, SottoGenere, Editore, Collana, Profilo)
+from ..models import (Libro, Autore, Genere, SottoGenere, Editore, Collana,
+                      Profilo)
 from ..forms import (LibroForm, AutoreForm, GenereForm, SottoGenereForm,
-                    EditoreForm, CollanaForm, ProfiloForm)
+                     EditoreForm, CollanaForm, ProfiloForm)
+from .filters import LibroFilter
+from .mixins import FilteredQuerysetMixin
 
 
 class DashboardView(LoginRequiredMixin, TemplateView):
@@ -22,29 +25,29 @@ class DashboardView(LoginRequiredMixin, TemplateView):
 
 
 # Prestiti
-class RichiestaLibroView(UpdateView):
-    model = Libro
-    form_class = LibroForm
-    template_name = 'core/richiesta_libro.html'
-
-    profilo_formset = inlineformset_factory(
-        Profilo,
-        Libro,
-        form=LibroProfiloForm,
-        extra=0,
-        min_num=1,
-        validate_min=True,
-    )
-
-    def form_valid(self, form):
-        profilo_prestito = profilo_formset(instance=self.object)
-        with transaction.atomic():
-            self.object = form.save()
-
-            if profilo.is_valid():
-                profilo.instance = self.object
-                profilo.save()
-        return super().form_valid(form)
+# class RichiestaLibroView(UpdateView):
+#     model = Libro
+#     form_class = LibroForm
+#     template_name = 'core/richiesta_libro.html'
+#
+#     profilo_formset = inlineformset_factory(
+#         Profilo,
+#         Libro,
+#         form=LibroProfiloForm,
+#         extra=0,
+#         min_num=1,
+#         validate_min=True,
+#     )
+#
+#     def form_valid(self, form):
+#         profilo_prestito = profilo_formset(instance=self.object)
+#         with transaction.atomic():
+#             self.object = form.save()
+#
+#             if profilo.is_valid():
+#                 profilo.instance = self.object
+#                 profilo.save()
+#         return super().form_valid(form)
 
     # def post(self, request, *args, **kwargs):
     #     self.object = self.get_object()
@@ -54,9 +57,10 @@ class RichiestaLibroView(UpdateView):
 
 
 # Libri
-class CatalogoView(ListView):
+class CatalogoView(FilteredQuerysetMixin, ListView):
     template_name = 'core/catalogo.html'
     model = Libro
+    filter_class = LibroFilter
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
@@ -70,10 +74,11 @@ class CatalogoView(ListView):
         return queryset
 
 
-class ElencoLibriView(PermissionRequiredMixin, LoginRequiredMixin, ListView):
+class ElencoLibriView(PermissionRequiredMixin, FilteredQuerysetMixin, LoginRequiredMixin, ListView):
     permission_required = 'core.view_libro'
     template_name = 'core/elenco_libri.html'
     model = Libro
+    filter_class = LibroFilter
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)

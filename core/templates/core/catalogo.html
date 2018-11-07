@@ -1,7 +1,14 @@
 {% extends 'base_site.html' %}
 {% load static %}
 
+{% block extracss %}
+{{ block.super }}
+{{ filter.form.media.css }}
+{% endblock %}
+
 {% block content %}
+
+{% include 'inc/filtri_libro.html' %}
 
 <div class="box box-ocra">
   <div class="box-body table-responsive no-padding">
@@ -39,4 +46,9 @@
   <!-- /.box-body -->
 </div>
 <!-- /.box -->
+{% endblock %}
+
+{% block extrajs %}
+{{ block.super }}
+{{ filter.form.media.js}}
 {% endblock %}
