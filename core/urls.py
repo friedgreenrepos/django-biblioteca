@@ -6,6 +6,8 @@ urlpatterns = [
     # Prestiti
     path('elenco-prestiti/', views.ElencoPrestitiView.as_view(),
         name='elenco_prestiti'),
+    path('dettaglio_prestito/<int:pk>/', views.DettaglioPrestitoView.as_view(),
+        name='dettaglio_prestito'),
     path('richiesta-prestito/<int:pk>/', views.RichiestaPrestitoView.as_view(),
         name='richiesta_prestito'),
     # Libri

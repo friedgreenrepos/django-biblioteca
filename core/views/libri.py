@@ -27,8 +27,37 @@ class DashboardView(LoginRequiredMixin, TemplateView):
 
 
 # Prestiti
+class ElencoPrestitiView(PermissionRequiredMixin, ListView):
+    permission_required = 'core.view_prestito'
+    template_name = 'core/elenco_prestiti.html'
+    model = Libro
+
+    def get_queryset(self):
+        qs = Libro.objects.filter(Q(stato_prestito=Libro.INPRESTITO) | Q(stato_prestito=Libro.PENDENTE))
+        return qs
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context['titolo'] = 'Elenco Prestiti'
+        context['sottotitolo'] = '({})'.format(self.get_queryset().count())
+        return context
+
+
+class DettaglioPrestitoView(PermissionRequiredMixin, DetailView):
+    permission_required = 'core.view_dettaglio_prestito'
+    template_name = 'core/dettaglio_prestito.html'
+    model = Libro
+    context_object_name = 'libro'
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context['titolo'] = '"{}"'.format(self.object)
+        context['sottotitolo'] = 'Dettagli prestito'
+        return context
+
+
 class RichiestaPrestitoView(CreateView):
-    template_name = 'core/richiesta_libro.html'
+    template_name = 'core/richiesta_prestito.html'
     model = Libro
     form_class = LibroProfiloForm
 
@@ -51,20 +80,9 @@ class RichiestaPrestitoView(CreateView):
         return reverse('catalogo')
 
 
-class ElencoPrestitiView(PermissionRequiredMixin, ListView):
-    permission_required = 'core.view_prestito'
-    template_name = 'core/elenco_prestiti.html'
-    model = Libro
+class AccettaRichiestaPrestito(UpdateView):
+    pass
 
-    def get_queryset(self):
-        qs = Libro.objects.filter(Q(stato_prestito=Libro.INPRESTITO) | Q(stato_prestito=Libro.PENDENTE))
-        return qs
-
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
-        context['titolo'] = 'Elenco Prestiti'
-        context['sottotitolo'] = '({})'.format(self.get_queryset().count())
-        return context
 
 # Libri
 class CatalogoView(FilteredQuerysetMixin, ListView):
@@ -103,7 +121,7 @@ class DettaglioLibroView(PermissionRequiredMixin, LoginRequiredMixin, DetailView
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         context['titolo'] = self.object.get_titolo_autori_display()
-        context['sottotitolo'] = 'Dettagli'
+        context['sottotitolo'] = 'Dettagli Libro'
         return context
 
 

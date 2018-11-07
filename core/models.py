@@ -101,7 +101,7 @@ class TrackLibro(models.Model):
         return self.stato_prestito == self.INPRESTITO
 
     def is_pendente(self):
-        return self.stato_prestito == self.PENDENETE
+        return self.stato_prestito == self.PENDENTE
 
 
 class Libro(TrackLibro):

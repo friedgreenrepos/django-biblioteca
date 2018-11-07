@@ -1,0 +1,118 @@
+{% extends 'base_site.html' %}
+{% load static %}
+
+{% block content %}
+
+<div class="row">
+  <div class="col-md-6">
+    <div class="box box-ocra">
+      <div class="box-header with-border">
+        <h3 class="box-title">Dettagli</h3>
+      </div>
+      <div class="box-body">
+        <div class="row">
+          <div class="col-xs-12">
+            <strong><i class="fas fa-question-circle margin-r-5"></i>Stato</strong>
+            {% if libro.is_inprestito %}
+              <span class="label label-danger lb-md pull-right">In prestito</span>
+            {% elif libro.is_pendente %}
+              <span class="label label-warning lb-md pull-right">Pendente</span>
+            {% endif %}
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xs-12">
+            <hr>
+            <strong><i class="fas fa-book margin-r-5"></i>Libro</strong>
+            <a href="{% url 'dettaglio_libro' libro.pk %}" target="_blank">
+              <span class="pull-right">{{ libro.get_titolo_autori_display }}</span>
+            </a>
+          </div>
+        </div>
+        {% if libro.data_richiesta %}
+          <div class="row">
+            <div class="col-xs-12">
+              <hr>
+              <strong><i class="fas fa-calendar margin-r-5"></i>Data richiesta</strong>
+              <span class="pull-right">{{ libro.data_richiesta }}</span>
+            </div>
+          </div>
+        {% endif %}
+        {% if libro.data_prestito %}
+          <div class="row">
+            <div class="col-xs-12">
+              <hr>
+              <strong><i class="fas fa-calendar margin-r-5"></i>Data prestito</strong>
+              <span class="pull-right">{{ libro.data_prestito }}</span>
+            </div>
+          </div>
+        {% endif %}
+        {% if libro.data_restituzione %}
+          <div class="row">
+            <div class="col-xs-12">
+              <hr>
+              <strong><i class="fas fa-calendar margin-r-5"></i>Data restituzione</strong>
+              <span class="pull-right">{{ libro.data_restituzione }}</span>
+            </div>
+          </div>
+          <hr>
+        {% endif %}
+      </div>
+      <!-- /.box-body -->
+    </div>
+    <!-- / .box -->
+  </div>
+  <div class="col-md-6">
+    <div class="box box-ocra">
+      <div class="box-header with-border">
+        <h3 class="box-title">Profilo Utente</h3>
+      </div>
+      <div class="box-body">
+        <div class="row">
+          <div class="col-md-6">
+            <strong><i class="fas fa-font margin-r-5"></i> Nome</strong>
+            <p>{{ libro.profilo_prestito.nome }}</p>
+          </div>
+          <hr class="visible-xs clearfix">
+          <div class="col-md-6">
+            <strong><i class="fas fa-pen-nib margin-r-5"></i> Cognome</strong>
+            <p>{{ libro.profilo_prestito.cognome}}</p>
+          </div>
+        </div>
+
+        <hr>
+
+        <div class="row">
+          <div class="col-md-6">
+            <strong><i class="fas fa-atlas margin-r-5"></i>Codice Fiscale</strong>
+            <p>{{ libro.profilo_prestito.codfisc }}</p>
+          </div>
+          <hr class="visible-xs clearfix">
+          <div class="col-md-6">
+            <strong><i class="fas fa-atlas margin-r-5"></i>Data di Nascita</strong>
+            <p>{{ libro.profilo_prestito.data_nascita }}</p>
+          </div>
+        </div>
+
+        <hr>
+
+        <div class="row">
+          <div class="col-md-6">
+            <strong><i class="fas fa-book margin-r-5"></i>Telefono</strong>
+            <p>{{ libro.profilo_prestito.telefono }}</p>
+          </div>
+          <hr class="visible-xs clearfix">
+          <div class="col-md-6">
+            <strong><i class="fas fa-object-group margin-r-5"></i>Email</strong>
+            <p>{{ libro.profilo_prestito.email }}</p>
+          </div>
+        </div>
+
+        <hr>
+      </div>
+      <!-- /.box-body -->
+    </div>
+    <!-- /.box -->
+  </div>
+</div>
+{% endblock %}

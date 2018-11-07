@@ -30,7 +30,7 @@
             {% for libro in object_list %}
             <tr>
               <td>
-                <a href="#" class="text-ocra" data-balloon="Dettaglio" data-balloon-pos="right">
+                <a href="{% url 'dettaglio_prestito' libro.pk %}" class="text-ocra" data-balloon="Dettaglio" data-balloon-pos="right">
                   <i class="fas fa-info-circle fa-130-p"></i>
                 </a>
               </td>
