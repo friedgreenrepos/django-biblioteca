@@ -1127,22 +1127,20 @@ throw new Error('AdminLTE requires jQuery')
     });
   });
 
-  // Sets class 'active' for the correct <li> in the sidebar menu
-
+    // Sets class 'active' for the correct <li> in the sidebar menu
     var curr_url = [location.protocol, '//', location.host, location.pathname].join('');
-    var menu_el = $('ul.sidebar-menu a').filter(function() {
+    var menu_el = $('ul.navbar-nav a').filter(function() {
         return this.href == curr_url;
     })
     var menu_li = menu_el.parent();
     menu_li.addClass('active');
-    var menu_ul = menu_li.parent()
-    if(menu_ul.hasClass('treeview-menu')){
-         menu_ul.css("display", "block");
-         menu_ul.parent().addClass('active menu-open');
-    }
+    // var menu_ul = menu_li.parent()
+    // if(menu_ul.hasClass('treeview-menu')){
+    //      menu_ul.css("display", "block");
+    //      menu_ul.parent().addClass('active menu-open');
+    // }
 
   // Enable iCheck plugin for checkboxes
-
     $('input[type="checkbox"]').iCheck({
       checkboxClass: 'icheckbox_flat-red',
       radioClass: 'iradio_flat-red',
