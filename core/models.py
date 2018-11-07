@@ -8,7 +8,7 @@ class Profilo(models.Model):
     #utente = models.OneToOneField(User, on_delete=models.CASCADE)
     nome = models.CharField(max_length=50)
     cognome = models.CharField(max_length=50)
-    codfisc = models.CharField(max_length=11, verbose_name=_('Codice fiscale'))
+    codfisc = models.CharField(max_length=16, verbose_name=_('Codice fiscale'))
     data_nascita = models.DateField(verbose_name=_('Data di nascita'))
     telefono = models.CharField(max_length=20)
     email = models.EmailField()
