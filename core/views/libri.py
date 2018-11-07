@@ -1,7 +1,9 @@
+from datetime import date
 from django.shortcuts import render
 from django.urls import reverse
 from django.contrib import messages
 from django.http import HttpResponseRedirect
+from django.db.models import Q
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
 from django.forms.models import inlineformset_factory
 from django.views.generic import (TemplateView, ListView, DetailView, CreateView,
@@ -9,7 +11,7 @@ from django.views.generic import (TemplateView, ListView, DetailView, CreateView
 from ..models import (Libro, Autore, Genere, SottoGenere, Editore, Collana,
                       Profilo)
 from ..forms import (LibroForm, AutoreForm, GenereForm, SottoGenereForm,
-                     EditoreForm, CollanaForm, ProfiloForm)
+                     EditoreForm, CollanaForm, ProfiloForm, LibroProfiloForm)
 from .filters import LibroFilter
 from .mixins import FilteredQuerysetMixin
 
@@ -25,36 +27,44 @@ class DashboardView(LoginRequiredMixin, TemplateView):
 
 
 # Prestiti
-# class RichiestaLibroView(UpdateView):
-#     model = Libro
-#     form_class = LibroForm
-#     template_name = 'core/richiesta_libro.html'
-#
-#     profilo_formset = inlineformset_factory(
-#         Profilo,
-#         Libro,
-#         form=LibroProfiloForm,
-#         extra=0,
-#         min_num=1,
-#         validate_min=True,
-#     )
-#
-#     def form_valid(self, form):
-#         profilo_prestito = profilo_formset(instance=self.object)
-#         with transaction.atomic():
-#             self.object = form.save()
-#
-#             if profilo.is_valid():
-#                 profilo.instance = self.object
-#                 profilo.save()
-#         return super().form_valid(form)
+class RichiestaPrestitoView(CreateView):
+    template_name = 'core/richiesta_libro.html'
+    model = Libro
+    form_class = LibroProfiloForm
 
-    # def post(self, request, *args, **kwargs):
-    #     self.object = self.get_object()
-    #     if not self.object.is_disponibile():
-    #         messages.error(self.request, "Il libro selezionato non è al momento disponibile.")
-    #         return HttpResponseRedirect(redirect_to=reverse('catalogo'))
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        libro = Libro.objects.get(pk=self.kwargs['pk'])
+        context['titolo'] = 'Richiesta Prestito - {}'.format(libro)
+        return context
 
+    def form_valid(self, form):
+        profilo_prestito = form.save()
+        libro = Libro.objects.get(pk=self.kwargs['pk'])
+        libro.profilo_prestito = profilo_prestito
+        libro.stato_prestito = Libro.PENDENTE
+        libro.data_richiesta = date.today()
+        libro.save()
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse('catalogo')
+
+
+class ElencoPrestitiView(PermissionRequiredMixin, ListView):
+    permission_required = 'core.view_prestito'
+    template_name = 'core/elenco_prestiti.html'
+    model = Libro
+
+    def get_queryset(self):
+        qs = Libro.objects.filter(Q(stato_prestito=Libro.INPRESTITO) | Q(stato_prestito=Libro.PENDENTE))
+        return qs
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context['titolo'] = 'Elenco Prestiti'
+        context['sottotitolo'] = '({})'.format(self.get_queryset().count())
+        return context
 
 # Libri
 class CatalogoView(FilteredQuerysetMixin, ListView):
@@ -62,16 +72,14 @@ class CatalogoView(FilteredQuerysetMixin, ListView):
     model = Libro
     filter_class = LibroFilter
 
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
-        context['titolo'] = 'Catalogo'
-        disponibili = '({})'.format(Libro.objects.filter(stato_prestito=Libro.DISPONIBILE).count())
-        context['sottotitolo'] = disponibili
-        return context
-
     def get_queryset(self):
         queryset = Libro.objects.filter(stato_prestito=Libro.DISPONIBILE)
         return queryset
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context['titolo'] = 'Catalogo'
+        return context
 
 
 class ElencoLibriView(PermissionRequiredMixin, FilteredQuerysetMixin, LoginRequiredMixin, ListView):
@@ -83,7 +91,6 @@ class ElencoLibriView(PermissionRequiredMixin, FilteredQuerysetMixin, LoginRequi
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         context['titolo'] = 'Elenco Libri'
-        context['sottotitolo'] = '({})'.format(Libro.objects.all().count())
         return context
 
 

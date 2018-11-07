@@ -4,10 +4,10 @@ from . import views
 urlpatterns = [
     path('dashboard/', views.DashboardView.as_view(), name='dashboard'),
     # Prestiti
-    # path('elenco-prestiti/', views.ElencoPrestitiView.as_view(),
-    #     name='elenco_prestiti'),
-    # path('elenco-richieste-prestiti/', views.ElencoRichiestePrestitiView.as_view(),
-    #     name='elenco_richieste_prestiti'),
+    path('elenco-prestiti/', views.ElencoPrestitiView.as_view(),
+        name='elenco_prestiti'),
+    path('richiesta-prestito/<int:pk>/', views.RichiestaPrestitoView.as_view(),
+        name='richiesta_prestito'),
     # Libri
     path('elenco-libri/', views.ElencoLibriView.as_view(),
         name='elenco_libri'),

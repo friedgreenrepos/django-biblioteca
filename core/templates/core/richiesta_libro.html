@@ -12,41 +12,34 @@
   <div class="col-xs-12">
     <div class="box box-ocra">
       <div class="box-header with-border">
-        <h3 class="box-title">Dettagli</h3>
+        <h3 class="box-title">Compilare i seguenti campi:</h3>
       </div>
       <div class="box-body">
         <form class="" action="" method="post">
           {% csrf_token %}
+          {{ form.non_field_errors }}
           <div class="row">
-            <div class="col-md-4">
-              {{ form.isbn|render }}
+            <div class="col-sm-6">
+              {{ form.nome|render }}
             </div>
-            <div class="col-md-4">
-              {{ form.titolo|render }}
-            </div>
-            <div class="col-md-4">
-              {{ form.autori|render }}
+            <div class="col-sm-6">
+              {{ form.cognome|render }}
             </div>
           </div>
           <div class="row">
-            <div class="col-xs-12">
-              {{ form.descrizione|render }}
+            <div class="col-sm-6">
+              {{ form.codfisc|render }}
+            </div>
+            <div class="col-sm-6">
+              {{ form.data_nascita|render }}
             </div>
           </div>
           <div class="row">
-            <div class="col-md-6">
-              {{ form.editore|render }}
+            <div class="col-sm-6">
+              {{ form.telefono|render }}
             </div>
-            <div class="col-md-6">
-              {{ form.collana|render }}
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-md-6">
-              {{ form.genere|render }}
-            </div>
-            <div class="col-md-6">
-              {{ form.sottogeneri|render }}
+            <div class="col-sm-6">
+              {{ form.email|render }}
             </div>
           </div>
           <hr>

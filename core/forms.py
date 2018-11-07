@@ -1,4 +1,5 @@
 from django import forms
+from django.forms.models import inlineformset_factory
 from .models import (Libro, Autore, Editore, Collana, Genere, SottoGenere,
                     Profilo)
 
@@ -61,10 +62,14 @@ class SottoGenereForm(BootstrapForm, forms.ModelForm):
 class ProfiloForm(BootstrapForm, forms.ModelForm):
     class Meta:
         model = Profilo
-        fields = ['nome', 'cognome', 'codfisc',
-                  'data_nascita', 'telefono', 'email']
+        fields = ['nome', 'cognome', 'codfisc', 'data_nascita', 'telefono',
+                  'email']
+
 
 class LibroProfiloForm(BootstrapForm, forms.ModelForm):
+    libro = forms.ModelChoiceField(queryset=Libro.objects.all(), required=False)
+
     class Meta:
-        model = Libro
-        fields = '__all__'
+        model = Profilo
+        fields = ['nome', 'cognome', 'codfisc', 'data_nascita', 'telefono',
+                  'email']
