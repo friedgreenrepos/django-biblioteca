@@ -7,13 +7,11 @@ from django.db import transaction
 from django.db.models import Q
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
-from django.forms.models import inlineformset_factory
 from django.views.generic import (TemplateView, ListView, DetailView, CreateView,
                                   UpdateView)
-from ..models import (Libro, Autore, Genere, SottoGenere, Editore, Collana,
-                      Profilo)
+from ..models import (Libro, Autore, Genere, SottoGenere, Editore, Collana)
 from ..forms import (LibroForm, AutoreForm, GenereForm, SottoGenereForm,
-                     EditoreForm, CollanaForm, ProfiloForm, ProfiloLibroForm)
+                     EditoreForm, CollanaForm,)
 from .filters import LibroFilter
 from .mixins import FilteredQuerysetMixin
 

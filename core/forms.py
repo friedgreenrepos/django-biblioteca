@@ -26,7 +26,7 @@ class LibroForm(BootstrapForm, forms.ModelForm):
     class Meta:
         model = Libro
         fields = ['isbn', 'titolo', 'autori', 'descrizione', 'editore',
-                  'genere', 'sottogeneri', 'collana']
+                  'genere', 'sottogeneri', 'collana', 'profilo_prestito']
 
 
 class AutoreForm(BootstrapForm, forms.ModelForm):
@@ -67,7 +67,10 @@ class ProfiloForm(BootstrapForm, forms.ModelForm):
 
 
 class ProfiloLibroForm(BootstrapForm, forms.ModelForm):
-    libro = forms.ModelChoiceField(queryset=Libro.objects.all(), required=False)
+    libro = forms.ModelChoiceField(
+        queryset=Libro.objects.all(),
+        required=False
+    )
 
     class Meta:
         model = Profilo

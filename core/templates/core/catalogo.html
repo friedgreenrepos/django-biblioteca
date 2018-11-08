@@ -34,7 +34,7 @@
           <td>{{ libro.collana|default_if_none:'-' }}</td>
           <td>{{ libro.genere }}</td>
           <td>
-            <a href="{% url 'richiesta_prestito' libro.pk %}" class="btn bg-fucsia text-white btn-sm ad-click-event">
+            <a href="{% url 'prestito_update_profilo' libro.pk %}" class="btn bg-fucsia text-white btn-sm ad-click-event">
               Richiedi prestito
             </a>
           </td>
