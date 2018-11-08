@@ -5080,3 +5080,11 @@ form.form-inline{
 .form-group input,  .form-group select {
   height: 34px;
 }
+/* annulla e salva btn are too small */
+.btn-form {
+  min-width: 130px;
+}
+
+.valign-bottom {
+  vertical-align: bottom;
+}

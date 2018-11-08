@@ -3,10 +3,19 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
 from django.db import models
 from django.urls import reverse
-from .settings import DURATA_PRESTITO
+from django.core.validators import MaxValueValidator
+from .settings import DURATA_PRESTITO, MAX_LIBRI_INPRESTITO
 
 
-class Profilo(models.Model):
+class TrackProfilo(models.Model):
+    tot_libri = models.PositiveIntegerField(default=0, validators=[MaxValueValidator(MAX_LIBRI_INPRESTITO)])
+    prestito_sospeso = models.BooleanField(default=False)
+
+    class Meta:
+        abstract = True
+
+
+class Profilo(TrackProfilo):
     #utente = models.OneToOneField(User, on_delete=models.CASCADE)
     nome = models.CharField(max_length=50)
     cognome = models.CharField(max_length=50)
@@ -17,6 +26,7 @@ class Profilo(models.Model):
 
     class Meta:
         verbose_name_plural = 'Profili'
+        unique_together = ("nome", "cognome", "codfisc")
 
     def __str__(self):
         return '{} {}'.format(self.nome, self.cognome)
