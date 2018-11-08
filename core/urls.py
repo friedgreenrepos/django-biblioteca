@@ -6,10 +6,16 @@ urlpatterns = [
     # Prestiti
     path('elenco-prestiti/', views.ElencoPrestitiView.as_view(),
         name='elenco_prestiti'),
-    path('dettaglio_prestito/<int:pk>/', views.DettaglioPrestitoView.as_view(),
+    path('dettaglio-prestito/<int:pk>/', views.DettaglioPrestitoView.as_view(),
         name='dettaglio_prestito'),
     path('richiesta-prestito/<int:pk>/', views.RichiestaPrestitoView.as_view(),
         name='richiesta_prestito'),
+    path('dettaglio-prestito/<int:pk>/consegna-libro/', views.ConsegnaLibroPrestitoView.as_view(),
+        name='consegna_libro'),
+    path('dettaglio-prestito/<int:pk>/rifiuta-richiesta/', views.RifiutaRichiestaPrestitoView.as_view(),
+        name='rifiuta_richiesta'),
+    path('dettaglio-prestito/<int:pk>/restituzione-libro/', views.RestituzioneLibroPrestitoView.as_view(),
+        name='restituzione_libro'),
     # Libri
     path('elenco-libri/', views.ElencoLibriView.as_view(),
         name='elenco_libri'),

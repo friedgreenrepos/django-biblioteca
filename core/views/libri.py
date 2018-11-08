@@ -3,7 +3,9 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.contrib import messages
 from django.http import HttpResponseRedirect
+from django.db import transaction
 from django.db.models import Q
+from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
 from django.forms.models import inlineformset_factory
 from django.views.generic import (TemplateView, ListView, DetailView, CreateView,
@@ -11,7 +13,7 @@ from django.views.generic import (TemplateView, ListView, DetailView, CreateView
 from ..models import (Libro, Autore, Genere, SottoGenere, Editore, Collana,
                       Profilo)
 from ..forms import (LibroForm, AutoreForm, GenereForm, SottoGenereForm,
-                     EditoreForm, CollanaForm, ProfiloForm, LibroProfiloForm)
+                     EditoreForm, CollanaForm, ProfiloForm, ProfiloLibroForm)
 from .filters import LibroFilter
 from .mixins import FilteredQuerysetMixin
 
@@ -51,15 +53,15 @@ class DettaglioPrestitoView(PermissionRequiredMixin, DetailView):
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
-        context['titolo'] = '"{}"'.format(self.object)
-        context['sottotitolo'] = 'Dettagli prestito'
+        context['titolo'] = '"{}"'.format(self.object.get_titolo_autori_display())
+        context['sottotitolo'] = '({})'.format(self.object.get_stato_prestito_display())
         return context
 
 
 class RichiestaPrestitoView(CreateView):
     template_name = 'core/richiesta_prestito.html'
     model = Libro
-    form_class = LibroProfiloForm
+    form_class = ProfiloLibroForm
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
@@ -74,14 +76,96 @@ class RichiestaPrestitoView(CreateView):
         libro.stato_prestito = Libro.PENDENTE
         libro.data_richiesta = date.today()
         libro.save()
+        messages.success(self.request, "Richiesta prestito registrata con successo!")
         return super().form_valid(form)
 
     def get_success_url(self):
         return reverse('catalogo')
 
 
-class AccettaRichiestaPrestito(UpdateView):
-    pass
+class ConsegnaLibroPrestitoView(PermissionRequiredMixin, DetailView):
+    permission_required = 'core.gestisci_prestito'
+    model = Libro
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        try:
+            with transaction.atomic():
+                libro = Libro.objects.select_for_update(nowait=True).get(pk=self.kwargs['pk'])
+                if libro.is_inprestito():
+                    messages.error(self.request, "Questo prestito è già in corso")
+                    return HttpResponseRedirect(redirect_to=reverse('dettaglio_prestito', kwargs={'pk':libro.pk}))
+                if libro.is_disponibile():
+                    messages.error(self.request, "Nessun utente ha richiesto questo prestito")
+                    return HttpResponseRedirect(redirect_to=reverse('elenco_prestiti'))
+
+                libro.stato_prestito = Libro.INPRESTITO
+                libro.data_richiesta = None
+                libro.data_prestito = date.today()
+                libro.save()
+                libro.data_restituzione = libro.calculate_data_restituzione()
+                libro.save()
+                messages.success(self.request, "Consegna libro registrata con successo!")
+
+        except ObjectDoesNotExist as err:
+            messages.error(self.request, err)
+        return HttpResponseRedirect(redirect_to=reverse('dettaglio_prestito', kwargs={'pk':libro.pk}))
+
+
+class RifiutaRichiestaPrestitoView(PermissionRequiredMixin, DetailView):
+    permission_required = 'core.gestisci_prestito'
+    model = Libro
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        try:
+            with transaction.atomic():
+                libro = Libro.objects.select_for_update(nowait=True).get(pk=self.kwargs['pk'])
+                if libro.is_inprestito():
+                    messages.error(self.request, "Questo prestito è già in corso")
+                    return HttpResponseRedirect(redirect_to=reverse('dettaglio_prestito', kwargs={'pk':libro.pk}))
+                if libro.is_disponibile():
+                    messages.error(self.request, "Nessun utente ha richiesto questo prestito")
+                    return HttpResponseRedirect(redirect_to=reverse('elenco_prestiti'))
+
+                libro.stato_prestito = Libro.DISPONIBILE
+                libro.profilo_prestito = None
+                libro.data_richiesta = None
+                libro.save()
+                messages.success(self.request, "Richiesta prestito rifiutata.")
+
+        except ObjectDoesNotExist as err:
+            messages.error(self.request, err)
+        return HttpResponseRedirect(redirect_to=reverse('elenco_prestiti'))
+
+
+class RestituzioneLibroPrestitoView(PermissionRequiredMixin, DetailView):
+    permission_required = 'core.gestisci_prestito'
+    model = Libro
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        try:
+            with transaction.atomic():
+                libro = Libro.objects.select_for_update(nowait=True).get(pk=self.kwargs['pk'])
+                if libro.is_pendente():
+                    messages.error(self.request, "Questo prestito non è ancora stato consegnato.")
+                    return HttpResponseRedirect(redirect_to=reverse('dettaglio_prestito', kwargs={'pk':libro.pk}))
+                if libro.is_disponibile():
+                    messages.error(self.request, "Nessun utente ha richiesto questo prestito.")
+                    return HttpResponseRedirect(redirect_to=reverse('elenco_prestiti'))
+
+                libro.stato_prestito = Libro.DISPONIBILE
+                libro.data_richiesta = None
+                libro.data_prestito = None
+                libro.data_restituzione = None
+                libro.profilo_prestito = None
+                libro.save()
+                messages.success(self.request, "Restituzione libro registrata con successo!")
+
+        except ObjectDoesNotExist as err:
+            messages.error(self.request, err)
+        return HttpResponseRedirect(redirect_to=reverse('elenco_prestiti'))
 
 
 # Libri
@@ -120,8 +204,8 @@ class DettaglioLibroView(PermissionRequiredMixin, LoginRequiredMixin, DetailView
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
-        context['titolo'] = self.object.get_titolo_autori_display()
-        context['sottotitolo'] = 'Dettagli Libro'
+        context['titolo'] = '"{}"'.format(self.object.get_titolo_autori_display())
+        context['sottotitolo'] = '({})'.format(self.object.get_stato_prestito_display())
         return context
 
 

@@ -2,15 +2,6 @@
 {% load static %}
 
 {% block content %}
-
-<div class="row">
-  <div class="col-xs-12">
-    <a href="" type="button" class="btn btn-ocra">Aggiungi</a>
-  </div>
-</div>
-
-<p>&nbsp;</p>
-
 <div class="row">
   <div class="col-xs-12">
     <div class="box box-ocra">
@@ -21,7 +12,8 @@
               <th></th>
               <th>Libro</th>
               <th>Utente</th>
-              <th>Data Prestito/Richiesta</th>
+              <th>Data Richiesta</th>
+              <th>Data Consegna</th>
               <th>Data Restituzione</th>
               <th>Stato Prestito</th>
             </tr>
@@ -35,12 +27,9 @@
                 </a>
               </td>
               <td>{{ libro.get_titolo_autori_display }}</td>
-              <td>{{ libro.profilo_prestito.full_name }}</td>
-              {% if libro.data_richiesta %}
-                <td>{{ libro.data_richiesta }}</td>
-              {% elif libro.data_prestito %}
-                <td>{{ libro.data_prestito }}</td>
-              {% endif %}
+              <td>{{ libro.profilo_prestito }}</td>
+              <td>{{ libro.data_richiesta|default:'-' }}</td>
+              <td>{{ libro.data_prestito|default:'-' }}</td>
               <td>{{ libro.data_restituzione|default:'-' }}</td>
               <td>
                 {% if libro.is_inprestito %}

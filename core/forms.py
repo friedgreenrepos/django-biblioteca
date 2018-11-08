@@ -66,7 +66,7 @@ class ProfiloForm(BootstrapForm, forms.ModelForm):
                   'email']
 
 
-class LibroProfiloForm(BootstrapForm, forms.ModelForm):
+class ProfiloLibroForm(BootstrapForm, forms.ModelForm):
     libro = forms.ModelChoiceField(queryset=Libro.objects.all(), required=False)
 
     class Meta:

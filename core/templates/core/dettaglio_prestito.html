@@ -1,15 +1,34 @@
 {% extends 'base_site.html' %}
 {% load static %}
 
+{% block headtitle %} Dettaglio Prestito {% endblock %}
+
 {% block content %}
 
 <div class="row">
   <div class="col-md-6">
     <div class="box box-ocra">
       <div class="box-header with-border">
-        <h3 class="box-title">Dettagli</h3>
+        <h3 class="box-title">Dettagli Prestito</h3>
       </div>
       <div class="box-body">
+        <div class="row">
+          <div class="col-xs-12">
+            <strong><i class="fas fa-book-open margin-r-5"></i>Libro</strong>
+            {% if perms.core.view_dettaglio_libro %}
+            <a href="{% url 'dettaglio_libro' libro.pk %}" target="_blank">
+              <span class="pull-right">
+                {{ libro.get_titolo_autori_display }} <i class="fas fa-external-link-alt"></i>
+              </span>
+            </a>
+            {% else %}
+            <span class="pull-right">
+              {{ libro.get_titolo_autori_display }}
+            </span>
+            {% endif %}
+          </div>
+        </div>
+        <hr>
         <div class="row">
           <div class="col-xs-12">
             <strong><i class="fas fa-question-circle margin-r-5"></i>Stato</strong>
@@ -20,42 +39,80 @@
             {% endif %}
           </div>
         </div>
-        <div class="row">
-          <div class="col-xs-12">
-            <hr>
-            <strong><i class="fas fa-book margin-r-5"></i>Libro</strong>
-            <a href="{% url 'dettaglio_libro' libro.pk %}" target="_blank">
-              <span class="pull-right">{{ libro.get_titolo_autori_display }}</span>
-            </a>
-          </div>
-        </div>
         {% if libro.data_richiesta %}
+          <hr>
           <div class="row">
             <div class="col-xs-12">
-              <hr>
               <strong><i class="fas fa-calendar margin-r-5"></i>Data richiesta</strong>
               <span class="pull-right">{{ libro.data_richiesta }}</span>
             </div>
           </div>
         {% endif %}
         {% if libro.data_prestito %}
+          <hr>
           <div class="row">
             <div class="col-xs-12">
-              <hr>
               <strong><i class="fas fa-calendar margin-r-5"></i>Data prestito</strong>
               <span class="pull-right">{{ libro.data_prestito }}</span>
             </div>
           </div>
         {% endif %}
         {% if libro.data_restituzione %}
+          <hr>
           <div class="row">
             <div class="col-xs-12">
-              <hr>
               <strong><i class="fas fa-calendar margin-r-5"></i>Data restituzione</strong>
               <span class="pull-right">{{ libro.data_restituzione }}</span>
             </div>
           </div>
           <hr>
+        {% endif %}
+        {% if perms.core.gestisci_prestito %}
+          {% if libro.is_pendente %}
+            <hr>
+            <div class="row">
+              <div class="col-xs-12">
+                <div class="pull-left">
+                    <form action="{% url 'consegna_libro' libro.pk %}" method="post">
+                      {% csrf_token %}
+                      <button type="submit" class="btn btn-success">
+                        <i class="far fa-arrow-alt-circle-up"></i> Registra Consegna
+                      </button>
+                    </form>
+                </div>
+                <div class="pull-right">
+                  <form action="{% url 'rifiuta_richiesta' libro.pk %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">
+                      <i class="far fa-times-circle"></i> Rifiuta Richiesta
+                    </button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          {% endif %}
+          {% if libro.is_inprestito %}
+          <div class="row">
+            <div class="col-xs-12">
+              <div class="pull-left">
+                  <form action="{% url 'restituzione_libro' libro.pk %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-success">
+                      <i class="far fa-arrow-alt-circle-down"></i> Registra Restituzione
+                    </button>
+                  </form>
+              </div>
+              <div class="pull-right">
+                <form action="" method="post">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-danger">
+                    <i class="fas fa-user-times"></i> Sospendi Prestito
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+          {% endif %}
         {% endif %}
       </div>
       <!-- /.box-body -->
@@ -65,17 +122,17 @@
   <div class="col-md-6">
     <div class="box box-ocra">
       <div class="box-header with-border">
-        <h3 class="box-title">Profilo Utente</h3>
+        <h3 class="box-title">Dettagli Utente</h3>
       </div>
       <div class="box-body">
         <div class="row">
           <div class="col-md-6">
-            <strong><i class="fas fa-font margin-r-5"></i> Nome</strong>
+            <strong><i class="fas fa-user margin-r-5"></i> Nome</strong>
             <p>{{ libro.profilo_prestito.nome }}</p>
           </div>
           <hr class="visible-xs clearfix">
           <div class="col-md-6">
-            <strong><i class="fas fa-pen-nib margin-r-5"></i> Cognome</strong>
+            <strong><i class="fas fa-user margin-r-5"></i> Cognome</strong>
             <p>{{ libro.profilo_prestito.cognome}}</p>
           </div>
         </div>
@@ -84,12 +141,12 @@
 
         <div class="row">
           <div class="col-md-6">
-            <strong><i class="fas fa-atlas margin-r-5"></i>Codice Fiscale</strong>
+            <strong><i class="fas fa-id-badge  margin-r-5"></i>Codice Fiscale</strong>
             <p>{{ libro.profilo_prestito.codfisc }}</p>
           </div>
           <hr class="visible-xs clearfix">
           <div class="col-md-6">
-            <strong><i class="fas fa-atlas margin-r-5"></i>Data di Nascita</strong>
+            <strong><i class="fas fa-birthday-cake  margin-r-5"></i>Data di Nascita</strong>
             <p>{{ libro.profilo_prestito.data_nascita }}</p>
           </div>
         </div>
@@ -98,12 +155,12 @@
 
         <div class="row">
           <div class="col-md-6">
-            <strong><i class="fas fa-book margin-r-5"></i>Telefono</strong>
+            <strong><i class="fas fa-phone margin-r-5"></i>Telefono</strong>
             <p>{{ libro.profilo_prestito.telefono }}</p>
           </div>
           <hr class="visible-xs clearfix">
           <div class="col-md-6">
-            <strong><i class="fas fa-object-group margin-r-5"></i>Email</strong>
+            <strong><i class="fas fa-at margin-r-5"></i>Email</strong>
             <p>{{ libro.profilo_prestito.email }}</p>
           </div>
         </div>
