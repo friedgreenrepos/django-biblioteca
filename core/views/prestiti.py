@@ -11,12 +11,14 @@ from django.views.generic import (ListView, DetailView, CreateView, UpdateView)
 from ..models import (Libro, Profilo)
 from ..forms import (ProfiloForm, ProfiloLibroForm, LibroPrestitoForm, SegnalazioneLibroForm)
 from .mixins import FilteredQuerysetMixin
+from .filters import LibroPrestitoFilter
 
 
-class ElencoPrestitiView(PermissionRequiredMixin, ListView):
+class ElencoPrestitiView(PermissionRequiredMixin, FilteredQuerysetMixin, ListView):
     permission_required = 'core.view_prestito'
     template_name = 'core/elenco_prestiti.html'
     model = Libro
+    filter_class = LibroPrestitoFilter
 
     def get_queryset(self):
         qs = Libro.objects.filter(Q(stato_prestito=Libro.INPRESTITO) | Q(stato_prestito=Libro.PENDENTE))
@@ -223,6 +225,9 @@ class SospendiPrestitoProfiloView(PermissionRequiredMixin, CreateView):
                 profilo = Profilo.objects.select_for_update(nowait=True).get(pk=self.kwargs['profilo_pk'])
                 profilo.prestito_sospeso = True
                 profilo.segnalazioni_set = segnalazione
+                profilo.data_inizio_sospensione = date.today()
+                profilo.save()
+                profilo.data_fine_sospensione = profilo.calculate_fine_sospensione()
                 profilo.save()
                 messages.success(self.request, "Segnalazione effettuata con successo.")
         except ObjectDoesNotExist as err:

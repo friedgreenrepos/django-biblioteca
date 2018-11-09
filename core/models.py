@@ -4,18 +4,22 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.urls import reverse
 from django.core.validators import MaxValueValidator
-from .settings import DURATA_PRESTITO, MAX_LIBRI_INPRESTITO
+from .settings import DURATA_PRESTITO, MAX_LIBRI_INPRESTITO, GIORNI_SOSPENSIONE
 
 
 class TrackProfilo(models.Model):
     tot_libri = models.PositiveIntegerField(default=0, validators=[MaxValueValidator(MAX_LIBRI_INPRESTITO)])
     prestito_sospeso = models.BooleanField(default=False)
     segnalazioni = models.ManyToManyField('Segnalazione', blank=True)
-    data_fine_sospensione = models.DateTimeField()
-
+    data_inizio_sospensione = models.DateField(null=True, blank=True)
+    data_fine_sospensione = models.DateField(null=True, blank=True)
 
     class Meta:
         abstract = True
+
+    def calculate_fine_sospensione(self):
+        if self.data_inizio_sospensione:
+            return self.data_inizio_sospensione + timedelta(GIORNI_SOSPENSIONE)
 
 
 class Profilo(TrackProfilo):
@@ -86,6 +90,12 @@ class TrackLibro(models.Model):
             return self.data_prestito + timedelta(days=DURATA_PRESTITO)
         else:
             return None
+
+    def is_prestito_scaduto(self, oggi):
+        if self.data_restituzione:
+            return oggi > self.data_restituzione
+        else:
+            return False
 
 
 class Libro(TrackLibro):
