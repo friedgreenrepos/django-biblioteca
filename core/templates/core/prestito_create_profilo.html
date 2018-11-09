@@ -17,6 +17,7 @@
       <div class="box-body">
         <form class="" action="" method="post">
           {% csrf_token %}
+          {{ form.errors }}
           {{ form.non_field_errors }}
           <div class="row">
             <div class="col-sm-6">

@@ -12,15 +12,16 @@
   <div class="col-xs-12">
     <div class="box box-ocra">
       <div class="box-header with-border">
-        <h3 class="box-title">Scegliere un profilo:</h3>
+        <h3 class="box-title">Scegliere un profilo esistente:</h3>
       </div>
       <div class="box-body">
         <form class="" action="" method="post">
           {% csrf_token %}
+          {{ form.errors }}
           {{ form.non_field_errors }}
           <div class="row">
             <div class="col-md-6">
-              {{ form.profilo_prestito }}
+              {{ form.profilo_prestito|render }}
             </div>
           </div>
           <hr>
@@ -30,7 +31,9 @@
           <div class="row">
             <div class="col-xs-12">
               <div class="pull-left">
-                <a href="{% url 'prestito_create_profilo' object.pk %}">Crea Profilo</a>
+                <a href="{% url 'prestito_create_profilo' object.pk %}">
+                  <i class="fas fa-user-plus"></i> Crea un nuovo profilo
+                </a>
               </div>
               <div class="pull-right">
                 <button class="btn btn-danger btn-flat btn-form">Annulla</button>

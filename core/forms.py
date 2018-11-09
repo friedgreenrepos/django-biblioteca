@@ -22,11 +22,28 @@ class BootstrapForm(forms.Form):
                     field.widget.attrs['class'] = 'form-control'
 
 
+class LibroPrestitoForm(BootstrapForm, forms.ModelForm):
+    class Meta:
+        model = Libro
+        fields = ['isbn', 'titolo', 'autori', 'descrizione', 'editore',
+                  'genere', 'sottogeneri', 'collana', 'profilo_prestito' ]
+        widgets = {
+            'isbn': forms.HiddenInput(),
+            'titolo': forms.HiddenInput(),
+            'autori': forms.MultipleHiddenInput(),
+            'descrizione': forms.HiddenInput(),
+            'editore': forms.HiddenInput(),
+            'genere': forms.HiddenInput(),
+            'sottogeneri': forms.MultipleHiddenInput(),
+            'collana': forms.HiddenInput(),
+        }
+
+
 class LibroForm(BootstrapForm, forms.ModelForm):
     class Meta:
         model = Libro
         fields = ['isbn', 'titolo', 'autori', 'descrizione', 'editore',
-                  'genere', 'sottogeneri', 'collana', 'profilo_prestito']
+                  'genere', 'sottogeneri', 'collana']
 
 
 class AutoreForm(BootstrapForm, forms.ModelForm):
