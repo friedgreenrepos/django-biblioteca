@@ -14,7 +14,7 @@ from .mixins import FilteredQuerysetMixin
 from .filters import LibroPrestitoFilter
 
 
-class ElencoPrestitiView(PermissionRequiredMixin, FilteredQuerysetMixin, ListView):
+class ElencoPrestitiView(PermissionRequiredMixin, FilteredQuerysetMixin, LoginRequiredMixin, ListView):
     permission_required = 'core.view_prestito'
     template_name = 'core/elenco_prestiti.html'
     model = Libro
@@ -31,7 +31,7 @@ class ElencoPrestitiView(PermissionRequiredMixin, FilteredQuerysetMixin, ListVie
         return context
 
 
-class DettaglioPrestitoView(PermissionRequiredMixin, DetailView):
+class DettaglioPrestitoView(PermissionRequiredMixin, LoginRequiredMixin, DetailView):
     permission_required = 'core.view_dettaglio_prestito'
     template_name = 'core/dettaglio_prestito.html'
     model = Libro
@@ -117,7 +117,7 @@ class PrestitoUpdateProfiloView(UpdateView):
         return HttpResponseRedirect(self.get_success_url())
 
 
-class ConsegnaLibroPrestitoView(PermissionRequiredMixin, DetailView):
+class ConsegnaLibroPrestitoView(PermissionRequiredMixin, LoginRequiredMixin, DetailView):
     permission_required = 'core.gestisci_prestito'
     model = Libro
 
@@ -146,7 +146,7 @@ class ConsegnaLibroPrestitoView(PermissionRequiredMixin, DetailView):
         return HttpResponseRedirect(redirect_to=reverse('dettaglio_prestito', kwargs={'pk':libro.pk}))
 
 
-class RifiutaRichiestaPrestitoView(PermissionRequiredMixin, DetailView):
+class RifiutaRichiestaPrestitoView(PermissionRequiredMixin, LoginRequiredMixin, DetailView):
     permission_required = 'core.gestisci_prestito'
     model = Libro
 
@@ -173,7 +173,7 @@ class RifiutaRichiestaPrestitoView(PermissionRequiredMixin, DetailView):
         return HttpResponseRedirect(redirect_to=reverse('elenco_prestiti'))
 
 
-class RestituzioneLibroPrestitoView(PermissionRequiredMixin, DetailView):
+class RestituzioneLibroPrestitoView(PermissionRequiredMixin, LoginRequiredMixin, DetailView):
     permission_required = 'core.gestisci_prestito'
     model = Libro
 
@@ -203,7 +203,7 @@ class RestituzioneLibroPrestitoView(PermissionRequiredMixin, DetailView):
         return HttpResponseRedirect(redirect_to=reverse('elenco_prestiti'))
 
 
-class SospendiPrestitoProfiloView(PermissionRequiredMixin, CreateView):
+class SospendiPrestitoProfiloView(PermissionRequiredMixin, LoginRequiredMixin, CreateView):
     permission_required = 'core.gestisci_prestito'
     template_name = 'core/prestito_sospensione_form.html'
     model = Libro
