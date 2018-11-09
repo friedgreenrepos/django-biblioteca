@@ -10,13 +10,15 @@ from .settings import DURATA_PRESTITO, MAX_LIBRI_INPRESTITO
 class TrackProfilo(models.Model):
     tot_libri = models.PositiveIntegerField(default=0, validators=[MaxValueValidator(MAX_LIBRI_INPRESTITO)])
     prestito_sospeso = models.BooleanField(default=False)
+    segnalazioni = models.ManyToManyField('Segnalazione', blank=True)
+    data_fine_sospensione = models.DateTimeField()
+
 
     class Meta:
         abstract = True
 
 
 class Profilo(TrackProfilo):
-    #utente = models.OneToOneField(User, on_delete=models.CASCADE)
     nome = models.CharField(max_length=50)
     cognome = models.CharField(max_length=50)
     codfisc = models.CharField(max_length=16, verbose_name=_('Codice fiscale'))
@@ -30,6 +32,26 @@ class Profilo(TrackProfilo):
 
     def __str__(self):
         return '{} {}'.format(self.nome, self.cognome)
+
+
+class Segnalazione(models.Model):
+    DANNEGGIAMENTO = 'D'
+    RITARDO = 'R'
+    ALTRO = 'A'
+    TIPI_MOTIVO = (
+        (DANNEGGIAMENTO, 'Danneggiamento'),
+        (RITARDO, 'Ritardo consegna'),
+        (ALTRO, 'Altro'),
+    )
+    tipo = models.CharField(max_length=10, choices=TIPI_MOTIVO)
+    data = models.DateField(auto_now_add=True)
+    descrizione = models.TextField(blank=True)
+
+    class Meta:
+        verbose_name_plural = 'Segnalazioni'
+
+    def __str__(self):
+        return self.tipo
 
 
 class TrackLibro(models.Model):
@@ -81,7 +103,7 @@ class Libro(TrackLibro):
         ordering = ['titolo']
         permissions = (
             ('view_dettaglio_libro', 'Accesso al dettaglio di un libro'),
-            ('gestisci_prestito', 'Accetta o rifiuta richieste di prestito'),
+            ('gestisci_prestito', 'Gestione richieste e prestiti'),
         )
 
     def __str__(self):

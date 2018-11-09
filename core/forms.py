@@ -1,7 +1,7 @@
 from django import forms
 from django.forms.models import inlineformset_factory
 from .models import (Libro, Autore, Editore, Collana, Genere, SottoGenere,
-                    Profilo)
+                    Profilo, Segnalazione)
 
 
 __all__ = ['BootstrapForm']
@@ -93,3 +93,14 @@ class ProfiloLibroForm(BootstrapForm, forms.ModelForm):
         model = Profilo
         fields = ['nome', 'cognome', 'codfisc', 'data_nascita', 'telefono',
                   'email']
+
+
+class SegnalazioneLibroForm(BootstrapForm, forms.ModelForm):
+    libro = forms.ModelChoiceField(
+        queryset=Libro.objects.all(),
+        required=False
+    )
+
+    class Meta:
+        model = Segnalazione
+        fields = ['tipo', 'descrizione']

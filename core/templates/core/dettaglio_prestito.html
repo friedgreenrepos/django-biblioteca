@@ -103,7 +103,7 @@
                   </form>
               </div>
               <div class="pull-right">
-                <form action="" method="post">
+                <form action="{% url 'sospensione_prestito' libro.pk libro.profilo_prestito.pk %}" method="post">
                   {% csrf_token %}
                   <button type="submit" class="btn btn-danger">
                     <i class="fas fa-user-times"></i> Sospendi Prestito

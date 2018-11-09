@@ -9,7 +9,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
 from django.views.generic import (ListView, DetailView, CreateView, UpdateView)
 from ..models import (Libro, Profilo)
-from ..forms import (ProfiloForm, ProfiloLibroForm, LibroPrestitoForm)
+from ..forms import (ProfiloForm, ProfiloLibroForm, LibroPrestitoForm, SegnalazioneLibroForm)
 from .mixins import FilteredQuerysetMixin
 
 
@@ -49,7 +49,7 @@ class PrestitoCreateProfiloView(CreateView):
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
-        libro = Libro.objects.get(pk=self.kwargs['pk'])
+        libro = Libro.objects.filter(pk=self.kwargs['pk']).first()
         context['titolo'] = 'Richiesta Prestito: "{}"'.format(libro.get_titolo_autori_display())
         return context
 
@@ -66,6 +66,9 @@ class PrestitoCreateProfiloView(CreateView):
                     return HttpResponseRedirect(redirect_to=reverse('catalogo'))
                 if libro.is_pendente():
                     messages.error(self.request, "Questo prestito è già stato richiesto")
+                    return HttpResponseRedirect(redirect_to=reverse('catalogo'))
+                if profilo_prestito.prestito_sospeso:
+                    messages.error(self.request, "Questo profilo è stato sospeso.")
                     return HttpResponseRedirect(redirect_to=reverse('catalogo'))
                 libro.profilo_prestito = profilo_prestito
                 libro.stato_prestito = Libro.PENDENTE
@@ -198,5 +201,30 @@ class RestituzioneLibroPrestitoView(PermissionRequiredMixin, DetailView):
         return HttpResponseRedirect(redirect_to=reverse('elenco_prestiti'))
 
 
-    class SospendiPrestitoView(PermissionRequiredMixin,):
-        permission_required = 'core.gestisci_prestito'
+class SospendiPrestitoProfiloView(PermissionRequiredMixin, CreateView):
+    permission_required = 'core.gestisci_prestito'
+    template_name = 'core/prestito_sospensione_form.html'
+    model = Libro
+    form_class = SegnalazioneLibroForm
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        profilo = Profilo.objects.filter(pk=self.kwargs['profilo_pk']).first()
+        context['titolo'] = 'Sospensione Prestito: "{}"'.format(profilo)
+        return context
+
+    def get_success_url(self):
+        return reverse('elenco_prestiti')
+
+    def form_valid(self, form):
+        segnalazione = form.save()
+        try:
+            with transaction.atomic():
+                profilo = Profilo.objects.select_for_update(nowait=True).get(pk=self.kwargs['profilo_pk'])
+                profilo.prestito_sospeso = True
+                profilo.segnalazioni_set = segnalazione
+                profilo.save()
+                messages.success(self.request, "Segnalazione effettuata con successo.")
+        except ObjectDoesNotExist as err:
+            messages.error(self.request, err)
+        return HttpResponseRedirect(self.get_success_url())
