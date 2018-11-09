@@ -9,9 +9,9 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
 from django.views.generic import (TemplateView, ListView, DetailView, CreateView,
                                   UpdateView)
-from ..models import (Libro, Autore, Genere, SottoGenere, Editore, Collana)
+from ..models import (Libro, Autore, Genere, SottoGenere, Editore, Collana, Bookmark)
 from ..forms import (LibroForm, AutoreForm, GenereForm, SottoGenereForm,
-                     EditoreForm, CollanaForm,)
+                     EditoreForm, CollanaForm, BookmarkForm)
 from .filters import LibroFilter
 from .mixins import FilteredQuerysetMixin
 
@@ -297,3 +297,35 @@ class ModificaCollanaView(PermissionRequiredMixin, LoginRequiredMixin, UpdateVie
 
     def get_success_url(self):
         return reverse('elenco_editori_collane')
+
+
+class AggiungiBookmarkView(PermissionRequiredMixin, LoginRequiredMixin, CreateView):
+    permission_required = 'core.add_bookmark'
+    template_name = 'core/bookmark_form.html'
+    model = Bookmark
+    form_class = BookmarkForm
+
+    def get(self, request, *args, **kwargs):
+        # self.isbn = request.GET.get('isbn')
+        # self.titolo= request.GET.get('titolo')
+        # self.autori= request.GET.get('autori')
+        # self.editore = request.GET.get('editore')
+        # self.collana = request.GET.get('collana')
+        # self.genere = request.GET.get('genere')
+        # self.stato_prestito = request.GET.get('stato_prestito')
+        #self.url = request.GET.urlencode()
+        return super().get(request, *args, **kwargs)
+
+    def get_initial(self):
+        initial = super().get_initial()
+        initial['url'] = self.request.GET.urlencode()
+        return initial
+
+    def get_success_url(self):
+        return reverse('elenco_libri')
+
+    def form_valid(self, form):
+        bookmark = form.save()
+        bookmark.user = self.request.user
+        bookmark.save()
+        return HttpResponseRedirect(self.get_success_url())

@@ -1,0 +1,46 @@
+{% extends 'base_site.html' %}
+{% load static render_fields %}
+
+{% block extracss %}
+{{ block.super }}
+{{ form.media.css }}
+{% endblock %}
+
+{% block content %}
+
+<div class="row">
+  <div class="col-xs-12">
+    <div class="box box-ocra">
+      <div class="box-header with-border">
+        <h3 class="box-title">Dettagli</h3>
+      </div>
+      <div class="box-body">
+        <form class="" action="" method="post">
+          {% csrf_token %}
+          {{ form.errors }}
+          {{ form.non_field_errors }}
+          <div class="row">
+            <div class="col-md-6">
+              {{ form.nome|render }}
+            </div>
+          </div>
+          {% for field in form.hidden_fields %}
+            {{ field }}
+          {% endfor %}
+          <hr>
+          <div class="row">
+            <div class="col-xs-12">
+              <div class="pull-right">
+                <button class="btn btn-danger btn-flat btn-form">Annulla</button>
+                <span>&nbsp;</span>
+                <button type="submit" class="btn btn-success btn-flat btn-form">Salva</button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <!-- /.box-body -->
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -29,6 +29,8 @@ urlpatterns = [
         name='aggiungi_libro'),
     path('elenco-libri/<int:pk>/modifica-libro/', views.ModificaLibroView.as_view(),
         name='modifica_libro'),
+    path('elenco-libri/aggiungi-bookmark/', views.AggiungiBookmarkView.as_view(),
+        name='aggiungi_bookmark'),
     # Autori
     path('elenco-autori/', views.ElencoAutoriView.as_view(),
         name='elenco_autori'),

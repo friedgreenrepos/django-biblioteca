@@ -5009,6 +5009,12 @@ a.text-ocra:hover {
 .bg-fucsia {
   background-color: #dd3968;
 }
+.bg-verdino {
+  background-color: #39dd80;
+}
+.bg-viola {
+  background-color: #5d39dd;
+}
 /* logo image size and padding */
 #logo-navbar {
   height: 50px;
@@ -5053,6 +5059,12 @@ a.text-ocra:hover {
 }
 .padding-b-10 {
   padding-bottom: 10px !important;
+}
+.margin-b-15 {
+  margin-bottom: 15px !important;
+}
+.margin-t-15 {
+  margin-top: 15px !important;
 }
 /* font awesome custom size */
 .fa-130-p {

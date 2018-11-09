@@ -1,7 +1,7 @@
 from django import forms
 from django.forms.models import inlineformset_factory
 from .models import (Libro, Autore, Editore, Collana, Genere, SottoGenere,
-                    Profilo, Segnalazione)
+                    Profilo, Segnalazione, Bookmark)
 
 
 __all__ = ['BootstrapForm']
@@ -104,3 +104,13 @@ class SegnalazioneLibroForm(BootstrapForm, forms.ModelForm):
     class Meta:
         model = Segnalazione
         fields = ['tipo', 'descrizione']
+
+
+class BookmarkForm(BootstrapForm, forms.ModelForm):
+
+    class Meta:
+        model = Bookmark
+        fields = ['nome', 'url']
+        widgets = {
+            'url': forms.HiddenInput()
+        }

@@ -3,6 +3,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
 from django.db import models
 from django.urls import reverse
+from django.conf import settings
 from django.core.validators import MaxValueValidator
 from .settings import DURATA_PRESTITO, MAX_LIBRI_INPRESTITO, GIORNI_SOSPENSIONE
 
@@ -188,3 +189,12 @@ class Autore(models.Model):
 
     def nome_cognome(self):
         return '{} {}'.format(self.nome, self.cognome)
+
+
+class Bookmark(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    nome = models.CharField(max_length=20)
+    url = models.URLField(max_length=200)
+
+    def __str__(self):
+        return self.nome

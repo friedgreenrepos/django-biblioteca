@@ -8,70 +8,114 @@
 
 {% block content %}
 
-<div class="btn-group">
-  <button type="button" class="btn btn-ocra">Aggiungi</button>
-  <button type="button" class="btn btn-ocra dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-    <span class="caret"></span>
-    <span class="sr-only">Toggle Dropdown</span>
-  </button>
-  <ul class="dropdown-menu" role="menu">
-    <li><a class="padding-t-10 padding-b-10" href="{% url 'aggiungi_libro' %}">Libro</a></li>
-    <li><a class="padding-t-10 padding-b-10" href="{% url 'aggiungi_autore' %}">Autore</a></li>
-    <li><a class="padding-t-10 padding-b-10" href="{% url 'aggiungi_editore' %}">Editore</a></li>
-    <li><a class="padding-t-10 padding-b-10" href="{% url 'aggiungi_collana' %}">Collana</a></li>
-    <li><a class="padding-t-10 padding-b-10" href="{% url 'aggiungi_genere' %}">Genere</a></li>
-    <li><a class="padding-t-10 padding-b-10" href="{% url 'aggiungi_sottogenere' %}">Sottogenere</a></li>
-  </ul>
+<div class="row">
+  <div class="col-xs-12">
+    <div class="btn-group">
+      <button type="button" class="btn bg-verdino">Aggiungi</button>
+      <button type="button" class="btn bg-verdino dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+        <span class="caret"></span>
+        <span class="sr-only">Toggle Dropdown</span>
+      </button>
+      <ul class="dropdown-menu" role="menu">
+        {% if perms.core.add_libro %}
+        <li><a class="padding-t-10 padding-b-10" href="{% url 'aggiungi_libro' %}">Libro</a></li>
+        {% endif %}
+        {% if perms.core.add_autore %}
+        <li><a class="padding-t-10 padding-b-10" href="{% url 'aggiungi_autore' %}">Autore</a></li>
+        {% endif %}
+        {% if perms.core.add_editore %}
+        <li><a class="padding-t-10 padding-b-10" href="{% url 'aggiungi_editore' %}">Editore</a></li>
+        {% endif %}
+        {% if perms.core.add_collana %}
+        <li><a class="padding-t-10 padding-b-10" href="{% url 'aggiungi_collana' %}">Collana</a></li>
+        {% endif %}
+        {% if perms.core.add_genere %}
+        <li><a class="padding-t-10 padding-b-10" href="{% url 'aggiungi_genere' %}">Genere</a></li>
+        {% endif %}
+        {% if perms.core.add_sottogenere %}
+        <li><a class="padding-t-10 padding-b-10" href="{% url 'aggiungi_sottogenere' %}">Sottogenere</a></li>
+        {% endif %}
+      </ul>
+    </div>
+    <span>&nbsp;</span>
+    <div class="btn-group">
+      <button type="button" class="btn bg-fucsia text-white">Bookmark Salvati</button>
+      <button type="button" class="btn bg-fucsia text-white dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+        <span class="caret"></span>
+        <span class="sr-only">Toggle Dropdown</span>
+      </button>
+      <ul class="dropdown-menu" role="menu">
+        {% for bookmark in request.user.bookmark_set.all %}
+        <li>
+          <a class="padding-t-10 padding-b-10" href="#">
+            {{ bookmark.nome }}
+          </a>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+    <div class="pull-right">
+      <a class="btn btn-ocra" href="{% url 'aggiungi_bookmark' %}">
+        <i class="far fa-star"></i> Salva Ricerca nei Bookmark
+      </a>
+    </div>
+  </div>
 </div>
 
 {% include 'inc/filtri_libro.html' %}
 
-<div class="box box-ocra">
-  <div class="box-body table-responsive no-padding">
-    <table class="table table-hover">
-      <thead>
-        <tr>
-          <th></th>
-          <th>ISBN</th>
-          <th>Titolo</th>
-          <th>Autore</th>
-          <th>Editore</th>
-          <th>Collana</th>
-          <th>Genere</th>
-          <th>Stato</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for libro in object_list %}
-        <tr>
-          <td>
-            <a href="{% url 'dettaglio_libro' libro.id %}" class="text-ocra" data-balloon="Dettaglio" data-balloon-pos="right">
-              <i class="fas fa-info-circle fa-130-p"></i>
-            </a>
-          </td>
-          <td>{{ libro.isbn }}</td>
-          <td>{{ libro.titolo }}</td>
-          <td>{{ libro.get_autori_display }}</td>
-          <td>{{ libro.editore }}</td>
-          <td>{{ libro.collana|default_if_none:'-' }}</td>
-          <td>{{ libro.genere }}</td>
-          <td>
-            {% if libro.is_disponibile %}
-            <span class="label label-success">Disponibile</span>
-            {% elif libro.is_inprestito %}
-            <span class="label label-danger">In prestito</span>
-            {% else %}
-            <span class="label label-warning">Pendente</span>
-            {% endif %}
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+<div class="row">
+  <div class="col-xs-12">
+    <div class="box box-ocra">
+      <div class="box-body table-responsive no-padding">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th></th>
+              <th>ISBN</th>
+              <th>Titolo</th>
+              <th>Autore</th>
+              <th>Editore</th>
+              <th>Collana</th>
+              <th>Genere</th>
+              <th>Stato</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for libro in object_list %}
+            <tr>
+              <td>
+                <a href="{% url 'dettaglio_libro' libro.id %}" class="text-ocra" data-balloon="Dettaglio" data-balloon-pos="right">
+                  <i class="fas fa-info-circle fa-130-p"></i>
+                </a>
+              </td>
+              <td>{{ libro.isbn }}</td>
+              <td>{{ libro.titolo }}</td>
+              <td>{{ libro.get_autori_display }}</td>
+              <td>{{ libro.editore }}</td>
+              <td>{{ libro.collana|default_if_none:'-' }}</td>
+              <td>{{ libro.genere }}</td>
+              <td>
+                {% if libro.is_disponibile %}
+                <span class="label label-success">Disponibile</span>
+                {% elif libro.is_inprestito %}
+                <span class="label label-danger">In prestito</span>
+                {% else %}
+                <span class="label label-warning">Pendente</span>
+                {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <!-- /.box-body -->
+    </div>
+    <!-- /.box -->
   </div>
-  <!-- /.box-body -->
+  <!-- /.col-xs-12 -->
 </div>
-<!-- /.box -->
+<!-- /.row -->
 {% endblock %}
 
 {% block extrajs %}

@@ -1,6 +1,6 @@
 from django.contrib import admin
 from .models import (Libro, Autore, Genere, SottoGenere, Editore, Collana,
-                     Profilo, Segnalazione)
+                     Profilo, Segnalazione, Bookmark)
 
 
 @admin.register(Libro)
@@ -41,3 +41,8 @@ class ProfiloAdmin(admin.ModelAdmin):
 @admin.register(Segnalazione)
 class SegnalazioneAdmin(admin.ModelAdmin):
     list_display = ('get_tipo_display', 'data')
+
+
+@admin.register(Bookmark)
+class BookmarkAdmin(admin.ModelAdmin):
+    list_display = ('nome', 'user')
