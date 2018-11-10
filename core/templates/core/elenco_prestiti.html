@@ -22,23 +22,23 @@
             </tr>
           </thead>
           <tbody>
-            {% for libro in object_list %}
+            {% for prestito in object_list %}
             <tr>
               <td>
-                <a href="{% url 'dettaglio_prestito' libro.pk %}" class="text-ocra" data-balloon="Dettaglio" data-balloon-pos="right">
+                <a href="{% url 'dettaglio_prestito' prestito.pk %}" class="text-ocra" data-balloon="Dettaglio" data-balloon-pos="right">
                   <i class="fas fa-info-circle fa-130-p"></i>
                 </a>
               </td>
-              <td>{{ libro.get_titolo_autori_display }}</td>
-              <td>{{ libro.profilo_prestito }}</td>
-              <td>{{ libro.data_richiesta|default:'-' }}</td>
-              <td>{{ libro.data_prestito|default:'-' }}</td>
-              <td>{{ libro.data_restituzione|default:'-' }}</td>
+              <td>{{ prestito.libro.get_titolo_autori_display }}</td>
+              <td>{{ prestito.profilo }}</td>
+              <td>{{ prestito.data_richiesta|default:'-' }}</td>
+              <td>{{ prestito.data_prestito|default:'-' }}</td>
+              <td>{{ prestito.data_restituzione|default:'-' }}</td>
               <td>
-                {% if libro.is_inprestito %}
-                  <span class="label label-danger">In prestito</span>
+                {% if prestito.is_incorso %}
+                  <span class="label label-danger">In corso</span>
                 {% else %}
-                  <span class="label label-warning">Pendente</span>
+                  <span class="label label-warning">Richiesto</span>
                 {% endif %}
               </td>
             </tr>

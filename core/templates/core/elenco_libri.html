@@ -97,11 +97,9 @@
               <td>{{ libro.genere }}</td>
               <td>
                 {% if libro.is_disponibile %}
-                <span class="label label-success">Disponibile</span>
-                {% elif libro.is_inprestito %}
-                <span class="label label-danger">In prestito</span>
+                  <span class="label label-success">Disponibile</span>
                 {% else %}
-                <span class="label label-warning">Pendente</span>
+                  <span class="label label-danger">Non disponibile</span>
                 {% endif %}
               </td>
             </tr>

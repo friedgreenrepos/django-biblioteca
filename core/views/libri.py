@@ -7,9 +7,10 @@ from django.db import transaction
 from django.db.models import Q
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
-from django.views.generic import (TemplateView, ListView, DetailView, CreateView,
-                                  UpdateView)
-from ..models import (Libro, Autore, Genere, SottoGenere, Editore, Collana, Bookmark)
+from django.views.generic import (TemplateView, ListView, DetailView,
+                                  CreateView, UpdateView)
+from ..models import (Libro, Autore, Genere, SottoGenere, Editore, Collana,
+                      Bookmark, Prestito)
 from ..forms import (LibroForm, AutoreForm, GenereForm, SottoGenereForm,
                      EditoreForm, CollanaForm, BookmarkForm)
 from .filters import LibroFilter
@@ -32,7 +33,7 @@ class CatalogoView(FilteredQuerysetMixin, ListView):
     filter_class = LibroFilter
 
     def get_queryset(self):
-        queryset = Libro.objects.filter(stato_prestito=Libro.DISPONIBILE)
+        queryset = Libro.objects.all()
         return queryset
 
     def get_context_data(self, *args, **kwargs):
@@ -62,7 +63,6 @@ class DettaglioLibroView(PermissionRequiredMixin, LoginRequiredMixin, DetailView
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         context['titolo'] = '"{}"'.format(self.object.get_titolo_autori_display())
-        context['sottotitolo'] = '({})'.format(self.object.get_stato_prestito_display())
         return context
 
 
@@ -148,8 +148,8 @@ class ElencoGeneriSottogeneriView(PermissionRequiredMixin, LoginRequiredMixin, T
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
-        generi_list =  Genere.objects.all()
-        sottogeneri_list =  SottoGenere.objects.all()
+        generi_list = Genere.objects.all()
+        sottogeneri_list = SottoGenere.objects.all()
         context['generi_list'] = generi_list
         context['sottogeneri_list'] = sottogeneri_list
         context['tot_generi'] = generi_list.count()
@@ -227,8 +227,8 @@ class ElencoEditoriCollaneView(PermissionRequiredMixin, LoginRequiredMixin, Temp
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
-        editori_list =  Editore.objects.all()
-        collane_list =  Collana.objects.all()
+        editori_list = Editore.objects.all()
+        collane_list = Collana.objects.all()
         context['editori_list'] = editori_list
         context['collane_list'] = collane_list
         context['tot_editori'] = editori_list.count()
@@ -305,17 +305,6 @@ class AggiungiBookmarkView(PermissionRequiredMixin, LoginRequiredMixin, CreateVi
     model = Bookmark
     form_class = BookmarkForm
 
-    def get(self, request, *args, **kwargs):
-        # self.isbn = request.GET.get('isbn')
-        # self.titolo= request.GET.get('titolo')
-        # self.autori= request.GET.get('autori')
-        # self.editore = request.GET.get('editore')
-        # self.collana = request.GET.get('collana')
-        # self.genere = request.GET.get('genere')
-        # self.stato_prestito = request.GET.get('stato_prestito')
-        #self.url = request.GET.urlencode()
-        return super().get(request, *args, **kwargs)
-
     def get_initial(self):
         initial = super().get_initial()
         initial['url'] = self.request.GET.urlencode()
@@ -325,7 +314,7 @@ class AggiungiBookmarkView(PermissionRequiredMixin, LoginRequiredMixin, CreateVi
         return reverse('elenco_libri')
 
     def form_valid(self, form):
-        bookmark = form.save()
+        bookmark = form.save(commit=False)
         bookmark.user = self.request.user
         bookmark.save()
         return HttpResponseRedirect(self.get_success_url())

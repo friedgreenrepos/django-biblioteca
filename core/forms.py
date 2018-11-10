@@ -1,7 +1,7 @@
 from django import forms
 from django.forms.models import inlineformset_factory
 from .models import (Libro, Autore, Editore, Collana, Genere, SottoGenere,
-                    Profilo, Segnalazione, Bookmark)
+                     Profilo, Segnalazione, Bookmark, Prestito)
 
 
 __all__ = ['BootstrapForm']
@@ -22,21 +22,27 @@ class BootstrapForm(forms.Form):
                     field.widget.attrs['class'] = 'form-control'
 
 
-class LibroPrestitoForm(BootstrapForm, forms.ModelForm):
+# class LibroPrestitoForm(BootstrapForm, forms.ModelForm):
+#     class Meta:
+#         model = Libro
+#         fields = ['isbn', 'titolo', 'autori', 'descrizione', 'editore',
+#                   'genere', 'sottogeneri', 'collana', 'profilo_prestito']
+#         widgets = {
+#             'isbn': forms.HiddenInput(),
+#             'titolo': forms.HiddenInput(),
+#             'autori': forms.MultipleHiddenInput(),
+#             'descrizione': forms.HiddenInput(),
+#             'editore': forms.HiddenInput(),
+#             'genere': forms.HiddenInput(),
+#             'sottogeneri': forms.MultipleHiddenInput(),
+#             'collana': forms.HiddenInput(),
+#         }
+
+
+class PrestitoForm(BootstrapForm, forms.ModelForm):
     class Meta:
-        model = Libro
-        fields = ['isbn', 'titolo', 'autori', 'descrizione', 'editore',
-                  'genere', 'sottogeneri', 'collana', 'profilo_prestito' ]
-        widgets = {
-            'isbn': forms.HiddenInput(),
-            'titolo': forms.HiddenInput(),
-            'autori': forms.MultipleHiddenInput(),
-            'descrizione': forms.HiddenInput(),
-            'editore': forms.HiddenInput(),
-            'genere': forms.HiddenInput(),
-            'sottogeneri': forms.MultipleHiddenInput(),
-            'collana': forms.HiddenInput(),
-        }
+        model = Prestito
+        fields = ['profilo']
 
 
 class LibroForm(BootstrapForm, forms.ModelForm):
@@ -46,41 +52,19 @@ class LibroForm(BootstrapForm, forms.ModelForm):
                   'genere', 'sottogeneri', 'collana']
 
 
-class AutoreForm(BootstrapForm, forms.ModelForm):
-    class Meta:
-        model = Autore
-        fields = ['nome', 'cognome']
-
-
-class EditoreForm(BootstrapForm, forms.ModelForm):
-    class Meta:
-        model = Editore
-        fields = ['nome']
-
-
-class CollanaForm(BootstrapForm, forms.ModelForm):
-    class Meta:
-        model = Collana
-        fields = ['nome', 'editore']
-
-
-class GenereForm(BootstrapForm, forms.ModelForm):
-    class Meta:
-        model = Genere
-        fields = ['nome']
-
-
-class SottoGenereForm(BootstrapForm, forms.ModelForm):
-    class Meta:
-        model = SottoGenere
-        fields = ['nome', 'padre']
-
-
 class ProfiloForm(BootstrapForm, forms.ModelForm):
     class Meta:
         model = Profilo
         fields = ['nome', 'cognome', 'codfisc', 'data_nascita', 'telefono',
                   'email']
+
+
+class ProfiloSelectForm(BootstrapForm, forms.Form):
+    profilo = forms.ModelChoiceField(
+        queryset=Profilo.objects.all(),
+        required=True,
+        label='Profio esistente'
+    )
 
 
 class ProfiloLibroForm(BootstrapForm, forms.ModelForm):
@@ -114,3 +98,33 @@ class BookmarkForm(BootstrapForm, forms.ModelForm):
         widgets = {
             'url': forms.HiddenInput()
         }
+
+
+class AutoreForm(BootstrapForm, forms.ModelForm):
+    class Meta:
+        model = Autore
+        fields = ['nome', 'cognome']
+
+
+class EditoreForm(BootstrapForm, forms.ModelForm):
+    class Meta:
+        model = Editore
+        fields = ['nome']
+
+
+class CollanaForm(BootstrapForm, forms.ModelForm):
+    class Meta:
+        model = Collana
+        fields = ['nome', 'editore']
+
+
+class GenereForm(BootstrapForm, forms.ModelForm):
+    class Meta:
+        model = Genere
+        fields = ['nome']
+
+
+class SottoGenereForm(BootstrapForm, forms.ModelForm):
+    class Meta:
+        model = SottoGenere
+        fields = ['nome', 'padre']

@@ -21,7 +21,7 @@
           {{ form.non_field_errors }}
           <div class="row">
             <div class="col-md-6">
-              {{ form.profilo_prestito|render }}
+              {{ form.profilo|render }}
             </div>
           </div>
           <hr>
@@ -31,12 +31,12 @@
           <div class="row">
             <div class="col-xs-12">
               <div class="pull-left">
-                <a href="{% url 'prestito_create_profilo' object.pk %}">
+                <a href="{% url 'prestito_create_profilo' libro_pk=libro.pk %}">
                   <i class="fas fa-user-plus"></i> Crea un nuovo profilo
                 </a>
               </div>
               <div class="pull-right">
-                <button class="btn btn-danger btn-flat btn-form">Annulla</button>
+                <a href="#" class="btn btn-danger btn-flat btn-form">Annulla</a>
                 <span>&nbsp;</span>
                 <button type="submit" class="btn btn-success btn-flat btn-form">Salva</button>
               </div>

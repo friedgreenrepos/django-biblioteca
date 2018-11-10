@@ -11,18 +11,18 @@ class LibroFilter(django_filters.FilterSet):
     class Meta:
         model = Libro
         fields = ['isbn', 'titolo', 'autori', 'editore',
-                  'genere', 'collana', 'stato_prestito']
+                  'genere', 'collana']
 
 
-class LibroPrestitoFilter(django_filters.FilterSet):
-    PRESTITO_CHOICES = (
-        ('PN', 'Pendente'),
-        ('PR', 'In prestito'),
-    )
-    stato_prestito = django_filters.ChoiceFilter(choices=PRESTITO_CHOICES, label= 'Stato prestito')
-    isbn = django_filters.CharFilter(lookup_expr='iexact')
-    titolo = django_filters.CharFilter(label='Titolo Libro', lookup_expr='icontains')
-
-    class Meta:
-        model = Libro
-        fields = ['profilo_prestito']
+# class LibroPrestitoFilter(django_filters.FilterSet):
+#     PRESTITO_CHOICES = (
+#         ('PN', 'Pendente'),
+#         ('PR', 'In prestito'),
+#     )
+#     stato_prestito = django_filters.ChoiceFilter(choices=PRESTITO_CHOICES, label= 'Stato prestito')
+#     isbn = django_filters.CharFilter(lookup_expr='iexact')
+#     titolo = django_filters.CharFilter(label='Titolo Libro', lookup_expr='icontains')
+#
+#     class Meta:
+#         model = Libro
+#         fields = ['profilo_prestito']

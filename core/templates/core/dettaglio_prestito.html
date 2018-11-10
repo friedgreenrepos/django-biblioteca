@@ -15,14 +15,14 @@
           <div class="col-xs-12">
             <strong><i class="fas fa-book-open margin-r-5"></i>Libro</strong>
             {% if perms.core.view_dettaglio_libro %}
-            <a href="{% url 'dettaglio_libro' libro.pk %}" target="_blank">
+            <a href="{% url 'dettaglio_libro' prestito.libro.pk %}" target="_blank">
               <span class="pull-right">
-                {{ libro.get_titolo_autori_display }} <i class="fas fa-external-link-alt"></i>
+                {{ prestito.libro.get_titolo_autori_display }} <i class="fas fa-external-link-alt"></i>
               </span>
             </a>
             {% else %}
             <span class="pull-right">
-              {{ libro.get_titolo_autori_display }}
+              {{ prestito.libro.get_titolo_autori_display }}
             </span>
             {% endif %}
           </div>
@@ -31,48 +31,48 @@
         <div class="row">
           <div class="col-xs-12">
             <strong><i class="fas fa-question-circle margin-r-5"></i>Stato</strong>
-            {% if libro.is_inprestito %}
-              <span class="label label-danger lb-md pull-right">In prestito</span>
-            {% elif libro.is_pendente %}
-              <span class="label label-warning lb-md pull-right">Pendente</span>
+            {% if prestito.is_incorso %}
+              <span class="label label-danger lb-md pull-right">In corso</span>
+            {% elif prestito.is_richiesto %}
+              <span class="label label-warning lb-md pull-right">Richiesto</span>
             {% endif %}
           </div>
         </div>
-        {% if libro.data_richiesta %}
+        {% if prestito.data_richiesta %}
           <hr>
           <div class="row">
             <div class="col-xs-12">
               <strong><i class="fas fa-calendar margin-r-5"></i>Data richiesta</strong>
-              <span class="pull-right">{{ libro.data_richiesta }}</span>
+              <span class="pull-right">{{ prestito.data_richiesta }}</span>
             </div>
           </div>
         {% endif %}
-        {% if libro.data_prestito %}
+        {% if prestito.data_prestito %}
           <hr>
           <div class="row">
             <div class="col-xs-12">
               <strong><i class="fas fa-calendar margin-r-5"></i>Data prestito</strong>
-              <span class="pull-right">{{ libro.data_prestito }}</span>
+              <span class="pull-right">{{ prestito.data_prestito }}</span>
             </div>
           </div>
         {% endif %}
-        {% if libro.data_restituzione %}
+        {% if prestito.data_restituzione %}
           <hr>
           <div class="row">
             <div class="col-xs-12">
               <strong><i class="fas fa-calendar margin-r-5"></i>Data restituzione</strong>
-              <span class="pull-right">{{ libro.data_restituzione }}</span>
+              <span class="pull-right">{{ prestito.data_restituzione }}</span>
             </div>
           </div>
           <hr>
         {% endif %}
         {% if perms.core.gestisci_prestito %}
-          {% if libro.is_pendente %}
+          {% if prestito.is_richiesto %}
             <hr>
             <div class="row">
               <div class="col-xs-12">
                 <div class="pull-left">
-                    <form action="{% url 'consegna_libro' libro.pk %}" method="post">
+                    <form action="{% url 'consegna_libro' prestito.pk %}" method="post">
                       {% csrf_token %}
                       <button type="submit" class="btn btn-success">
                         <i class="far fa-arrow-alt-circle-up"></i> Registra Consegna
@@ -80,7 +80,7 @@
                     </form>
                 </div>
                 <div class="pull-right">
-                  <form action="{% url 'rifiuta_richiesta' libro.pk %}" method="post">
+                  <form action="{% url 'rifiuta_richiesta' prestito.pk %}" method="post">
                     {% csrf_token %}
                     <button type="submit" class="btn btn-danger">
                       <i class="far fa-times-circle"></i> Rifiuta Richiesta
@@ -90,11 +90,11 @@
               </div>
             </div>
           {% endif %}
-          {% if libro.is_inprestito %}
+          {% if prestito.is_incorso %}
           <div class="row">
             <div class="col-xs-12">
               <div class="pull-left">
-                  <form action="{% url 'restituzione_libro' libro.pk %}" method="post">
+                  <form action="{% url 'restituzione_libro' prestito.pk %}" method="post">
                     {% csrf_token %}
                     <button type="submit" class="btn btn-success">
                       <i class="far fa-arrow-alt-circle-down"></i> Registra Restituzione
@@ -127,12 +127,12 @@
         <div class="row">
           <div class="col-md-6">
             <strong><i class="fas fa-user margin-r-5"></i> Nome</strong>
-            <p>{{ libro.profilo_prestito.nome }}</p>
+            <p>{{ prestito.profilo.nome }}</p>
           </div>
           <hr class="visible-xs clearfix">
           <div class="col-md-6">
             <strong><i class="fas fa-user margin-r-5"></i> Cognome</strong>
-            <p>{{ libro.profilo_prestito.cognome}}</p>
+            <p>{{ prestito.profilo.cognome}}</p>
           </div>
         </div>
 
@@ -141,12 +141,12 @@
         <div class="row">
           <div class="col-md-6">
             <strong><i class="fas fa-id-badge  margin-r-5"></i>Codice Fiscale</strong>
-            <p>{{ libro.profilo_prestito.codfisc }}</p>
+            <p>{{ prestito.profilo.codfisc }}</p>
           </div>
           <hr class="visible-xs clearfix">
           <div class="col-md-6">
             <strong><i class="fas fa-birthday-cake  margin-r-5"></i>Data di Nascita</strong>
-            <p>{{ libro.profilo_prestito.data_nascita }}</p>
+            <p>{{ libro.profilo.data_nascita }}</p>
           </div>
         </div>
 
@@ -155,12 +155,12 @@
         <div class="row">
           <div class="col-md-6">
             <strong><i class="fas fa-phone margin-r-5"></i>Telefono</strong>
-            <p>{{ libro.profilo_prestito.telefono }}</p>
+            <p>{{ libro.profilo.telefono }}</p>
           </div>
           <hr class="visible-xs clearfix">
           <div class="col-md-6">
             <strong><i class="fas fa-at margin-r-5"></i>Email</strong>
-            <p>{{ libro.profilo_prestito.email }}</p>
+            <p>{{ libro.profilo.email }}</p>
           </div>
         </div>
 
