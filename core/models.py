@@ -101,8 +101,8 @@ class Libro(models.Model):
         if not self.has_prestiti():
             return True
         for p in self.prestito_set.all():
-            if p.data_restituzione is not None:
-                return True
+            if not p.stato == Prestito.CONCLUSO:
+                return False
         return False
 
     def get_current_prestito(self):
@@ -115,9 +115,11 @@ class Libro(models.Model):
 class Prestito(models.Model):
     RICHIESTO = 'RC'
     INCORSO = 'IC'
+    CONCLUSO = 'CN'
     STATI_PRESTITO = (
         (RICHIESTO, 'Richiesto'),
         (INCORSO, 'In corso'),
+        (CONCLUSO, 'CN'),
     )
     stato = models.CharField(max_length=2, choices=STATI_PRESTITO)
     data_richiesta = models.DateField(auto_now_add=True)
