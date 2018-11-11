@@ -25,9 +25,9 @@ urlpatterns = [
     path('dettaglio-prestito/<int:pk>/restituzione-libro/',
          views.RestituzioneLibroPrestitoView.as_view(),
          name='restituzione_libro'),
-    # path('dettaglio-prestito/<int:pk>/sospensione-prestito/<int:profilo_pk>/',
-    #      views.SospendiPrestitoProfiloView.as_view(),
-    #      name='sospensione_prestito'),
+    path('dettaglio-prestito/sospensione-prestito/<int:pk>',
+         views.SospendiPrestitoProfiloView.as_view(),
+         name='sospensione_prestito'),
     # Libri
     path('elenco-libri/',
          views.ElencoLibriView.as_view(),

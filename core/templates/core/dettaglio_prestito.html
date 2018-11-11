@@ -35,6 +35,8 @@
               <span class="label label-danger lb-md pull-right">In corso</span>
             {% elif prestito.is_richiesto %}
               <span class="label label-warning lb-md pull-right">Richiesto</span>
+            {% else %}
+              <span class="label label-info lb-md pull-right">Concluso</span>
             {% endif %}
           </div>
         </div>
@@ -60,7 +62,7 @@
           <hr>
           <div class="row">
             <div class="col-xs-12">
-              <strong><i class="fas fa-calendar margin-r-5"></i>Data restituzione</strong>
+              <strong><i class="fas fa-calendar margin-r-5"></i>Scadenza Prestito</strong>
               <span class="pull-right">{{ prestito.data_restituzione }}</span>
             </div>
           </div>

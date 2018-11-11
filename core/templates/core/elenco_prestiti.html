@@ -37,8 +37,10 @@
               <td>
                 {% if prestito.is_incorso %}
                   <span class="label label-danger">In corso</span>
-                {% else %}
+                {% elif prestito.is_richiesto %}
                   <span class="label label-warning">Richiesto</span>
+                {% else %}
+                  <span class="label label-info">Concluso</span>
                 {% endif %}
               </td>
             </tr>

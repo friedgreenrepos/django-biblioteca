@@ -125,7 +125,7 @@
             <div class="row">
               <div class="col-xs-12">
                 <hr>
-                <strong><i class="fas fa-calendar margin-r-5"></i>Data restituzione</strong>
+                <strong><i class="fas fa-calendar margin-r-5"></i>Scadenza Prestito</strong>
                 <span class="pull-right">{{ current_prestito.data_restituzione }}</span>
               </div>
             </div>
@@ -146,7 +146,7 @@
         <h3 class="box-title">Storico</h3>
       </div>
       <div class="box-body">
-        
+
 
         {% for prestito in libro.prestito_set.all %}
           <strong><i class="fas fa-book-reader margin-r-5"></i>Utente</strong>
