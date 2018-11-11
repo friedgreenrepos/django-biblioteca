@@ -80,12 +80,9 @@
                     </form>
                 </div>
                 <div class="pull-right">
-                  <form action="{% url 'rifiuta_richiesta' prestito.pk %}" method="post">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-danger">
-                      <i class="far fa-times-circle"></i> Rifiuta Richiesta
-                    </button>
-                  </form>
+                  <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modal-rifiuta">
+                    <i class="far fa-times-circle"></i> Rifiuta Richiesta
+                  </button>
                 </div>
               </div>
             </div>
@@ -94,7 +91,7 @@
           <div class="row">
             <div class="col-xs-12">
               <div class="pull-left">
-                  <form action="{% url 'restituzione_libro' prestito.pk %}" method="post">
+                  <form action="" method="post">
                     {% csrf_token %}
                     <button type="submit" class="btn btn-success">
                       <i class="far fa-arrow-alt-circle-down"></i> Registra Restituzione
@@ -102,7 +99,7 @@
                   </form>
               </div>
               <div class="pull-right">
-                <form action="{% url 'sospensione_prestito' libro.pk libro.profilo_prestito.pk %}" method="post">
+                <form action="" method="post">
                   {% csrf_token %}
                   <button type="submit" class="btn btn-danger">
                     <i class="fas fa-user-times"></i> Sospendi Prestito
@@ -146,7 +143,7 @@
           <hr class="visible-xs clearfix">
           <div class="col-md-6">
             <strong><i class="fas fa-birthday-cake  margin-r-5"></i>Data di Nascita</strong>
-            <p>{{ libro.profilo.data_nascita }}</p>
+            <p>{{ prestito.profilo.data_nascita }}</p>
           </div>
         </div>
 
@@ -155,12 +152,12 @@
         <div class="row">
           <div class="col-md-6">
             <strong><i class="fas fa-phone margin-r-5"></i>Telefono</strong>
-            <p>{{ libro.profilo.telefono }}</p>
+            <p>{{ prestito.profilo.telefono }}</p>
           </div>
           <hr class="visible-xs clearfix">
           <div class="col-md-6">
             <strong><i class="fas fa-at margin-r-5"></i>Email</strong>
-            <p>{{ libro.profilo.email }}</p>
+            <p>{{ prestito.profilo.email }}</p>
           </div>
         </div>
 
@@ -171,4 +168,33 @@
     <!-- /.box -->
   </div>
 </div>
+
+<!-- Rifiuta richiesta modal -->
+<div class="modal fade in" id="modal-rifiuta" style="display: none; padding-right: 12px;">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title">Rifiuta richiesta prestito</h4>
+      </div>
+      <div class="modal-body">
+        <p>Dopo aver rifiutato la richiesta non sarà più possibile recuperarla.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Chiudi</button>
+        <form action="{% url 'rifiuta_richiesta' prestito.pk %}" method="post">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-danger">
+            Continua
+          </button>
+        </form>
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
 {% endblock %}

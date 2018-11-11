@@ -33,8 +33,11 @@ class CatalogoView(FilteredQuerysetMixin, ListView):
     filter_class = LibroFilter
 
     def get_queryset(self):
-        queryset = Libro.objects.all()
-        return queryset
+        qs = Libro.objects.all()
+        for lib in qs:
+            if not lib.is_disponibile():
+                qs = qs.exclude(pk=lib.pk)
+        return qs
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
@@ -63,6 +66,7 @@ class DettaglioLibroView(PermissionRequiredMixin, LoginRequiredMixin, DetailView
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         context['titolo'] = '"{}"'.format(self.object.get_titolo_autori_display())
+        context['current_prestito'] = self.object.get_current_prestito()
         return context
 
 

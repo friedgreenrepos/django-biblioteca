@@ -59,46 +59,6 @@ class Segnalazione(models.Model):
         return self.tipo
 
 
-# class TrackLibro(models.Model):
-#     PENDENTE = 'PN'
-#     INPRESTITO = 'PR'
-#     DISPONIBILE = 'DS'
-#     STATI_PRESTITO = (
-#         (PENDENTE, 'Pendente'),
-#         (INPRESTITO, 'In prestito'),
-#         (DISPONIBILE, 'Disponibile')
-#     )
-#     stato_prestito = models.CharField(max_length=2, choices=STATI_PRESTITO, default=DISPONIBILE)
-#     data_richiesta = models.DateField(blank=True, null=True)
-#     data_prestito = models.DateField(blank=True, null=True)
-#     data_restituzione = models.DateField(blank=True, null=True)
-#     profilo_prestito = models.ForeignKey(Profilo, on_delete=models.SET_NULL, null=True, blank=True)
-#
-#     class Meta:
-#         abstract = True
-#
-#     def is_disponibile(self):
-#         return self.stato_prestito == self.DISPONIBILE
-#
-#     def is_inprestito(self):
-#         return self.stato_prestito == self.INPRESTITO
-#
-#     def is_pendente(self):
-#         return self.stato_prestito == self.PENDENTE
-#
-#     def calculate_data_restituzione(self):
-#         if self.data_prestito:
-#             return self.data_prestito + timedelta(days=DURATA_PRESTITO)
-#         else:
-#             return None
-#
-#     def is_prestito_scaduto(self, oggi):
-#         if self.data_restituzione:
-#             return oggi > self.data_restituzione
-#         else:
-#             return False
-
-
 class Libro(models.Model):
     isbn = models.CharField(max_length=13, unique=True, verbose_name='ISBN')
     titolo = models.CharField(max_length=100)
@@ -134,11 +94,19 @@ class Libro(models.Model):
         return ', '.join(sottogenere.nome for sottogenere in self.sottogeneri.all())
     get_sottogeneri_display.short_description = 'Sottogeneri'
 
-    def has_prestito(self):
-        return self.prestito_set.all() is not None
+    def has_prestiti(self):
+        return self.prestito_set.all().exists()
+
+    def is_disponibile(self):
+        if not self.has_prestiti():
+            return True
+        for p in self.prestito_set.all():
+            if p.data_restituzione is not None:
+                return True
+        return False
 
     def get_current_prestito(self):
-        if self.has_prestito:
+        if self.has_prestiti():
             return self.prestito_set.all().latest()
         else:
             return None
@@ -167,7 +135,7 @@ class Prestito(models.Model):
     def is_richiesto(self):
         return self.stato == self.RICHIESTO
 
-    def calculate_data_restituzione(self):
+    def calc_data_restituzione(self):
         if self.data_prestito:
             return self.data_prestito + timedelta(days=DURATA_PRESTITO)
         else:

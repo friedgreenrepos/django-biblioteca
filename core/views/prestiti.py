@@ -13,14 +13,14 @@ from ..models import (Libro, Profilo, Prestito)
 from ..forms import (ProfiloForm, PrestitoForm, SegnalazioneLibroForm,
                      ProfiloSelectForm)
 from .mixins import FilteredQuerysetMixin
-#from .filters import LibroPrestitoFilter
+from .filters import PrestitoFilter
 
 
-class ElencoPrestitiView(PermissionRequiredMixin, LoginRequiredMixin, ListView):
+class ElencoPrestitiView(PermissionRequiredMixin, LoginRequiredMixin, FilteredQuerysetMixin, ListView):
     permission_required = 'core.view_prestito'
     template_name = 'core/elenco_prestiti.html'
     model = Prestito
-    #filter_class = LibroPrestitoFilter
+    filter_class = PrestitoFilter
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
@@ -58,16 +58,12 @@ class PrestitoUpdateProfiloView(CreateView):
         return reverse('catalogo')
 
     def form_valid(self, form):
-        prestito = form.save()
+        prestito = form.instance
         try:
             with transaction.atomic():
-                libro = Libro.objects.select_for_update(nowait=True).get(pk=self.kwargs['libro_pk'])
-                prestito_dict = {
-                    'libro': libro,
-                    'stato': Prestito.RICHIESTO,
-                }
-                print('++++++prestito: {}'.format(prestito))
-                prestito.update(**prestito_dict)
+                libro = Libro.objects.get(pk=self.kwargs['libro_pk'])
+                prestito.libro = libro
+                prestito.stato = Prestito.RICHIESTO
                 prestito.save()
                 messages.success(self.request, "Richiesta prestito registrata con successo!")
 
@@ -111,53 +107,35 @@ class PrestitoCreateProfiloView(FormView):
 
 class ConsegnaLibroPrestitoView(PermissionRequiredMixin, LoginRequiredMixin, DetailView):
     permission_required = 'core.gestisci_prestito'
-    model = Libro
+    model = Prestito
 
     def post(self, request, *args, **kwargs):
         try:
             with transaction.atomic():
-                libro = Libro.objects.select_for_update(nowait=True).get(pk=self.kwargs['pk'])
-                if libro.is_inprestito():
-                    messages.error(self.request, "Questo prestito è già in corso")
-                    return HttpResponseRedirect(redirect_to=reverse('dettaglio_prestito', kwargs={'pk':libro.pk}))
-                if libro.is_disponibile():
-                    messages.error(self.request, "Nessun utente ha richiesto questo prestito")
-                    return HttpResponseRedirect(redirect_to=reverse('elenco_prestiti'))
-
-                libro.profilo_prestito.tot_libri += 1
-                libro.stato_prestito = Libro.INPRESTITO
-                libro.data_richiesta = None
-                libro.data_prestito = date.today()
-                libro.save()
-                libro.data_restituzione = libro.calculate_data_restituzione()
-                libro.save()
-                messages.success(self.request, "Consegna libro registrata con successo!")
-
-        except ObjectDoesNotExist as err:
-            messages.error(self.request, err)
-        return HttpResponseRedirect(redirect_to=reverse('dettaglio_prestito', kwargs={'pk':libro.pk}))
+                prestito = Prestito.objects.select_for_update(nowait=True).get(pk=self.kwargs['pk'])
+                if prestito.is_incorso():
+                    messages.error(self.request, "Questo prestito è già in corso.")
+                    return HttpResponseRedirect(redirect_to=reverse('dettaglio_prestito', kwargs={'pk': self.kwargs['pk']}))
+                prestito.stato = Prestito.INCORSO
+                prestito.data_prestito = date.today()
+                prestito.save()
+                prestito.data_restituzione = prestito.calc_data_restituzione()
+                prestito.save()
+                messages.success(self.request, "Consegna libro registrata con successo.")
+        except ObjectDoesNotExist:
+            messages.error(self.request)
+        return HttpResponseRedirect(redirect_to=reverse('dettaglio_prestito', kwargs={'pk': self.kwargs['pk']}))
 
 
 class RifiutaRichiestaPrestitoView(PermissionRequiredMixin, LoginRequiredMixin, DetailView):
     permission_required = 'core.gestisci_prestito'
-    model = Libro
+    model = Prestito
 
     def post(self, request, *args, **kwargs):
-        self.object = self.get_object()
         try:
             with transaction.atomic():
-                libro = Libro.objects.select_for_update(nowait=True).get(pk=self.kwargs['pk'])
-                if libro.is_inprestito():
-                    messages.error(self.request, "Questo prestito è già in corso")
-                    return HttpResponseRedirect(redirect_to=reverse('dettaglio_prestito', kwargs={'pk':libro.pk}))
-                if libro.is_disponibile():
-                    messages.error(self.request, "Nessun utente ha richiesto questo prestito")
-                    return HttpResponseRedirect(redirect_to=reverse('elenco_prestiti'))
-
-                libro.stato_prestito = Libro.DISPONIBILE
-                libro.profilo_prestito = None
-                libro.data_richiesta = None
-                libro.save()
+                prestito = Prestito.objects.select_for_update(nowait=True).get(pk=self.kwargs['pk'])
+                prestito.delete()
                 messages.success(self.request, "Richiesta prestito rifiutata.")
 
         except ObjectDoesNotExist as err:
@@ -195,33 +173,33 @@ class RestituzioneLibroPrestitoView(PermissionRequiredMixin, LoginRequiredMixin,
         return HttpResponseRedirect(redirect_to=reverse('elenco_prestiti'))
 
 
-class SospendiPrestitoProfiloView(PermissionRequiredMixin, LoginRequiredMixin, CreateView):
-    permission_required = 'core.gestisci_prestito'
-    template_name = 'core/prestito_sospensione_form.html'
-    model = Libro
-    form_class = SegnalazioneLibroForm
-
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
-        profilo = Profilo.objects.filter(pk=self.kwargs['profilo_pk']).first()
-        context['titolo'] = 'Sospensione Prestito: "{}"'.format(profilo)
-        return context
-
-    def get_success_url(self):
-        return reverse('elenco_prestiti')
-
-    def form_valid(self, form):
-        segnalazione = form.save()
-        try:
-            with transaction.atomic():
-                profilo = Profilo.objects.select_for_update(nowait=True).get(pk=self.kwargs['profilo_pk'])
-                profilo.prestito_sospeso = True
-                profilo.segnalazioni_set = segnalazione
-                profilo.data_inizio_sospensione = date.today()
-                profilo.save()
-                profilo.data_fine_sospensione = profilo.calculate_fine_sospensione()
-                profilo.save()
-                messages.success(self.request, "Segnalazione effettuata con successo.")
-        except ObjectDoesNotExist as err:
-            messages.error(self.request, err)
-        return HttpResponseRedirect(self.get_success_url())
+# class SospendiPrestitoProfiloView(PermissionRequiredMixin, LoginRequiredMixin, CreateView):
+#     permission_required = 'core.gestisci_prestito'
+#     template_name = 'core/prestito_sospensione_form.html'
+#     model = Libro
+#     form_class = SegnalazioneLibroForm
+#
+#     def get_context_data(self, *args, **kwargs):
+#         context = super().get_context_data(*args, **kwargs)
+#         profilo = Profilo.objects.filter(pk=self.kwargs['profilo_pk']).first()
+#         context['titolo'] = 'Sospensione Prestito: "{}"'.format(profilo)
+#         return context
+#
+#     def get_success_url(self):
+#         return reverse('elenco_prestiti')
+#
+#     def form_valid(self, form):
+#         segnalazione = form.save()
+#         try:
+#             with transaction.atomic():
+#                 profilo = Profilo.objects.select_for_update(nowait=True).get(pk=self.kwargs['profilo_pk'])
+#                 profilo.prestito_sospeso = True
+#                 profilo.segnalazioni_set = segnalazione
+#                 profilo.data_inizio_sospensione = date.today()
+#                 profilo.save()
+#                 profilo.data_fine_sospensione = profilo.calculate_fine_sospensione()
+#                 profilo.save()
+#                 messages.success(self.request, "Segnalazione effettuata con successo.")
+#         except ObjectDoesNotExist as err:
+#             messages.error(self.request, err)
+#         return HttpResponseRedirect(self.get_success_url())

@@ -88,45 +88,45 @@
         <div class="row">
           <div class="col-xs-12">
             <strong><i class="fas fa-question-circle margin-r-5"></i>Stato</strong>
-            {% if not libro.has_prestito %}
+            {% if libro.is_disponibile %}
               <span class="label label-success lb-md pull-right">Disponibile</span>
             {% else %}
               <span class="label label-danger lb-md pull-right">Non disponibile</span>
             {% endif %}
           </div>
         </div>
-        {% if libro.has_prestito %}
+        {% if current_prestito %}
           <div class="row">
             <div class="col-xs-12">
               <hr>
               <strong><i class="fas fa-book-reader margin-r-5"></i>Profilo</strong>
-              <span class="pull-right">{{ libro.get_current_prestito.profilo }}</span>
+              <span class="pull-right">{{ current_prestito.profilo }}</span>
             </div>
           </div>
-          {% if libro.get_current_prestito.data_richiesta %}
+          {% if current_prestito.data_richiesta %}
             <div class="row">
               <div class="col-xs-12">
                 <hr>
                 <strong><i class="fas fa-calendar margin-r-5"></i>Data richiesta</strong>
-                <span class="pull-right">{{ libro.get_current_prestito.data_richiesta }}</span>
+                <span class="pull-right">{{ current_prestito.data_richiesta }}</span>
               </div>
             </div>
           {% endif %}
-          {% if libro.get_current_prestito.data_prestito %}
+          {% if current_prestito.data_prestito %}
             <div class="row">
               <div class="col-xs-12">
                 <hr>
                 <strong><i class="fas fa-calendar margin-r-5"></i>Data prestito</strong>
-                <span class="pull-right">{{ libro.get_current_prestito.data_prestito }}</span>
+                <span class="pull-right">{{ current_prestito.data_prestito }}</span>
               </div>
             </div>
           {% endif %}
-          {% if libro.get_current_prestito.data_restituzione %}
+          {% if current_prestito.data_restituzione %}
             <div class="row">
               <div class="col-xs-12">
                 <hr>
                 <strong><i class="fas fa-calendar margin-r-5"></i>Data restituzione</strong>
-                <span class="pull-right">{{ libro.get_current_prestito.data_restituzione }}</span>
+                <span class="pull-right">{{ current_prestito.data_restituzione }}</span>
               </div>
             </div>
             <hr>
@@ -146,6 +146,8 @@
         <h3 class="box-title">Storico</h3>
       </div>
       <div class="box-body">
+        
+
         {% for prestito in libro.prestito_set.all %}
           <strong><i class="fas fa-book-reader margin-r-5"></i>Utente</strong>
           <span>{{ prestito.profilo }}</span>
