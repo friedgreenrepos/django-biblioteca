@@ -115,8 +115,9 @@ class ConsegnaLibroPrestitoView(PermissionRequiredMixin, LoginRequiredMixin, Det
                 prestito = Prestito.objects.select_for_update(nowait=True).get(pk=self.kwargs['pk'])
                 if prestito.is_incorso():
                     messages.error(self.request, "Questo prestito è già in corso.")
-                    return HttpResponseRedirect(redirect_to=reverse('dettaglio_prestito', kwargs={'pk': self.kwargs['pk']}))
+                    return HttpResponseRedirect(redirect_to=reverse('dettaglio_prestito', kwargs={'pk': prestito.pk}))
                 prestito.stato = Prestito.INCORSO
+                prestito.profilo.tot_libri += 1
                 prestito.data_prestito = date.today()
                 prestito.save()
                 prestito.data_restituzione = prestito.calc_data_restituzione()
@@ -124,7 +125,7 @@ class ConsegnaLibroPrestitoView(PermissionRequiredMixin, LoginRequiredMixin, Det
                 messages.success(self.request, "Consegna libro registrata con successo.")
         except ObjectDoesNotExist:
             messages.error(self.request)
-        return HttpResponseRedirect(redirect_to=reverse('dettaglio_prestito', kwargs={'pk': self.kwargs['pk']}))
+        return HttpResponseRedirect(redirect_to=reverse('dettaglio_prestito', kwargs={'pk': prestito.pk}))
 
 
 class RifiutaRichiestaPrestitoView(PermissionRequiredMixin, LoginRequiredMixin, DetailView):
@@ -145,27 +146,19 @@ class RifiutaRichiestaPrestitoView(PermissionRequiredMixin, LoginRequiredMixin, 
 
 class RestituzioneLibroPrestitoView(PermissionRequiredMixin, LoginRequiredMixin, DetailView):
     permission_required = 'core.gestisci_prestito'
-    model = Libro
+    model = Prestito
 
     def post(self, request, *args, **kwargs):
-        self.object = self.get_object()
         try:
             with transaction.atomic():
-                libro = Libro.objects.select_for_update(nowait=True).get(pk=self.kwargs['pk'])
-                if libro.is_pendente():
+                prestito = Prestito.objects.select_for_update(nowait=True).get(pk=self.kwargs['pk'])
+                if prestito.is_richiesto():
                     messages.error(self.request, "Questo prestito non è ancora stato consegnato.")
-                    return HttpResponseRedirect(redirect_to=reverse('dettaglio_prestito', kwargs={'pk':libro.pk}))
-                if libro.is_disponibile():
-                    messages.error(self.request, "Nessun utente ha richiesto questo prestito.")
-                    return HttpResponseRedirect(redirect_to=reverse('elenco_prestiti'))
-
-                libro.stato_prestito = Libro.DISPONIBILE
-                libro.data_richiesta = None
-                libro.data_prestito = None
-                libro.data_restituzione = None
-                libro.profilo_prestito.tot_libri -= 1
-                libro.profilo_prestito = None
-                libro.save()
+                    return HttpResponseRedirect(redirect_to=reverse('dettaglio_prestito', kwargs={'pk': prestito.pk}))
+                
+                prestito.stato = Prestito.CONCLUSO
+                prestito.profilo.tot_libri -= 1
+                prestito.save()
                 messages.success(self.request, "Restituzione libro registrata con successo!")
 
         except ObjectDoesNotExist as err:
