@@ -47,7 +47,7 @@
       <ul class="dropdown-menu" role="menu">
         {% for bookmark in request.user.bookmark_set.all %}
         <li>
-          <a class="padding-t-10 padding-b-10" href="{{ bookmark.url }}">
+          <a class="padding-t-10 padding-b-10" href="{{ bookmark.get_bookmark_url }}">
             {{ bookmark.nome }}
           </a>
         </li>

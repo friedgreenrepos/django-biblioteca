@@ -192,10 +192,16 @@ class DocumentoAmministratore(Documento):
 class Bookmark(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     nome = models.CharField(max_length=20)
-    url = models.CharField(max_length=500)
-    
+    urlname = models.CharField(max_length=100)
+    args = models.CharField(max_length=100, blank=True, null=True)
+    kwargs = models.CharField(max_length=100, blank=True, null=True)
+    urlparams = models.CharField(max_length=100, blank=True, null=True)
+
     def __str__(self):
         return self.nome
+
+    def get_bookmark_url(self):
+        return "{}?{}".format(reverse(self.urlname, args=self.args, kwargs=self.kwargs), self.urlparams)
 
 
 class Genere(models.Model):

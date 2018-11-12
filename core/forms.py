@@ -69,7 +69,7 @@ class DocumentoAmministratoreForm(BootstrapForm, forms.ModelForm):
 class BookmarkForm(BootstrapForm, forms.ModelForm):
     class Meta:
         model = Bookmark
-        fields = ['nome', 'url']
+        fields = ['nome', 'urlname', 'urlparams']
 
 
 class AutoreForm(BootstrapForm, forms.ModelForm):

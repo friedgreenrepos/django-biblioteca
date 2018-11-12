@@ -1,6 +1,6 @@
 from datetime import date
 from django.shortcuts import render
-from django.urls import reverse
+from django.urls import reverse, resolve
 from django.contrib import messages
 from django.http import HttpResponseRedirect, HttpResponseNotAllowed
 from django.db import transaction
@@ -54,7 +54,12 @@ class ElencoLibriView(PermissionRequiredMixin, FilteredQuerysetMixin, LoginRequi
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         context['titolo'] = 'Elenco Libri'
-        context['bookmark_form'] = BookmarkModelForm(initial={ 'url': self.request.get_full_path()})
+        match = resolve(self.request.path)
+        bm_form = BookmarkForm(initial={ 'urlname': match.url_name,
+                                         'args': match.args,
+                                         'kwargs': match.kwargs,
+                                         'urlparams': self.request.GET.urlencode()})
+        context['bookmark_form'] = bm_form
         return context
 
 
