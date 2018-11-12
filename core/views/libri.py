@@ -2,13 +2,13 @@ from datetime import date
 from django.shortcuts import render
 from django.urls import reverse
 from django.contrib import messages
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponseNotAllowed
 from django.db import transaction
 from django.db.models import Q
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
 from django.views.generic import (TemplateView, ListView, DetailView,
-                                  CreateView, UpdateView)
+                                  CreateView, UpdateView, FormView)
 from ..models import (Libro, Autore, Genere, SottoGenere, Editore, Collana,
                       Bookmark, Prestito)
 from ..forms import (LibroForm, AutoreForm, GenereForm, SottoGenereForm,
@@ -54,6 +54,7 @@ class ElencoLibriView(PermissionRequiredMixin, FilteredQuerysetMixin, LoginRequi
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         context['titolo'] = 'Elenco Libri'
+        context['bookmark_form'] = BookmarkModelForm(initial={ 'url': self.request.get_full_path()})
         return context
 
 
@@ -99,6 +100,22 @@ class ModificaLibroView(PermissionRequiredMixin, LoginRequiredMixin, UpdateView)
 
     def get_success_url(self):
         return reverse('dettaglio_libro', kwargs={'pk': self.object.pk})
+
+
+class AggiungiBookmarkView(PermissionRequiredMixin, LoginRequiredMixin, CreateView):
+    permission_required = 'core.add_bookmark'
+    model = Bookmark
+    form_class = BookmarkForm
+
+    def get(self, request, *args, **kwargs):
+        return HttpResponseNotAllowed(['POST'])
+
+    def get_success_url(self):
+        return reverse('elenco_libri')
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
 
 
 # Autori
@@ -301,24 +318,3 @@ class ModificaCollanaView(PermissionRequiredMixin, LoginRequiredMixin, UpdateVie
 
     def get_success_url(self):
         return reverse('elenco_editori_collane')
-
-
-class AggiungiBookmarkView(PermissionRequiredMixin, LoginRequiredMixin, CreateView):
-    permission_required = 'core.add_bookmark'
-    template_name = 'core/bookmark_form.html'
-    model = Bookmark
-    form_class = BookmarkForm
-
-    def get_initial(self):
-        initial = super().get_initial()
-        initial['url'] = self.request.GET.urlencode()
-        return initial
-
-    def get_success_url(self):
-        return reverse('elenco_libri')
-
-    def form_valid(self, form):
-        bookmark = form.save(commit=False)
-        bookmark.user = self.request.user
-        bookmark.save()
-        return HttpResponseRedirect(self.get_success_url())

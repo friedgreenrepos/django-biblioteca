@@ -192,8 +192,8 @@ class DocumentoAmministratore(Documento):
 class Bookmark(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     nome = models.CharField(max_length=20)
-    url = models.URLField(max_length=200)
-
+    url = models.CharField(max_length=500)
+    
     def __str__(self):
         return self.nome
 

@@ -9,8 +9,7 @@ from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMix
 from django.views.generic import (ListView, DetailView, CreateView, UpdateView,
                                   FormView)
 from ..models import (Libro, Profilo, Prestito)
-from ..forms import (ProfiloForm, PrestitoForm, SegnalazioneLibroForm,
-                     ProfiloSelectForm)
+from ..forms import (ProfiloForm, PrestitoForm, SegnalazioneLibroForm)
 from .mixins import FilteredQuerysetMixin
 from .filters import PrestitoFilter
 

@@ -43,26 +43,6 @@ class ProfiloForm(BootstrapForm, forms.ModelForm):
                   'email']
 
 
-class ProfiloSelectForm(BootstrapForm, forms.Form):
-    profilo = forms.ModelChoiceField(
-        queryset=Profilo.objects.all(),
-        required=True,
-        label='Profio esistente'
-    )
-
-
-class ProfiloLibroForm(BootstrapForm, forms.ModelForm):
-    libro = forms.ModelChoiceField(
-        queryset=Libro.objects.all(),
-        required=False
-    )
-
-    class Meta:
-        model = Profilo
-        fields = ['nome', 'cognome', 'codfisc', 'data_nascita', 'telefono',
-                  'email']
-
-
 class SegnalazioneLibroForm(BootstrapForm, forms.ModelForm):
     libro = forms.ModelChoiceField(
         queryset=Libro.objects.all(),
@@ -75,27 +55,21 @@ class SegnalazioneLibroForm(BootstrapForm, forms.ModelForm):
 
 
 class DocumentoForm(BootstrapForm, forms.ModelForm):
-
     class Meta:
         model = Documento
         fields = ['nome', 'descrizione', 'file']
 
 
 class DocumentoAmministratoreForm(BootstrapForm, forms.ModelForm):
-
     class Meta:
         model = DocumentoAmministratore
         fields = ['nome', 'descrizione', 'file']
 
 
 class BookmarkForm(BootstrapForm, forms.ModelForm):
-
     class Meta:
         model = Bookmark
         fields = ['nome', 'url']
-        widgets = {
-            'url': forms.HiddenInput()
-        }
 
 
 class AutoreForm(BootstrapForm, forms.ModelForm):
