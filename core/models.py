@@ -19,6 +19,7 @@ def valida_documento(documento):
 
 class TrackProfilo(models.Model):
     tot_libri = models.PositiveIntegerField(default=0, validators=[MaxValueValidator(MAX_LIBRI_INPRESTITO)])
+    tot_richieste = models.PositiveIntegerField(default=0, validators=[MaxValueValidator(MAX_LIBRI_INPRESTITO)])
     prestito_sospeso = models.BooleanField(default=False)
     segnalazioni = models.ManyToManyField('Segnalazione', blank=True)
     data_inizio_sospensione = models.DateField(null=True, blank=True)

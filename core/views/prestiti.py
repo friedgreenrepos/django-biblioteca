@@ -8,6 +8,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
 from django.views.generic import (ListView, DetailView, CreateView, UpdateView,
                                   FormView)
+from ..settings import MAX_LIBRI_INPRESTITO
 from ..models import (Libro, Profilo, Prestito)
 from ..forms import (ProfiloForm, PrestitoForm, SegnalazioneLibroForm)
 from .mixins import FilteredQuerysetMixin
@@ -60,6 +61,12 @@ class PrestitoUpdateProfiloView(CreateView):
         try:
             with transaction.atomic():
                 libro = Libro.objects.get(pk=self.kwargs['libro_pk'])
+                profilo = Profilo.objects.select_for_update(nowait=True).get(pk=prestito.profilo.pk)
+                if profilo.tot_richieste >= MAX_LIBRI_INPRESTITO:
+                    messages.error(self.request, "E' possibile richiede al massimo {} libri alla volta".format(MAX_LIBRI_INPRESTITO))
+                    return HttpResponseRedirect(redirect_to=reverse('catalogo'))
+                profilo.tot_richieste += 1
+                profilo.save()
                 prestito.libro = libro
                 prestito.stato = Prestito.RICHIESTO
                 prestito.save()
@@ -67,7 +74,7 @@ class PrestitoUpdateProfiloView(CreateView):
 
         except ObjectDoesNotExist as err:
             messages.error(self.request, err)
-        return HttpResponseRedirect(self.get_success_url())
+        return super().form_valid(form)
 
 
 class PrestitoCreateProfiloView(FormView):
@@ -84,11 +91,12 @@ class PrestitoCreateProfiloView(FormView):
         return reverse('catalogo')
 
     def form_valid(self, form):
-        profilo = form.save()
-
+        profilo = form.instance
         try:
             with transaction.atomic():
                 libro = Libro.objects.get(pk=self.kwargs['libro_pk'])
+                profilo.tot_richieste += 1
+                profilo.save()
                 prestito_dict = {
                     'libro': libro,
                     'profilo': profilo,
@@ -100,7 +108,7 @@ class PrestitoCreateProfiloView(FormView):
 
         except ObjectDoesNotExist as err:
             messages.error(self.request, err)
-        return HttpResponseRedirect(self.get_success_url())
+        return super().form_valid(form)
 
 
 class ConsegnaLibroPrestitoView(PermissionRequiredMixin, LoginRequiredMixin, DetailView):
@@ -111,11 +119,20 @@ class ConsegnaLibroPrestitoView(PermissionRequiredMixin, LoginRequiredMixin, Det
         try:
             with transaction.atomic():
                 prestito = Prestito.objects.select_for_update(nowait=True).get(pk=self.kwargs['pk'])
+                profilo = Profilo.objects.select_for_update(nowait=True).get(pk=prestito.profilo.pk)
                 if prestito.is_incorso():
                     messages.error(self.request, "Questo prestito è già in corso.")
                     return HttpResponseRedirect(redirect_to=reverse('dettaglio_prestito', kwargs={'pk': prestito.pk}))
+                if profilo.tot_libri >= MAX_LIBRI_INPRESTITO:
+                    messages.error(self.request, "E' possibile avere in prestito al massimo {} libri alla volta".format(MAX_LIBRI_INPRESTITO))
+                    return HttpResponseRedirect(redirect_to=reverse('dettaglio_prestito', kwargs={'pk': prestito.pk}))
+                if profilo.tot_richieste == 0:
+                    messages.error(self.request, "Questo profilo non ha richieste in atto.")
+                    return HttpResponseRedirect(redirect_to=reverse('elenco_prestiti'))
+                profilo.tot_libri += 1
+                profilo.tot_richieste -= 1
+                profilo.save()
                 prestito.stato = Prestito.INCORSO
-                prestito.profilo.tot_libri += 1
                 prestito.data_prestito = date.today()
                 prestito.save()
                 prestito.data_restituzione = prestito.calc_data_restituzione()
@@ -134,6 +151,12 @@ class RifiutaRichiestaPrestitoView(PermissionRequiredMixin, LoginRequiredMixin, 
         try:
             with transaction.atomic():
                 prestito = Prestito.objects.select_for_update(nowait=True).get(pk=self.kwargs['pk'])
+                profilo = Profilo.objects.select_for_update(nowait=True).get(pk=prestito.profilo.pk)
+                if profilo.tot_richieste == 0:
+                    messages.error(self.request, "Questo profilo non ha richieste di prestito")
+                    return HttpResponseRedirect(redirect_to=reverse('elenco_prestiti'))
+                profilo.tot_richieste -= 1
+                profilo.save()
                 prestito.delete()
                 messages.success(self.request, "Richiesta prestito rifiutata.")
 
@@ -150,12 +173,17 @@ class RestituzioneLibroPrestitoView(PermissionRequiredMixin, LoginRequiredMixin,
         try:
             with transaction.atomic():
                 prestito = Prestito.objects.select_for_update(nowait=True).get(pk=self.kwargs['pk'])
+                profilo = Profilo.objects.select_for_update(nowait=True).get(pk=prestito.profilo.pk)
                 if prestito.is_richiesto():
                     messages.error(self.request, "Questo prestito non è ancora stato consegnato.")
                     return HttpResponseRedirect(redirect_to=reverse('dettaglio_prestito', kwargs={'pk': prestito.pk}))
+                if profilo.tot_libri == 0:
+                    messages.error(self.request, "Questo profilo non ha prestiti")
+                    return HttpResponseRedirect(redirect_to=reverse('elenco_prestiti'))
 
                 prestito.stato = Prestito.CONCLUSO
-                prestito.profilo.tot_libri -= 1
+                profilo.tot_libri -= 1
+                profilo.save()
                 prestito.save()
                 messages.success(self.request, "Restituzione libro registrata con successo!")
 
@@ -167,8 +195,7 @@ class RestituzioneLibroPrestitoView(PermissionRequiredMixin, LoginRequiredMixin,
 class SospendiPrestitoProfiloView(PermissionRequiredMixin, LoginRequiredMixin, CreateView):
     permission_required = 'core.gestisci_prestito'
     template_name = 'core/prestito_sospensione_form.html'
-    model = Libro
-    form_class = SegnalazioneLibroForm
+    #form_class = SegnalazioneForm
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
