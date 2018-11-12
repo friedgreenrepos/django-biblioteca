@@ -70,6 +70,10 @@ class BookmarkForm(BootstrapForm, forms.ModelForm):
     class Meta:
         model = Bookmark
         fields = ['nome', 'urlname', 'urlparams']
+        widgets = {
+            'urlname': forms.HiddenInput(),
+            'urlparams': forms.HiddenInput(),
+        }
 
 
 class AutoreForm(BootstrapForm, forms.ModelForm):
