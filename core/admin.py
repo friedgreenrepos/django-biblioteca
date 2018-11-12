@@ -1,6 +1,7 @@
 from django.contrib import admin
 from .models import (Libro, Autore, Genere, SottoGenere, Editore, Collana,
-                     Profilo, Segnalazione, Bookmark, Prestito)
+                     Profilo, Segnalazione, Bookmark, Prestito, Documento,
+                     DocumentoAmministratore)
 
 
 @admin.register(Libro)
@@ -51,3 +52,13 @@ class BookmarkAdmin(admin.ModelAdmin):
 @admin.register(Prestito)
 class PrestitoAdmin(admin.ModelAdmin):
     list_display = ('profilo', 'libro')
+
+
+@admin.register(Documento)
+class DocumentoAdmin(admin.ModelAdmin):
+    list_display = ('nome', 'data_upload')
+
+
+@admin.register(DocumentoAmministratore)
+class DocumentoAmministratoreAdmin(admin.ModelAdmin):
+    list_display = ('nome', 'data_upload')

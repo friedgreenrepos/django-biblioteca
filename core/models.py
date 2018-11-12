@@ -5,7 +5,16 @@ from django.db import models
 from django.urls import reverse
 from django.conf import settings
 from django.core.validators import MaxValueValidator
-from .settings import DURATA_PRESTITO, MAX_LIBRI_INPRESTITO, GIORNI_SOSPENSIONE
+from django.core.exceptions import ValidationError
+from .settings import (DURATA_PRESTITO, MAX_LIBRI_INPRESTITO, GIORNI_SOSPENSIONE,
+                      MAXKB_DOCUMENTO)
+
+
+def valida_documento(documento):
+    file_size = documento.file.size
+    limit_kb = MAXKB_DOCUMENTO
+    if file_size > limit_kb*1024:
+        raise ValidationError("La dimensione massima del documento è: {}".format(limit_kb))
 
 
 class TrackProfilo(models.Model):
@@ -155,6 +164,40 @@ class Prestito(models.Model):
         get_latest_by = ('-data_richiesta')
 
 
+class Documento(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    nome = models.CharField(max_length=100)
+    descrizione = models.TextField(blank=True)
+    file = models.FileField(upload_to='documenti/%Y/%m/',
+                            validators=[valida_documento],
+                            help_text="Dimensione massima: {} Kb".format(MAXKB_DOCUMENTO))
+    data_upload = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name_plural = 'Documenti'
+        permissions = (
+            ('view_dettaglio_documento', 'Accesso al dettaglio del documento'),
+        )
+
+    def __str__(self):
+        return '"{}" - {}'.format(self.nome, self.data_upload.date())
+
+
+class DocumentoAmministratore(Documento):
+
+    class Meta:
+        verbose_name_plural = 'Documenti Amministratore'
+
+
+class Bookmark(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    nome = models.CharField(max_length=20)
+    url = models.URLField(max_length=200)
+
+    def __str__(self):
+        return self.nome
+
+
 class Genere(models.Model):
     nome = models.CharField(max_length=100)
 
@@ -209,12 +252,3 @@ class Autore(models.Model):
 
     def nome_cognome(self):
         return '{} {}'.format(self.nome, self.cognome)
-
-
-class Bookmark(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    nome = models.CharField(max_length=20)
-    url = models.URLField(max_length=200)
-
-    def __str__(self):
-        return self.nome

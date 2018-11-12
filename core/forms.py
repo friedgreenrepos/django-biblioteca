@@ -1,7 +1,8 @@
 from django import forms
 from django.forms.models import inlineformset_factory
 from .models import (Libro, Autore, Editore, Collana, Genere, SottoGenere,
-                     Profilo, Segnalazione, Bookmark, Prestito)
+                     Profilo, Segnalazione, Bookmark, Prestito, Documento,
+                     DocumentoAmministratore)
 
 
 __all__ = ['BootstrapForm']
@@ -20,23 +21,6 @@ class BootstrapForm(forms.Form):
                     field.widget.attrs['class'] = ' '.join(set(classes))
                 except KeyError:
                     field.widget.attrs['class'] = 'form-control'
-
-
-# class LibroPrestitoForm(BootstrapForm, forms.ModelForm):
-#     class Meta:
-#         model = Libro
-#         fields = ['isbn', 'titolo', 'autori', 'descrizione', 'editore',
-#                   'genere', 'sottogeneri', 'collana', 'profilo_prestito']
-#         widgets = {
-#             'isbn': forms.HiddenInput(),
-#             'titolo': forms.HiddenInput(),
-#             'autori': forms.MultipleHiddenInput(),
-#             'descrizione': forms.HiddenInput(),
-#             'editore': forms.HiddenInput(),
-#             'genere': forms.HiddenInput(),
-#             'sottogeneri': forms.MultipleHiddenInput(),
-#             'collana': forms.HiddenInput(),
-#         }
 
 
 class PrestitoForm(BootstrapForm, forms.ModelForm):
@@ -88,6 +72,20 @@ class SegnalazioneLibroForm(BootstrapForm, forms.ModelForm):
     class Meta:
         model = Segnalazione
         fields = ['tipo', 'descrizione']
+
+
+class DocumentoForm(BootstrapForm, forms.ModelForm):
+
+    class Meta:
+        model = Documento
+        fields = ['nome', 'descrizione', 'file']
+
+
+class DocumentoAmministratoreForm(BootstrapForm, forms.ModelForm):
+
+    class Meta:
+        model = DocumentoAmministratore
+        fields = ['nome', 'descrizione', 'file']
 
 
 class BookmarkForm(BootstrapForm, forms.ModelForm):

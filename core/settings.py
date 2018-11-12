@@ -17,3 +17,9 @@ GIORNI_SOSPENSIONE = getattr(
     'BIBLIOTECA_GIORNI_SOSPENSIONE',
     10
 )
+
+MAXKB_DOCUMENTO = getattr(
+    settings,
+    'BIBLIOTECA_MAXKB_DOCUMENTO',
+    50
+)

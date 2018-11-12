@@ -1,5 +1,4 @@
 from datetime import date
-from django.shortcuts import render
 from django.urls import reverse
 from django.contrib import messages
 from django.http import HttpResponseRedirect
