@@ -3,6 +3,7 @@ from .utils import BootstrapForm
 from .models import (Libro, Autore, Editore, Collana, Genere, SottoGenere,
                      Profilo, Segnalazione, Bookmark, Prestito, Documento,
                      DocumentoAmministratore)
+from .settings import GIORNI_SOSPENSIONE
 
 
 class PrestitoForm(BootstrapForm, forms.ModelForm):
@@ -26,7 +27,10 @@ class ProfiloForm(BootstrapForm, forms.ModelForm):
 
 
 class SegnalazioneForm(BootstrapForm, forms.ModelForm):
-    sospendi = forms.BooleanField(label='Sospendi profilo', required=False)
+    sospendi = forms.BooleanField(label='Sospendi profilo',
+                                  help_text='(Il profilo rimarrà sospeso per {} giorni)'.format(GIORNI_SOSPENSIONE),
+                                  required=False,
+                                  initial=True)
 
     class Meta:
         model = Segnalazione
