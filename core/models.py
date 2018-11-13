@@ -1,4 +1,4 @@
-from datetime import timedelta
+from datetime import timedelta, date
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
 from django.db import models
@@ -20,7 +20,6 @@ def valida_documento(documento):
 class TrackProfilo(models.Model):
     tot_libri = models.PositiveIntegerField(default=0, validators=[MaxValueValidator(MAX_LIBRI_INPRESTITO)])
     tot_richieste = models.PositiveIntegerField(default=0, validators=[MaxValueValidator(MAX_LIBRI_INPRESTITO)])
-    #prestito_sospeso = models.BooleanField(default=False)
     segnalazioni = models.ManyToManyField('Segnalazione', blank=True)
     data_inizio_sospensione = models.DateField(null=True, blank=True)
     data_fine_sospensione = models.DateField(null=True, blank=True)
@@ -28,9 +27,18 @@ class TrackProfilo(models.Model):
     class Meta:
         abstract = True
 
+    @property
+    def is_sospeso(self):
+        if self.data_fine_sospensione:
+            return self.data_fine_sospensione > date.today()
+        else:
+            return False
+
     def calculate_fine_sospensione(self):
         if self.data_inizio_sospensione:
             return self.data_inizio_sospensione + timedelta(GIORNI_SOSPENSIONE)
+        else:
+            return None
 
 
 class Profilo(TrackProfilo):
@@ -53,9 +61,9 @@ class Profilo(TrackProfilo):
 
 
 class Segnalazione(models.Model):
-    DANNEGGIAMENTO = 'D'
-    RITARDO = 'R'
-    ALTRO = 'A'
+    DANNEGGIAMENTO = 'DAN'
+    RITARDO = 'RIT'
+    ALTRO = 'ALTRO'
     TIPI_MOTIVO = (
         (DANNEGGIAMENTO, 'Danneggiamento'),
         (RITARDO, 'Ritardo consegna'),
@@ -121,7 +129,7 @@ class Libro(models.Model):
     def get_current_prestito(self):
         if self.has_prestiti():
             ultimo = self.prestito_set.all().latest()
-            if not ultimo.data_restituzione:
+            if not ultimo.is_concluso():
                 return ultimo
         return None
 
@@ -136,14 +144,21 @@ class Prestito(models.Model):
         (CONCLUSO, 'Concluso'),
     )
     stato = models.CharField(max_length=2, choices=STATI_PRESTITO)
-    data_richiesta = models.DateField(auto_now_add=True)
-    data_prestito = models.DateField(blank=True, null=True)
-    data_restituzione = models.DateField(blank=True, null=True)
+    data_richiesta = models.DateTimeField(auto_now_add=True)
+    data_inizio = models.DateField(blank=True, null=True)
+    data_scadenza = models.DateField(blank=True, null=True)
     profilo = models.ForeignKey(Profilo, on_delete=models.CASCADE)
     libro = models.ForeignKey(Libro, on_delete=models.CASCADE)
 
     def __str__(self):
         return '{}-{}'.format(self.libro, self.profilo)
+
+    @property
+    def is_scaduto(self):
+        if self.data_scadenza:
+            return  self.data_scadenza > date.today()
+        else:
+            return False
 
     def is_incorso(self):
         return self.stato == self.INCORSO
@@ -151,22 +166,20 @@ class Prestito(models.Model):
     def is_richiesto(self):
         return self.stato == self.RICHIESTO
 
-    def calc_data_restituzione(self):
-        if self.data_prestito:
-            return self.data_prestito + timedelta(days=GIORNI_PRESTITO)
+    def is_concluso(self):
+        return self.stato == self.CONCLUSO
+
+    def calc_data_scadenza(self):
+        if self.data_inizio:
+            return self.data_inizio + timedelta(days=GIORNI_PRESTITO)
         else:
             return None
 
-    def is_prestito_scaduto(self, oggi):
-        if self.data_restituzione:
-            return oggi > self.data_restituzione
-        else:
-            return False
 
     class Meta:
         verbose_name_plural = 'Prestiti'
         unique_together = ('profilo', 'libro')
-        get_latest_by = ('-data_richiesta')
+        get_latest_by = ('data_richiesta')
 
 
 class Documento(models.Model):

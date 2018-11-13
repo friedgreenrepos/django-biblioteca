@@ -52,6 +52,7 @@ class PrestitoUpdateProfiloView(CreateView):
         libro = Libro.objects.get(pk=self.kwargs['libro_pk'])
         context['libro'] = libro
         context['titolo'] = 'Richiesta Prestito: "{}"'.format(libro.get_titolo_autori_display())
+        context['max_libri_prestito'] = MAX_LIBRI_INPRESTITO
         return context
 
     def get_success_url(self):
@@ -65,6 +66,9 @@ class PrestitoUpdateProfiloView(CreateView):
                 profilo = Profilo.objects.select_for_update(nowait=True).get(pk=prestito.profilo.pk)
                 if profilo.tot_richieste >= MAX_LIBRI_INPRESTITO:
                     messages.error(self.request, "E' possibile richiede al massimo {} libri alla volta".format(MAX_LIBRI_INPRESTITO))
+                    return HttpResponseRedirect(redirect_to=reverse('catalogo'))
+                if profilo.is_sospeso:
+                    messages.error(self.request, "ATTENZIONE: questo profilo è sospeso fino al {}".format(profilo.data_fine_sospensione))
                     return HttpResponseRedirect(redirect_to=reverse('catalogo'))
                 profilo.tot_richieste += 1
                 profilo.save()
@@ -134,9 +138,9 @@ class ConsegnaLibroPrestitoView(PermissionRequiredMixin, LoginRequiredMixin, Det
                 profilo.tot_richieste -= 1
                 profilo.save()
                 prestito.stato = Prestito.INCORSO
-                prestito.data_prestito = date.today()
+                prestito.data_inizio = date.today()
                 prestito.save()
-                prestito.data_restituzione = prestito.calc_data_restituzione()
+                prestito.data_scadenza = prestito.calc_data_scadenza()
                 prestito.save()
                 messages.success(self.request, "Consegna libro registrata con successo.")
         except ObjectDoesNotExist:
@@ -208,18 +212,20 @@ class SegnalaProfiloView(PermissionRequiredMixin, LoginRequiredMixin, CreateView
         return reverse('elenco_prestiti')
 
     def form_valid(self, form):
-        #segnalazione = form.instance
+        segnalazione = form.save()
+        print(segnalazione)
         try:
             with transaction.atomic():
                 profilo = Profilo.objects.select_for_update(nowait=True).get(pk=self.kwargs['profilo_pk'])
-                if form.instance.sospendi:
+                if form.cleaned_data['sospendi']:
                     profilo.data_inizio_sospensione = date.today()
                     profilo.save()
                     profilo.data_fine_sospensione = profilo.calculate_fine_sospensione()
-                    segnalazione = form.save()
-                    profilo.segnalazioni_set.add()
-                    profilo.save()
-                    messages.success(self.request, "Segnalazione effettuata con successo.")
+                    messages.success(self.request, "Sospensione profilo avviata con successo")
+                #segnalazione = form.save()
+                profilo.segnalazioni.add(segnalazione)
+                profilo.save()
+                messages.success(self.request, "Segnalazione effettuata con successo.")
         except ObjectDoesNotExist as err:
             messages.error(self.request, err)
         return super().form_valid(form)

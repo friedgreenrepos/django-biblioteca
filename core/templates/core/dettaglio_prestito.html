@@ -49,21 +49,21 @@
             </div>
           </div>
         {% endif %}
-        {% if prestito.data_prestito %}
+        {% if prestito.data_inizio %}
           <hr>
           <div class="row">
             <div class="col-xs-12">
-              <strong><i class="fas fa-calendar margin-r-5"></i>Data prestito</strong>
-              <span class="pull-right">{{ prestito.data_prestito }}</span>
+              <strong><i class="fas fa-calendar margin-r-5"></i>Data inizio</strong>
+              <span class="pull-right">{{ prestito.data_inizio }}</span>
             </div>
           </div>
         {% endif %}
-        {% if prestito.data_restituzione %}
+        {% if prestito.data_scadenza %}
           <hr>
           <div class="row">
             <div class="col-xs-12">
               <strong><i class="fas fa-calendar margin-r-5"></i>Scadenza Prestito</strong>
-              <span class="pull-right">{{ prestito.data_restituzione }}</span>
+              <span class="pull-right">{{ prestito.data_scadenza }}</span>
             </div>
           </div>
           <hr>

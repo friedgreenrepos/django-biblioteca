@@ -17,7 +17,7 @@
               <th>Utente</th>
               <th>Data Richiesta</th>
               <th>Data Consegna</th>
-              <th>Data Restituzione</th>
+              <th>Data Scadenza</th>
               <th>Stato Prestito</th>
             </tr>
           </thead>
@@ -32,8 +32,8 @@
               <td>{{ prestito.libro.get_titolo_autori_display }}</td>
               <td>{{ prestito.profilo }}</td>
               <td>{{ prestito.data_richiesta|default:'-' }}</td>
-              <td>{{ prestito.data_prestito|default:'-' }}</td>
-              <td>{{ prestito.data_restituzione|default:'-' }}</td>
+              <td>{{ prestito.data_inizio|default:'-' }}</td>
+              <td>{{ prestito.data_scadenza|default:'-' }}</td>
               <td>
                 {% if prestito.is_incorso %}
                   <span class="label label-danger">In corso</span>
