@@ -6,9 +6,10 @@
       {{ filter.form.libro|render }}
       {{ filter.form.profilo|render }}
       {{ filter.form.stato|render }}
-        <div class="form-group valign-bottom">
-        <button type="submit" class="btn btn-ocra"><i class="fa fa-search"></i>&nbsp;Filtra</button>
-        <a class="btn btn-link" href="?">Resetta</a>
+      {{ filter.form.scaduto|render }}
+      <div class="form-group valign-bottom">
+      <button type="submit" class="btn btn-ocra"><i class="fa fa-search"></i>&nbsp;Filtra</button>
+      <a class="btn btn-link" href="?">Resetta</a>
       </div>
     </form>
   </div>

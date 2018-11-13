@@ -156,7 +156,7 @@ class Prestito(models.Model):
     @property
     def is_scaduto(self):
         if self.data_scadenza:
-            return  self.data_scadenza > date.today()
+            return  date.today() >= self.data_scadenza
         else:
             return False
 
@@ -174,7 +174,6 @@ class Prestito(models.Model):
             return self.data_inizio + timedelta(days=GIORNI_PRESTITO)
         else:
             return None
-
 
     class Meta:
         verbose_name_plural = 'Prestiti'

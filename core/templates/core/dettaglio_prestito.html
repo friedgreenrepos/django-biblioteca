@@ -3,6 +3,15 @@
 
 {% block headtitle %} Dettaglio Prestito {% endblock %}
 
+{% block content-top %}
+{% if prestito.is_scaduto %}
+<div class="callout callout-warning">
+  <h4>Prestito scaduto</h4>
+  <p>Questo prestito è scaduto il {{ prestito.data_scadenza }}. L' utente "{{ prestito.profilo }}" sarà sospeso.</p>
+</div>
+{% endif %}
+{% endblock %}
+
 {% block content %}
 <div class="row">
   <div class="col-md-6">
@@ -44,7 +53,7 @@
           <hr>
           <div class="row">
             <div class="col-xs-12">
-              <strong><i class="fas fa-calendar margin-r-5"></i>Data richiesta</strong>
+              <strong><i class="far fa-calendar-alt margin-r-5"></i>Data richiesta</strong>
               <span class="pull-right">{{ prestito.data_richiesta|date }}</span>
             </div>
           </div>
@@ -53,7 +62,7 @@
           <hr>
           <div class="row">
             <div class="col-xs-12">
-              <strong><i class="fas fa-calendar margin-r-5"></i>Data inizio</strong>
+              <strong><i class="far fa-calendar-alt margin-r-5"></i>Data inizio</strong>
               <span class="pull-right">{{ prestito.data_inizio }}</span>
             </div>
           </div>
@@ -62,7 +71,7 @@
           <hr>
           <div class="row">
             <div class="col-xs-12">
-              <strong><i class="fas fa-calendar margin-r-5"></i>Scadenza Prestito</strong>
+              <strong><i class="far fa-calendar-alt margin-r-5"></i>Data Scadenza</strong>
               <span class="pull-right">{{ prestito.data_scadenza }}</span>
             </div>
           </div>
@@ -114,6 +123,7 @@
     </div>
     <!-- / .box -->
   </div>
+  {% with prestito.profilo as profilo %}
   <div class="col-md-6">
     <div class="box box-ocra">
       <div class="box-header with-border">
@@ -123,12 +133,12 @@
         <div class="row">
           <div class="col-md-6">
             <strong><i class="fas fa-user margin-r-5"></i> Nome</strong>
-            <p>{{ prestito.profilo.nome }}</p>
+            <p>{{ profilo.nome }}</p>
           </div>
           <hr class="visible-xs clearfix">
           <div class="col-md-6">
             <strong><i class="fas fa-user margin-r-5"></i> Cognome</strong>
-            <p>{{ prestito.profilo.cognome}}</p>
+            <p>{{ profilo.cognome}}</p>
           </div>
         </div>
 
@@ -137,12 +147,12 @@
         <div class="row">
           <div class="col-md-6">
             <strong><i class="fas fa-id-badge  margin-r-5"></i>Codice Fiscale</strong>
-            <p>{{ prestito.profilo.codfisc }}</p>
+            <p>{{ profilo.codfisc }}</p>
           </div>
           <hr class="visible-xs clearfix">
           <div class="col-md-6">
             <strong><i class="fas fa-birthday-cake  margin-r-5"></i>Data di Nascita</strong>
-            <p>{{ prestito.profilo.data_nascita }}</p>
+            <p>{{ profilo.data_nascita }}</p>
           </div>
         </div>
 
@@ -151,21 +161,37 @@
         <div class="row">
           <div class="col-md-6">
             <strong><i class="fas fa-phone margin-r-5"></i>Telefono</strong>
-            <p>{{ prestito.profilo.telefono }}</p>
+            <p>{{ profilo.telefono }}</p>
           </div>
           <hr class="visible-xs clearfix">
           <div class="col-md-6">
             <strong><i class="fas fa-at margin-r-5"></i>Email</strong>
-            <p>{{ prestito.profilo.email }}</p>
+            <p>{{ profilo.email }}</p>
           </div>
         </div>
 
         <hr>
+
+        {% if profilo.is_sospeso %}
+        <div class="row">
+          <div class="col-md-6">
+            <strong><i class="fas fa-question-circle margin-r-5"></i>Stato</strong>
+            <span class="label label-danger lb-md pull-right">Sospeso</span>
+          </div>
+          <hr class="visible-xs clearfix">
+          <div class="col-md-6">
+            <strong><i class="far fa-calendar-alt margin-r-5"></i>Fine sospensione</strong>
+            <p>{{ profilo.data_fine_sospensione }}</p>
+          </div>
+        </div>
+        <hr>
+        {% endif %}
       </div>
       <!-- /.box-body -->
     </div>
     <!-- /.box -->
   </div>
+  {% endwith %}
 </div>
 
 <!-- Rifiuta richiesta modal -->

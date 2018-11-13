@@ -1,6 +1,11 @@
 {% extends 'base_site.html' %}
 {% load static %}
 
+{% block extracss %}
+{{block.super}}
+{{ filter.form.media.css }}
+{% endblock %}
+
 {% block content %}
 
 {% include 'inc/filtri_prestiti.html' %}
@@ -53,4 +58,9 @@
     <!-- /.box -->
   </div>
 </div>
+{% endblock %}
+
+{% block extrajs %}
+{{block.super}}
+{{ filter.form.media.js}}
 {% endblock %}
