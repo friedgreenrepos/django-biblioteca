@@ -85,6 +85,7 @@ class AggiungiLibroView(PermissionRequiredMixin, LoginRequiredMixin, CreateView)
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         context['titolo'] = 'Aggiungi Libro'
+        context['annulla_link'] = reverse('elenco_libri')
         return context
 
     def get_success_url(self):
@@ -101,6 +102,7 @@ class ModificaLibroView(PermissionRequiredMixin, LoginRequiredMixin, UpdateView)
         context = super().get_context_data(*args, **kwargs)
         context['titolo'] = self.object.get_titolo_autori_display()
         context['sottotitolo'] = 'Modifica'
+        context['annulla_link'] = reverse('dettaglio_libro', kwargs={'pk': self.object.pk})
         return context
 
     def get_success_url(self):
@@ -114,6 +116,12 @@ class AggiungiBookmarkView(PermissionRequiredMixin, LoginRequiredMixin, CreateVi
 
     def get(self, request, *args, **kwargs):
         return HttpResponseNotAllowed(['POST'])
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context['titolo'] = 'Aggiungi Bookmark'
+        context['annulla_link'] = reverse('elenco_libri')
+        return context
 
     def get_success_url(self):
         return reverse('elenco_libri')
@@ -145,6 +153,7 @@ class AggiungiAutoreView(PermissionRequiredMixin, LoginRequiredMixin, CreateView
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         context['titolo'] = 'Aggiungi Autore'
+        context['annulla_link'] = reverse('elenco_libri')
         return context
 
     def get_success_url(self):
@@ -161,6 +170,7 @@ class ModificaAutoreView(PermissionRequiredMixin, LoginRequiredMixin, UpdateView
         context = super().get_context_data(*args, **kwargs)
         context['titolo'] = self.object.nome_cognome()
         context['sottotitolo'] = 'Modifica'
+        context['annulla_link'] = reverse('elenco_libri')
         return context
 
     def get_success_url(self):
@@ -193,6 +203,7 @@ class AggiungiGenereView(PermissionRequiredMixin, LoginRequiredMixin, CreateView
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         context['titolo'] = 'Aggiungi Genere'
+        context['annulla_link'] = reverse('elenco_libri')
         return context
 
     def get_success_url(self):
@@ -209,6 +220,7 @@ class ModificaGenereView(PermissionRequiredMixin, LoginRequiredMixin, UpdateView
         context = super().get_context_data(*args, **kwargs)
         context['titolo'] = self.object
         context['sottotitolo'] = 'Modifica'
+        context['annulla_link'] = reverse('elenco_libri')
         return context
 
     def get_success_url(self):
@@ -224,6 +236,7 @@ class AggiungiSottoGenereView(PermissionRequiredMixin, LoginRequiredMixin, Creat
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         context['titolo'] = 'Aggiungi Sottogenere'
+        context['annulla_link'] = reverse('elenco_libri')
         return context
 
     def get_success_url(self):
@@ -240,6 +253,7 @@ class ModificaSottoGenereView(PermissionRequiredMixin, LoginRequiredMixin, Updat
         context = super().get_context_data(*args, **kwargs)
         context['titolo'] = self.object
         context['sottotitolo'] = 'Modifica'
+        context['annulla_link'] = reverse('elenco_libri')
         return context
 
     def get_success_url(self):
@@ -272,6 +286,7 @@ class AggiungiEditoreView(PermissionRequiredMixin, LoginRequiredMixin, CreateVie
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         context['titolo'] = 'Aggiungi Editore'
+        context['annulla_link'] = reverse('elenco_libri')
         return context
 
     def get_success_url(self):
@@ -288,6 +303,7 @@ class ModificaEditoreView(PermissionRequiredMixin, LoginRequiredMixin, UpdateVie
         context = super().get_context_data(*args, **kwargs)
         context['titolo'] = self.object
         context['sottotitolo'] = 'Modifica'
+        context['annulla_link'] = reverse('elenco_libri')
         return context
 
     def get_success_url(self):
@@ -303,6 +319,7 @@ class AggiungiCollanaView(PermissionRequiredMixin, LoginRequiredMixin, CreateVie
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         context['titolo'] = 'Aggiungi Collana'
+        context['annulla_link'] = reverse('elenco_libri')
         return context
 
     def get_success_url(self):
@@ -319,6 +336,7 @@ class ModificaCollanaView(PermissionRequiredMixin, LoginRequiredMixin, UpdateVie
         context = super().get_context_data(*args, **kwargs)
         context['titolo'] = self.object
         context['sottotitolo'] = 'Modifica'
+        context['annulla_link'] = reverse('elenco_libri')
         return context
 
     def get_success_url(self):

@@ -1,6 +1,11 @@
 {% extends 'base_site.html' %}
 {% load static render_fields %}
 
+{% block extracss %}
+{{ block.super }}
+{{ form.media.css }}
+{% endblock %}
+
 {% block content %}
 
 <div class="row">
@@ -24,21 +29,16 @@
             {{ field }}
           {% endfor %}
           <hr>
-          <div class="row">
-            <div class="col-md-3 hidden-xs"></div>
-            <div class="col-md-3 hidden-xs"></div>
-            <div class="col-md-3">
-              <button class="btn btn-block btn-danger btn-flat">Annulla</button>
-              <span class="visible-xs">&nbsp;</span>
-            </div>
-            <div class="col-md-3">
-              <button type="submit" class="btn btn-block btn-success btn-flat">Salva</button>
-            </div>
-          </div>
+          {% include 'inc/submit_annulla.html' %}
         </form>
       </div>
       <!-- /.box-body -->
     </div>
   </div>
 </div>
+{% endblock %}
+
+{% block extrajs %}
+{{ block.super }}
+{{ form.media.js }}
 {% endblock %}

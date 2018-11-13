@@ -53,6 +53,7 @@ class PrestitoUpdateProfiloView(CreateView):
         context['libro'] = libro
         context['titolo'] = 'Richiesta Prestito: "{}"'.format(libro.get_titolo_autori_display())
         context['max_libri_prestito'] = MAX_LIBRI_INPRESTITO
+        context['annulla_link'] = reverse('catalogo')
         return context
 
     def get_success_url(self):
@@ -90,6 +91,7 @@ class PrestitoCreateProfiloView(FormView):
         context = super().get_context_data(*args, **kwargs)
         libro = Libro.objects.filter(pk=self.kwargs['libro_pk']).first()
         context['titolo'] = 'Richiesta Prestito: "{}"'.format(libro.get_titolo_autori_display())
+        context['annulla_link'] = reverse('catalogo')
         return context
 
     def get_success_url(self):
@@ -206,6 +208,7 @@ class SegnalaProfiloView(PermissionRequiredMixin, LoginRequiredMixin, CreateView
         context = super().get_context_data(*args, **kwargs)
         profilo = Profilo.objects.filter(pk=self.kwargs['profilo_pk']).first()
         context['titolo'] = 'Sospensione Prestito: "{}"'.format(profilo)
+        context['annulla_link'] = reverse('elenco_prestiti')
         return context
 
     def get_success_url(self):

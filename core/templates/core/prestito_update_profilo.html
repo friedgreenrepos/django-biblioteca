@@ -17,8 +17,6 @@
       <div class="box-body">
         <form class="" action="" method="post">
           {% csrf_token %}
-          {{ form.errors }}
-          {{ form.non_field_errors }}
           <div class="row">
             <div class="col-md-6">
               {{ form.profilo|render }}
@@ -37,7 +35,7 @@
                 </a>
               </div>
               <div class="pull-right">
-                <a href="#" class="btn btn-danger btn-flat btn-form">Annulla</a>
+                <a href="{{ annulla_link }}" class="btn btn-danger btn-flat btn-form">Annulla</a>
                 <span>&nbsp;</span>
                 <button type="submit" class="btn btn-success btn-flat btn-form">Salva</button>
               </div>

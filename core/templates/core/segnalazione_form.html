@@ -33,19 +33,11 @@
               {{ form.sospendi|render }}
             </div>
           </div>
-          <hr>
           {% for field in form.hidden_fields %}
             {{ field }}
           {% endfor %}
-          <div class="row">
-            <div class="col-xs-12">
-              <div class="pull-right">
-                <button class="btn btn-danger btn-flat btn-form">Annulla</button>
-                <span>&nbsp;</span>
-                <button type="submit" class="btn btn-success btn-flat btn-form">Salva</button>
-              </div>
-            </div>
-          </div>
+          <hr>
+          {% include 'inc/submit_annulla.html' %}
         </form>
       </div>
       <!-- /.box-body -->
