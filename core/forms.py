@@ -1,11 +1,11 @@
 from django import forms
-from django.forms.models import inlineformset_factory
 from .models import (Libro, Autore, Editore, Collana, Genere, SottoGenere,
                      Profilo, Segnalazione, Bookmark, Prestito, Documento,
                      DocumentoAmministratore)
 
 
 __all__ = ['BootstrapForm']
+
 
 class BootstrapForm(forms.Form):
     ''' A simple Form to apply bootstrap classes to widgets.
@@ -43,11 +43,8 @@ class ProfiloForm(BootstrapForm, forms.ModelForm):
                   'email']
 
 
-class SegnalazioneLibroForm(BootstrapForm, forms.ModelForm):
-    libro = forms.ModelChoiceField(
-        queryset=Libro.objects.all(),
-        required=False
-    )
+class SegnalazioneForm(BootstrapForm, forms.ModelForm):
+    sospendi = forms.BooleanField(label='Sospendi profilo')
 
     class Meta:
         model = Segnalazione

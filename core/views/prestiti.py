@@ -5,12 +5,13 @@ from django.http import HttpResponseRedirect
 from django.db import transaction
 from django.db.models import Q
 from django.core.exceptions import ObjectDoesNotExist
-from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
+from django.contrib.auth.mixins import (PermissionRequiredMixin,
+                                        LoginRequiredMixin)
 from django.views.generic import (ListView, DetailView, CreateView, UpdateView,
                                   FormView)
 from ..settings import MAX_LIBRI_INPRESTITO
 from ..models import (Libro, Profilo, Prestito)
-from ..forms import (ProfiloForm, PrestitoForm, SegnalazioneLibroForm)
+from ..forms import (ProfiloForm, PrestitoForm, SegnalazioneForm)
 from .mixins import FilteredQuerysetMixin
 from .filters import PrestitoFilter
 
@@ -192,10 +193,10 @@ class RestituzioneLibroPrestitoView(PermissionRequiredMixin, LoginRequiredMixin,
         return HttpResponseRedirect(redirect_to=reverse('elenco_prestiti'))
 
 
-class SospendiPrestitoProfiloView(PermissionRequiredMixin, LoginRequiredMixin, CreateView):
-    permission_required = 'core.gestisci_prestito'
-    template_name = 'core/prestito_sospensione_form.html'
-    #form_class = SegnalazioneForm
+class SegnalaProfiloView(PermissionRequiredMixin, LoginRequiredMixin, CreateView):
+    permission_required = 'core.sospendi_profilo'
+    template_name = 'core/segnalazione_form.html'
+    form_class = SegnalazioneForm
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
@@ -207,17 +208,18 @@ class SospendiPrestitoProfiloView(PermissionRequiredMixin, LoginRequiredMixin, C
         return reverse('elenco_prestiti')
 
     def form_valid(self, form):
-        segnalazione = form.save()
+        #segnalazione = form.instance
         try:
             with transaction.atomic():
                 profilo = Profilo.objects.select_for_update(nowait=True).get(pk=self.kwargs['profilo_pk'])
-                profilo.prestito_sospeso = True
-                profilo.segnalazioni_set = segnalazione
-                profilo.data_inizio_sospensione = date.today()
-                profilo.save()
-                profilo.data_fine_sospensione = profilo.calculate_fine_sospensione()
-                profilo.save()
-                messages.success(self.request, "Segnalazione effettuata con successo.")
+                if form.instance.sospendi:
+                    profilo.data_inizio_sospensione = date.today()
+                    profilo.save()
+                    profilo.data_fine_sospensione = profilo.calculate_fine_sospensione()
+                    segnalazione = form.save()
+                    profilo.segnalazioni_set.add()
+                    profilo.save()
+                    messages.success(self.request, "Segnalazione effettuata con successo.")
         except ObjectDoesNotExist as err:
             messages.error(self.request, err)
-        return HttpResponseRedirect(self.get_success_url())
+        return super().form_valid(form)

@@ -6,7 +6,7 @@ from django.urls import reverse
 from django.conf import settings
 from django.core.validators import MaxValueValidator
 from django.core.exceptions import ValidationError
-from .settings import (DURATA_PRESTITO, MAX_LIBRI_INPRESTITO, GIORNI_SOSPENSIONE,
+from .settings import (GIORNI_PRESTITO, MAX_LIBRI_INPRESTITO, GIORNI_SOSPENSIONE,
                       MAXKB_DOCUMENTO)
 
 
@@ -20,7 +20,7 @@ def valida_documento(documento):
 class TrackProfilo(models.Model):
     tot_libri = models.PositiveIntegerField(default=0, validators=[MaxValueValidator(MAX_LIBRI_INPRESTITO)])
     tot_richieste = models.PositiveIntegerField(default=0, validators=[MaxValueValidator(MAX_LIBRI_INPRESTITO)])
-    prestito_sospeso = models.BooleanField(default=False)
+    #prestito_sospeso = models.BooleanField(default=False)
     segnalazioni = models.ManyToManyField('Segnalazione', blank=True)
     data_inizio_sospensione = models.DateField(null=True, blank=True)
     data_fine_sospensione = models.DateField(null=True, blank=True)
@@ -44,6 +44,9 @@ class Profilo(TrackProfilo):
     class Meta:
         verbose_name_plural = 'Profili'
         unique_together = ("nome", "cognome", "codfisc")
+        permissions = (
+            ('sospendi_profilo', 'Sospensione dei prestiti per profilo'),
+        )
 
     def __str__(self):
         return '{} {}'.format(self.nome, self.cognome)
@@ -59,8 +62,8 @@ class Segnalazione(models.Model):
         (ALTRO, 'Altro'),
     )
     tipo = models.CharField(max_length=10, choices=TIPI_MOTIVO)
-    data = models.DateField(auto_now_add=True)
     descrizione = models.TextField(blank=True)
+    data = models.DateField(auto_now_add=True)
 
     class Meta:
         verbose_name_plural = 'Segnalazioni'
@@ -117,9 +120,10 @@ class Libro(models.Model):
 
     def get_current_prestito(self):
         if self.has_prestiti():
-            return self.prestito_set.all().latest()
-        else:
-            return None
+            ultimo = self.prestito_set.all().latest()
+            if not ultimo.data_restituzione:
+                return ultimo
+        return None
 
 
 class Prestito(models.Model):
@@ -149,7 +153,7 @@ class Prestito(models.Model):
 
     def calc_data_restituzione(self):
         if self.data_prestito:
-            return self.data_prestito + timedelta(days=DURATA_PRESTITO)
+            return self.data_prestito + timedelta(days=GIORNI_PRESTITO)
         else:
             return None
 

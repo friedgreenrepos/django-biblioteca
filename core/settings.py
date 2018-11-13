@@ -1,8 +1,8 @@
 from django.conf import settings
 
-DURATA_PRESTITO = getattr(
+GIORNI_PRESTITO = getattr(
     settings,
-    'BIBLIOTECA_DURATA_PRESTITO',
+    'BIBLIOTECA_GIORNI_PRESTITO',
     30
 )
 

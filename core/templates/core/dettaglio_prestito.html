@@ -101,12 +101,9 @@
                   </form>
               </div>
               <div class="pull-right">
-                <form action="" method="post">
-                  {% csrf_token %}
-                  <button type="submit" class="btn btn-danger">
-                    <i class="fas fa-user-times"></i> Sospendi Prestito
-                  </button>
-                </form>
+                <a href="{% url 'segnala_profilo' prestito.profilo.pk %}" class="btn btn-danger">
+                  <i class="fas fa-user-times"></i> Segnala
+                </a>
               </div>
             </div>
           </div>

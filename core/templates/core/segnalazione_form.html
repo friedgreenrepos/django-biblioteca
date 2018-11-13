@@ -19,11 +19,14 @@
           {% csrf_token %}
           {{ form.non_field_errors }}
           <div class="row">
-            <div class="col-sm-6">
+            <div class="col-md-4">
               {{ form.tipo|render }}
             </div>
-            <div class="col-sm-6">
+            <div class="col-md-4">
               {{ form.descrizione|render }}
+            </div>
+            <div class="col-md-4">
+              {{ form.sospendi|render }}
             </div>
           </div>
           <hr>
