@@ -31,9 +31,9 @@
               </td>
               <td>{{ prestito.libro.get_titolo_autori_display }}</td>
               <td>{{ prestito.profilo }}</td>
-              <td>{{ prestito.data_richiesta|default:'-' }}</td>
-              <td>{{ prestito.data_inizio|default:'-' }}</td>
-              <td>{{ prestito.data_scadenza|default:'-' }}</td>
+              <td>{{ prestito.data_richiesta|date:"SHORT_DATE_FORMAT" }}</td>
+              <td>{{ prestito.data_inizio|date:"SHORT_DATE_FORMAT"|default:'-' }}</td>
+              <td>{{ prestito.data_scadenza|date:"SHORT_DATE_FORMAT"|default:'-' }}</td>
               <td>
                 {% if prestito.is_incorso %}
                   <span class="label label-danger">In corso</span>

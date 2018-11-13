@@ -179,7 +179,8 @@ class Prestito(models.Model):
     class Meta:
         verbose_name_plural = 'Prestiti'
         unique_together = ('profilo', 'libro')
-        get_latest_by = ('data_richiesta')
+        ordering = ('data_richiesta',)
+        get_latest_by = ('data_richiesta',)
 
 
 class Documento(models.Model):

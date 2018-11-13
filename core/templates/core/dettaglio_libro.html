@@ -82,12 +82,12 @@
   <div class="col-md-5">
     <div class="box box-ocra">
       <div class="box-header with-border">
-        <h3 class="box-title">Prestito</h3>
+        <h3 class="box-title">Situazione Prestito</h3>
       </div>
       <div class="box-body">
         <div class="row">
           <div class="col-xs-12">
-            <strong><i class="fas fa-question-circle margin-r-5"></i>Stato</strong>
+            <strong><i class="fas fa-question-circle margin-r-5"></i>Stato Libro</strong>
             {% if libro.is_disponibile %}
               <span class="label label-success lb-md pull-right">Disponibile</span>
             {% else %}
@@ -112,21 +112,21 @@
               </div>
             </div>
           {% endif %}
-          {% if current_prestito.data_prestito %}
+          {% if current_prestito.data_inizio %}
             <div class="row">
               <div class="col-xs-12">
                 <hr>
-                <strong><i class="fas fa-calendar margin-r-5"></i>Data prestito</strong>
-                <span class="pull-right">{{ current_prestito.data_prestito }}</span>
+                <strong><i class="fas fa-calendar margin-r-5"></i>Data inizio prestito</strong>
+                <span class="pull-right">{{ current_prestito.data_inizio }}</span>
               </div>
             </div>
           {% endif %}
-          {% if current_prestito.data_restituzione %}
+          {% if current_prestito.data_scadenza %}
             <div class="row">
               <div class="col-xs-12">
                 <hr>
                 <strong><i class="fas fa-calendar margin-r-5"></i>Scadenza Prestito</strong>
-                <span class="pull-right">{{ current_prestito.data_restituzione }}</span>
+                <span class="pull-right">{{ current_prestito.data_scadenza }}</span>
               </div>
             </div>
             <hr>
@@ -143,22 +143,45 @@
   <div class="col-md-7">
     <div class="box box-ocra">
       <div class="box-header with-border">
-        <h3 class="box-title">Storico</h3>
+        <h3 class="box-title">Storico Prestiti</h3>
       </div>
-      <div class="box-body">
-
-
-        {% for prestito in libro.prestito_set.all %}
-          <strong><i class="fas fa-book-reader margin-r-5"></i>Utente</strong>
-          <span>{{ prestito.profilo }}</span>
-          <strong><i class="fas fa-calendar margin-r-5"></i>Data Richiesta</strong>
-          <span>{{ prestito.data_richiesta|default:'-' }}</span>
-          <strong><i class="fas fa-calendar margin-r-5"></i>Data Prestito</strong>
-          <span>{{ prestito.data_prestito|default:'-' }}</span>
-          <strong><i class="fas fa-calendar margin-r-5"></i>Data Restituzione</strong>
-          <span>{{ prestito.data_restituzione|default:'-' }}</span>
-          <hr>
-        {% endfor %}
+      <div class="box-body table-responsive no-padding">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th></th>
+              <th>Utente</th>
+              <th>Data Richiesta</th>
+              <th>Data Inizio</th>
+              <th>Data Scadenza</th>
+              <th>Stato</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for prestito in libro.prestito_set.all %}
+            <tr>
+              <td>
+                <a href="{% url 'dettaglio_prestito' prestito.pk %}" class="text-ocra" data-balloon="Dettaglio" data-balloon-pos="right">
+                  <i class="fas fa-info-circle fa-130-p"></i>
+                </a>
+              </td>
+              <td>{{ prestito.profilo }}</td>
+              <td>{{ prestito.data_richiesta }}</td>
+              <td>{{ prestito.data_inizio }}</td>
+              <td>{{ prestito.data_scadenza }}</td>
+              <td>
+                {% if prestito.is_concluso %}
+                  <span class="label label-info">Concluso</span>
+                {% elif prestito.is_incorso %}
+                  <span class="label label-danger">In corso</span>
+                {% else %}
+                  <span class="label label-warning">Richiesto</span>
+                {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
       </div>
       <!-- /.box-body -->
     </div>
