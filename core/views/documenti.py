@@ -43,6 +43,7 @@ class AggiungiDocumentoView(PermissionRequiredMixin, LoginRequiredMixin, CreateV
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         context['titolo'] = "Aggiungi Documento"
+        context['annulla_link'] = reverse('elenco_documenti')
         return context
 
     def get_success_url(self):
@@ -65,6 +66,7 @@ class ModificaDocumentoView(PermissionRequiredMixin, LoginRequiredMixin, UpdateV
         context = super().get_context_data(*args, **kwargs)
         context['titolo'] = self.object
         context['sottotitolo'] = 'Modifica'
+        context['annulla_link'] = reverse('dettaglio_documento', kwargs={'pk': self.object.pk})
         return context
 
     def get_success_url(self):
@@ -98,6 +100,7 @@ class AggiungiDocumentoAmministratoreView(UserPassesTestMixin, LoginRequiredMixi
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         context['titolo'] = "Aggiungi Documento Amministratore"
+        context['annulla_link'] = reverse('elenco_documenti')
         return context
 
     def get_success_url(self):
@@ -122,6 +125,7 @@ class ModificaDocumentoAmministratoreView(UserPassesTestMixin, LoginRequiredMixi
         context = super().get_context_data(*args, **kwargs)
         context['titolo'] = self.object
         context['sottotitolo'] = 'Modifica'
+        context['annulla_link'] = reverse('dettaglio_documento_amministratore', kwargs={'pk': self.object.pk})
         return context
 
     def get_success_url(self):
