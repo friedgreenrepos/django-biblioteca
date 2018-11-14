@@ -3,18 +3,71 @@
 
 {% block content %}
 <div class="row">
-  <div class="col-md-3 col-sm-6 col-xs-12">
-    <div class="info-box">
-      <span class="info-box-icon bg-aqua"><i class="fas fa-book"></i></span>
-      <div class="info-box-content">
-        <span class="info-box-text">Libri totali</span>
-        <span class="info-box-number">{{ tot_libri }}</span>
+
+  <div class="col-lg-3 col-xs-6">
+    <!-- small box -->
+    <div class="small-box bg-red">
+      <div class="inner">
+        <h3>{{ tot_prestiti_incorso }}</h3>
+        <p>Prestiti in corso</p>
       </div>
-      <!-- /.info-box-content -->
+      <div class="icon">
+        <i class="fas fa-calendar-alt"></i>
+      </div>
+      <a href="{% url 'elenco_prestiti' %}" class="small-box-footer">
+        Vai alla pagina <i class="fa fa-arrow-circle-right"></i>
+      </a>
     </div>
-    <!-- /.info-box -->
   </div>
-  <!-- /.col -->
+
+  <div class="col-lg-3 col-xs-6">
+    <!-- small box -->
+    <div class="small-box bg-ocra text-white">
+      <div class="inner">
+        <h3>{{ tot_prestiti_richiesti }}</h3>
+        <p>Prestiti richiesti</p>
+      </div>
+      <div class="icon">
+        <i class="far fa-calendar-alt"></i>
+      </div>
+      <a href="{% url 'elenco_prestiti' %}" class="small-box-footer">
+        Vai alla pagina <i class="fa fa-arrow-circle-right"></i>
+      </a>
+    </div>
+  </div>
+
+  <div class="col-lg-3 col-xs-6">
+    <!-- small box -->
+    <div class="small-box bg-verdino text-white">
+      <div class="inner">
+        <h3>{{ tot_libri_disponibili }}</h3>
+        <p>Libri disponibili</p>
+      </div>
+      <div class="icon">
+        <i class="fas fa-book"></i>
+      </div>
+      <a href="{% url 'elenco_libri' %}" class="small-box-footer">
+        Vai alla pagina <i class="fa fa-arrow-circle-right"></i>
+      </a>
+    </div>
+  </div>
+
+  <div class="col-lg-3 col-xs-6">
+    <!-- small box -->
+    <div class="small-box bg-aqua">
+      <div class="inner">
+        <h3>{{ tot_libri }}</h3>
+        <p>Libri Totali</p>
+      </div>
+      <div class="icon">
+        <i class="fas fa-book"></i>
+      </div>
+      <a href="{% url 'elenco_libri' %}" class="small-box-footer">
+        Vai alla pagina <i class="fa fa-arrow-circle-right"></i>
+      </a>
+    </div>
+  </div>
+
 
   <!-- fix for small devices only -->
   <div class="clearfix visible-sm-block"></div>

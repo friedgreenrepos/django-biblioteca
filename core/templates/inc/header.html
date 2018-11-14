@@ -4,7 +4,7 @@
     <div class="container">
       <div class="navbar-header">
         <a href="{% url 'dashboard' %}" class="navbar-left">
-          <img src="{% static 'img/logo.png' %}" alt="logo" id="logo-navbar">
+          <img src="{% static 'img/logo.png' %}" alt="logo" id="logo-navbar" class="hidden-xs">
         </a>
         <a href="{% if user.is_authenticated %}{% url 'dashboard' %}{% else %}{% url 'catalogo' %}{% endif %}" class="navbar-brand"><b>B</b>IBLIOTECA</a>
         <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse">
@@ -18,13 +18,6 @@
           {% if not user.is_authenticated %}
           <li><a href="{% url 'login' %}">Area privata</a></li>
           {% endif %}
-        </ul>
-      </div>
-      <!-- /.navbar-collapse -->
-
-      <div class="navbar-custom-menu">
-        <ul class="nav navbar-nav">
-          <!-- Area accessibile via login -->
           {% if perms.core.view_libro %}
           <li><a href="{% url 'elenco_libri' %}">Libri</a></li>
           {% endif %}
@@ -36,7 +29,13 @@
           {% if perms.core.view_documento %}
           <li><a href="{% url 'elenco_documenti' %}">Documenti</a></li>
           {% endif %}
+        </ul>
+      </div>
+      <!-- /.navbar-collapse -->
 
+      <div class="navbar-custom-menu">
+        <ul class="nav navbar-nav">
+          <!-- Area accessibile via login -->
           {% comment %}
           <li class="dropdown">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Amministrazione <span class="caret"></span></a>
@@ -52,7 +51,7 @@
           {% if user.is_authenticated %}
           <li class="dropdown user user-menu">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-              <span class="hidden-xs">{{ user.username }}</span>
+              <span>{{ user.username }}</span>
             </a>
             <ul class="dropdown-menu">
               <!-- User image -->

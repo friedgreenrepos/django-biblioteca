@@ -23,7 +23,14 @@ class DashboardView(LoginRequiredMixin, TemplateView):
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         context['titolo'] = 'Dashboard'
+        libri_disp = Libro.objects.all()
+        for lib in libri_disp:
+            if not lib.is_disponibile():
+                libri_disp = libri_disp.exclude(pk=lib.pk)
+        context['tot_libri_disponibili'] = libri_disp.count()
         context['tot_libri'] = Libro.objects.all().count()
+        context['tot_prestiti_incorso'] = Prestito.objects.filter(stato=Prestito.INCORSO).count()
+        context['tot_prestiti_richiesti'] = Prestito.objects.filter(stato=Prestito.RICHIESTO).count()
         return context
 
 
