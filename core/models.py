@@ -29,10 +29,7 @@ class TrackProfilo(models.Model):
 
     @property
     def is_sospeso(self):
-        if self.data_fine_sospensione:
-            return self.data_fine_sospensione > date.today()
-        else:
-            return False
+        return self.data_fine_sospensione and self.data_fine_sospensione > date.today()
 
     def calculate_fine_sospensione(self):
         if self.data_inizio_sospensione:
