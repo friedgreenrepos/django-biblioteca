@@ -18,6 +18,7 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.2/css/all.css" integrity="sha384-/rXc/GQVaYpyDdyxK+ecHPVYJSN9bmVFBvjA/9eOB+pb3F2w2N6fc5qB9Ew5yIns" crossorigin="anonymous">
     <!-- Biblioteca stylesheet -->
     <link href="{% static 'css/biblioteca.css' %}" rel="stylesheet">
+    <link href="{% static 'css/select2custom.css' %}" rel="stylesheet">
     {% block extracss %}{% endblock %}
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -48,9 +49,9 @@
     <!-- / .wrapper -->
 
       <!-- jQuery 3 -->
-    <script src="{% static 'vendor/jquery/dist/jquery.min.js' %}"></script>
+    <script src="{% static 'vendor/jquery/dist/jquery.js' %}"></script>
     <!-- jQuery UI 1.11.4 -->
-    <script src="{% static 'vendor/jquery-ui/jquery-ui.min.js' %}"></script>
+    <script src="{% static 'vendor/jquery-ui/jquery-ui.js' %}"></script>
     <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
     <script>
       $.widget.bridge('uibutton', $.ui.button);

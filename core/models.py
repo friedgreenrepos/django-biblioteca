@@ -52,6 +52,7 @@ class Profilo(TrackProfilo):
         permissions = (
             ('sospendi_profilo', 'Sospensione dei prestiti per profilo'),
         )
+        ordering = ['nome', 'cognome']
 
     def __str__(self):
         return '{} {}'.format(self.nome, self.cognome)
@@ -72,6 +73,7 @@ class Segnalazione(models.Model):
 
     class Meta:
         verbose_name_plural = 'Segnalazioni'
+        ordering = ['data']
 
     def __str__(self):
         return self.tipo
@@ -193,6 +195,7 @@ class Documento(models.Model):
         permissions = (
             ('view_dettaglio_documento', 'Accesso al dettaglio del documento'),
         )
+        ordering = ['nome']
 
     def __str__(self):
         return '"{}" - {}'.format(self.nome, self.data_upload.date())
@@ -212,6 +215,9 @@ class Bookmark(models.Model):
     kwargs = models.CharField(max_length=100, blank=True, null=True)
     urlparams = models.CharField(max_length=100, blank=True, null=True)
 
+    class Meta:
+        ordering = ['nome']
+
     def __str__(self):
         return self.nome
 
@@ -224,6 +230,7 @@ class Genere(models.Model):
 
     class Meta:
         verbose_name_plural = 'Generi'
+        ordering = ['nome']
 
     def __str__(self):
         return self.nome
@@ -235,6 +242,7 @@ class SottoGenere(models.Model):
 
     class Meta:
         verbose_name_plural = 'Sottogeneri'
+        ordering = ['padre']
 
     def __str__(self):
         return self.nome
@@ -245,6 +253,7 @@ class Editore(models.Model):
 
     class Meta:
         verbose_name_plural = 'Editori'
+        ordering = ['nome']
 
     def __str__(self):
         return self.nome
@@ -256,6 +265,7 @@ class Collana(models.Model):
 
     class Meta:
         verbose_name_plural = 'Collane'
+        ordering = ['editore']
 
     def __str__(self):
         return self.nome
@@ -267,6 +277,7 @@ class Autore(models.Model):
 
     class Meta:
         verbose_name_plural = 'Autori'
+        ordering=['nome']
 
     def __str__(self):
         return '{} {}'.format(self.nome, self.cognome)

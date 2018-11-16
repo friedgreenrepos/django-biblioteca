@@ -1,14 +1,43 @@
 from datetime import date
-import django_filters
 from django.db.models import Q
 from django.forms import CheckboxInput
+import django_filters
+from dal import autocomplete
 from ..models import (Libro, Autore, Genere, SottoGenere, Editore, Collana,
                       Profilo, Prestito)
 
 
 class LibroFilter(django_filters.FilterSet):
     isbn = django_filters.CharFilter(lookup_expr='iexact')
-    titolo = django_filters.CharFilter(label="Titolo", lookup_expr='icontains')
+    titolo = django_filters.CharFilter(
+        label="Titolo",
+        lookup_expr='icontains',
+    )
+    autori = django_filters.ModelMultipleChoiceFilter(
+        label='Autori',
+        field_name='autori',
+        queryset= Autore.objects.all(),
+        widget=autocomplete.ModelSelect2Multiple(url='autore_dal',),
+    )
+    editore = django_filters.ModelChoiceFilter(
+        label='Editore',
+        field_name='editore',
+        required=False,
+        queryset= Editore.objects.all(),
+        widget=autocomplete.ModelSelect2(url='editore_dal',),
+    )
+    collana = django_filters.ModelChoiceFilter(
+        label='Collana',
+        field_name='collana',
+        queryset= Collana.objects.all(),
+        widget=autocomplete.ModelSelect2(url='collana_dal', forward=('editore',)),
+    )
+    genere = django_filters.ModelChoiceFilter(
+        label='Genere',
+        field_name='genere',
+        queryset= Genere.objects.all(),
+        widget=autocomplete.ModelSelect2(url='genere_dal',),
+    )
 
     class Meta:
         model = Libro

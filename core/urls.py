@@ -109,5 +109,10 @@ urlpatterns = [
     path('elenco-editori-collane/<int:pk>/modifica-collana/',
          views.ModificaCollanaView.as_view(),
          name='modifica_collana'),
+    # dal
+    path('autore-dal/', views.AutoreDalView.as_view(), name='autore_dal'),
+    path('editore-dal/', views.EditoreDalView.as_view(), name='editore_dal'),
+    path('collana-dal/', views.CollanaDalView.as_view(), name='collana_dal'),
+    path('genere-dal/', views.GenereDalView.as_view(), name='genere_dal'),
 
 ]

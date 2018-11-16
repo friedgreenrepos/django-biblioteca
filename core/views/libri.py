@@ -1,3 +1,4 @@
+import logging
 from datetime import date
 from django.shortcuts import render
 from django.urls import reverse, resolve
@@ -15,6 +16,8 @@ from ..forms import (LibroForm, AutoreForm, GenereForm, SottoGenereForm,
                      EditoreForm, CollanaForm, BookmarkForm)
 from .filters import LibroFilter
 from .mixins import FilteredQuerysetMixin
+
+logger = logging.getLogger(__name__)
 
 
 class DashboardView(LoginRequiredMixin, TemplateView):
