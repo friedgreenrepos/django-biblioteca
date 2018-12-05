@@ -8,10 +8,7 @@
         {{ filter.form.editore|render }}
         {{ filter.form.collana|render }}
         {{ filter.form.genere|render }}
-        <div class="form-group valign-bottom">
-        <button type="submit" class="btn btn-ocra"><i class="fa fa-search"></i>&nbsp;Filtra</button>
-        <a class="btn btn-link" href="?">Resetta</a>
-      </div>
+        {% include 'inc/filtri_actions.html' %}
     </form>
   </div>
 </div>

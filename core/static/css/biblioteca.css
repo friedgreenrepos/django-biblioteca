@@ -5036,3 +5036,9 @@ input[type=file] {
     margin-top: 10px;
   }
 }
+.btn-md {
+	padding: 10px 16px;
+	font-size: 16px;
+	line-height: 1.15;
+	border-radius: 6px;
+}

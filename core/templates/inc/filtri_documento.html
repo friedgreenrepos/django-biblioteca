@@ -9,10 +9,7 @@
       {% if request.user.is_staff %}
         {{ filter.form.is_amministrazione|render }}
       {% endif %}
-      <div class="form-group valign-bottom">
-        <button type="submit" class="btn btn-ocra"><i class="fa fa-search"></i>&nbsp;Filtra</button>
-        <a class="btn btn-link" href="?">Resetta</a>
-      </div>
+      {% include 'inc/filtri_actions.html' %}
     </form>
   </div>
 </div>
