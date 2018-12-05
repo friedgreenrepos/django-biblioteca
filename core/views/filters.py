@@ -8,10 +8,11 @@ from ..models import (Libro, Autore, Genere, SottoGenere, Editore, Collana,
 
 
 class LibroFilter(django_filters.FilterSet):
-    isbn = django_filters.CharFilter(lookup_expr='iexact')
-    titolo = django_filters.CharFilter(
-        label="Titolo",
+    # isbn = django_filters.CharFilter(lookup_expr='iexact')
+    titolo_isbn = django_filters.CharFilter(
+        label="Titolo/ISBN",
         lookup_expr='icontains',
+        method="cerca_titolo_isbn"
     )
     autori = django_filters.ModelMultipleChoiceFilter(
         label='Autori',
@@ -41,8 +42,11 @@ class LibroFilter(django_filters.FilterSet):
 
     class Meta:
         model = Libro
-        fields = ['isbn', 'titolo', 'autori', 'editore',
+        fields = ['titolo_isbn', 'autori', 'editore',
                   'genere', 'collana']
+
+    def cerca_titolo_isbn(self, queryset, name, value):
+        return queryset.filter(Q(titolo__icontains=value) | Q(isbn__icontains=value))
 
 
 class PrestitoFilter(django_filters.FilterSet):
