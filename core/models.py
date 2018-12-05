@@ -189,6 +189,9 @@ class Documento(models.Model):
                             validators=[valida_documento],
                             help_text="Dimensione massima: {} Kb".format(MAXKB_DOCUMENTO))
     data_upload = models.DateTimeField(auto_now_add=True)
+    is_amministrazione = models.BooleanField(default=False,
+                                             verbose_name="Amministrazione",
+                                             help_text="Documento visibile solo agli amministratori")
 
     class Meta:
         verbose_name_plural = 'Documenti'
@@ -199,12 +202,6 @@ class Documento(models.Model):
 
     def __str__(self):
         return '"{}" - {}'.format(self.nome, self.data_upload.date())
-
-
-class DocumentoAmministratore(Documento):
-
-    class Meta:
-        verbose_name_plural = 'Documenti Amministratore'
 
 
 class Bookmark(models.Model):

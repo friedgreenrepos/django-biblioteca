@@ -1,8 +1,7 @@
 from django import forms
 from .utils import BootstrapForm
 from .models import (Libro, Autore, Editore, Collana, Genere, SottoGenere,
-                     Profilo, Segnalazione, Bookmark, Prestito, Documento,
-                     DocumentoAmministratore)
+                     Profilo, Segnalazione, Bookmark, Prestito, Documento)
 from .settings import GIORNI_SOSPENSIONE
 
 
@@ -40,13 +39,7 @@ class SegnalazioneForm(BootstrapForm, forms.ModelForm):
 class DocumentoForm(BootstrapForm, forms.ModelForm):
     class Meta:
         model = Documento
-        fields = ['nome', 'descrizione', 'file']
-
-
-class DocumentoAmministratoreForm(BootstrapForm, forms.ModelForm):
-    class Meta:
-        model = DocumentoAmministratore
-        fields = ['nome', 'descrizione', 'file']
+        fields = ['nome', 'descrizione', 'file', 'is_amministrazione']
 
 
 class BookmarkForm(BootstrapForm, forms.ModelForm):

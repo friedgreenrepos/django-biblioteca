@@ -1,0 +1,18 @@
+{% load render_fields %}
+
+<div class="row">
+  <div class="col-xs-12 margin-b-15 margin-t-15">
+    <form action="" method="get" class="form-inline filter">
+      {{ filter.form.nome|render }}
+      {{ filter.form.user|render }}
+      {{ filter.form.data_upload|render }}
+      {% if request.user.is_staff %}
+        {{ filter.form.is_amministrazione|render }}
+      {% endif %}
+      <div class="form-group valign-bottom">
+        <button type="submit" class="btn btn-ocra"><i class="fa fa-search"></i>&nbsp;Filtra</button>
+        <a class="btn btn-link" href="?">Resetta</a>
+      </div>
+    </form>
+  </div>
+</div>

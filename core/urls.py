@@ -57,16 +57,6 @@ urlpatterns = [
     path('elenco-documenti/<int:pk>/modifica-documento/',
          views.ModificaDocumentoView.as_view(),
          name='modifica_documento'),
-    # Documenti Amministratore
-    path('elenco-documenti/aggiungi-documento-amministratore/',
-         views.AggiungiDocumentoAmministratoreView.as_view(),
-         name='aggiungi_documento_amministratore'),
-    path('elenco-documenti/<int:pk>/dettaglio-documento-amministratore/',
-         views.DettaglioDocumentoAmministratoreView.as_view(),
-         name='dettaglio_documento_amministratore'),
-    path('elenco-documenti/<int:pk>/modifica-documento-amministratore/',
-         views.ModificaDocumentoAmministratoreView.as_view(),
-         name='modifica_documento_amministratore'),
     # Autori
     path('elenco-autori/',
          views.ElencoAutoriView.as_view(),

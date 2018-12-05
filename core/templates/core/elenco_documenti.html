@@ -4,29 +4,15 @@
 {% block content %}
 
 <div class="btn-group">
-  <button type="button" class="btn btn-ocra">Aggiungi</button>
-  <button type="button" class="btn btn-ocra dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-    <span class="caret"></span>
-    <span class="sr-only">Toggle Dropdown</span>
-  </button>
-  <ul class="dropdown-menu" role="menu">
-    {% if perms.core.add_documento %}
-    <li>
-      <a class="padding-t-10 padding-b-10" href="{% url 'aggiungi_documento' %}" type="button" class="btn btn-ocra">Documento</a>
-    </li>
-    {% endif %}
-    {% if request.user.is_staff %}
-    <li>
-      <a class="padding-t-10 padding-b-10" href="{% url 'aggiungi_documento_amministratore'%}">Documento Amministratore</a>
-    </li>
-    {% endif %}
-  </ul>
+  <a href="{% url 'aggiungi_documento' %}" type="button" class="btn btn-ocra"><i class="fas fa-plus"></i> Aggiungi</a>
 </div>
 
 <p>&nbsp;</p>
 
+{% include 'inc/filtri_documento.html' %}
+
 <div class="row">
-  <div class="{% if request.user.is_staff %}col-md-6{% else %}col-xs-12{% endif %}">
+  <div class="col-xs-12">
     <div class="box box-ocra">
       <div class="box-header with-border">
         <h3 class="box-title">Documenti ({{ object_list.count }})</h3>
@@ -39,8 +25,11 @@
                 <th></th>
               {% endif %}
               <th>Nome File</th>
-              <th>Data Upload</th>
-              <th>Utente</th>
+              <th>Data Caricamento</th>
+              <th>Caricato Da</th>
+              {% if request.user.is_staff %}
+                <th></th>
+              {% endif %}
             </tr>
           </thead>
           <tbody>
@@ -56,6 +45,15 @@
               <td>{{ doc.nome }}</td>
               <td>{{ doc.data_upload|date:"SHORT_DATE_FORMAT" }}</td>
               <td>{{ doc.user }}</td>
+              {% if request.user.is_staff %}
+                <td class="text-center">
+                  {% if doc.is_amministrazione %}
+                  <div data-balloon="Amministrazione" data-balloon-pos="left">
+                    <i class="fas fa-lock fa-130-p text-red"></i>
+                  </div>
+                  {% endif %}
+                </td>
+              {% endif %}
             </tr>
             {% endfor %}
           </tbody>
@@ -65,44 +63,5 @@
     </div>
     <!-- /.box -->
   </div>
-
-  {% if request.user.is_staff %}
-  <div class="col-md-6">
-    <div class="box box-ocra">
-      <div class="box-header with-border">
-        <h3 class="box-title">Documenti Amministratore ({{ documenti_amministratore.count }})</h3>
-      </div>
-      <div class="box-body table-responsive no-padding">
-        <table class="table table-hover">
-          <thead>
-            <tr>
-              <th></th>
-              <th>Nome File</th>
-              <th>Data Upload</th>
-              <th>Utente</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for doc_amm in documenti_amministratore %}
-            <tr>
-              <td>
-                <a href="{% url 'dettaglio_documento_amministratore' doc_amm.pk%}" class="text-ocra" data-balloon="Dettaglio" data-balloon-pos="right">
-                  <i class="fas fa-info-circle fa-130-p"></i>
-                </a>
-              </td>
-              <td>{{ doc_amm.nome }}</td>
-              <td>{{ doc_amm.data_upload }}</td>
-              <td>{{ doc_amm.user }}</td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
-      <!-- /.box-body -->
-    </div>
-    <!-- /.box -->
-  </div>
-  {% endif %}
-  
 </div>
 {% endblock %}
