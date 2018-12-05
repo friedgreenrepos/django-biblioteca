@@ -3,11 +3,7 @@
 
 {% block content %}
 
-<div class="btn-group">
-  <a href="{% url 'aggiungi_documento' %}" type="button" class="btn btn-ocra"><i class="fas fa-plus"></i> Aggiungi</a>
-</div>
-
-<p>&nbsp;</p>
+<a href="{% url 'aggiungi_documento' %}" type="button" class="btn btn-ocra"><i class="fas fa-plus"></i> Aggiungi</a>
 
 {% include 'inc/filtri_documento.html' %}
 
