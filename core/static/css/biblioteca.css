@@ -5022,3 +5022,17 @@ input.datepicker {
 input[type=file] {
   margin-bottom:10px;
 }
+/* float left e right buttoni annulla/submit */
+@media (min-width: 380px) {
+  .float-left-sm {
+    float: left;
+  }
+  .float-right-sm {
+    float: right;
+  }
+}
+@media (max-width: 379px) {
+  .margin-top-xs {
+    margin-top: 10px;
+  }
+}
